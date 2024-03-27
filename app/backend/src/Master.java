@@ -6,13 +6,16 @@ import java.util.*;
 //----------------------------------------------------------------Master-Class---------------------------------------------------------------
 public class Master extends Thread{
     public static int num_of_workers;
-    private static String host; //
     private static ObjectInputStream in; // Socket for Master to listen the requests from the Master
     private static ObjectOutputStream out; // Socket for each request to send the result to the Reducer
-    private static int listenPort; // Port to listen the request
-    private static int requestReducerPort; // Port to send the result
+    private static int worker_port; // Port to listen the request
+    private static int reducer_port; // Port to send the result
+    private static int user_port;
     private Chunk chunk;
     public Socket requestSocket;
+    ServerSocket workerSocket;
+    ServerSocket clientSocket;
+    ServerSocket reducerSocket;
 //-------------------------------------------------------------Master-Constructor------------------------------------------------------------
     public Master(Socket socket, Chunk chunk ){
         this.chunk = chunk;
@@ -29,11 +32,10 @@ public class Master extends Thread{
             System.err.println("I/O Error\n" + "The system cannot find the path specified");
         }
 
-        Master.host = prop.getProperty("host");
-        Master.listenPort = Integer.parseInt(prop.getProperty("listenPort"));
-        Master.requestReducerPort = Integer.parseInt(prop.getProperty("requestReducerPort"));
+        Master.worker_port = Integer.parseInt(prop.getProperty("worker_port"));
+        Master.reducer_port = Integer.parseInt(prop.getProperty("reducer_port"));
         Master.num_of_workers = Integer.parseInt(prop.getProperty("numberOfWorkers"));
-        System.out.println(Integer.parseInt(prop.getProperty("listenPort")));
+        System.out.println(Integer.parseInt(prop.getProperty("worker_port")));
     }
 
 
@@ -51,10 +53,10 @@ public class Master extends Thread{
         Master.init();
         ServerSocket connectionSocket;
         Socket socket ;
-        System.out.println(Master.host);
+        //System.out.println(Master.host);
 
         try{
-            connectionSocket = new ServerSocket(Master.listenPort);
+            connectionSocket = new ServerSocket(Master.worker_port);
             socket = connectionSocket.accept();
             System.out.println("Client accepteed");
             Master.out = new ObjectOutputStream(socket.getOutputStream());
@@ -67,13 +69,13 @@ public class Master extends Thread{
         }
 
 
-        try{
+       /*  try{
             Chunk chunk = new Chunk();
-            Socket chunkSocket = new Socket(Master.host, Master.requestReducerPort);
+            Socket chunkSocket = new Socket(Master.host, Master.reducer_port);
             Master worker = new Master(chunkSocket, chunk);
             worker.start();
         }catch(IOException e){
             System.err.println("I/O Error\n" + "Error occured while trying to create the socket for the request");
-        }
+        } */
     }  
 }
