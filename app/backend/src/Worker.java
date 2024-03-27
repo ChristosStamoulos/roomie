@@ -22,12 +22,12 @@ public class Worker extends Thread{
 //---------------------------------------------------------------Initialization--------------------------------------------------------------
     public static void init(){
         Properties prop = new Properties();
-        String filename = "../config/worker.config";
+        String filename = "backend\\config\\worker.config";
 
         try (FileInputStream f = new FileInputStream(filename)){
             prop.load(f);
-        }catch (IOException exception) {
-            System.err.println("I/O Error\n" + "File not found");
+        }catch (IOException exception ) {
+            System.err.println("I/O Error\n" + "The system cannot find the path specified");
         }
 
         Worker.host = prop.getProperty("host");
@@ -38,7 +38,6 @@ public class Worker extends Thread{
 
     @Override
 	public void run(){
-
         try{
             Worker.out.writeObject(chunk);
         }catch(IOException e){
@@ -55,9 +54,16 @@ public class Worker extends Thread{
         try{
             connectionSocket = new Socket(Worker.host, Worker.listenPort);
             Worker.in = new ObjectInputStream(connectionSocket.getInputStream());
-            System.out.println("omg yes");
+            System.out.println("Found Master!");
+            while(in.available() > 0){
+                String message = in.readUTF();
+            System.out.println("Server says: " + message);
+            }
+            connectionSocket.close();
+            in.close();;
+
         }catch(IOException e){
-            System.err.println("I/O Error\n" + "Error occured while trying to create the socket for ");
+            System.err.println("I/O Error\n" + "Error occured while trying to create the socket for conection enstablishment");
         }
 
 
