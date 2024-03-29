@@ -41,7 +41,7 @@ public class Worker extends Thread{
         try{
             Worker.out.writeObject(chunk);
         }catch(IOException e){
-            System.err.println("I/O Error\n" + "Error");
+            System.err.println("IO Error\n" + "Error");
         }
         System.out.println("hey i'm working!!");
     }
