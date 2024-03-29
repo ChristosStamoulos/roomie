@@ -1,3 +1,5 @@
+
+
 //------------------------------------------------------------------Imports------------------------------------------------------------------
 import java.net.*;
 import java.io.*;
@@ -22,7 +24,7 @@ public class Worker extends Thread{
 //---------------------------------------------------------------Initialization--------------------------------------------------------------
     public static void init(){
         Properties prop = new Properties();
-        String filename = "backend\\config\\worker.config";
+        String filename = "app\\backend\\config\\worker.config";
 
         try (FileInputStream f = new FileInputStream(filename)){
             prop.load(f);
