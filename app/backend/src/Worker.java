@@ -17,8 +17,8 @@ public class Worker {
 			while (true) {
 				connection = providerSocket.accept();
 
-				//Thread t = new ActionsForClients(connection);
-				//t.start();
+				Thread t = new ActionsForClients(connection);
+				t.start();
 
 			}
 		} catch (IOException ioException) {
