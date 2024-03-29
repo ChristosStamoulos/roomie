@@ -25,7 +25,7 @@ public class Master{
 
     public static void init(){
         Properties prop = new Properties();
-        String filename = "backend\\config\\master.config";
+        String filename = "app\\backend\\config\\master.config";
 
         try (FileInputStream f = new FileInputStream(filename)){
             prop.load(f);
@@ -47,7 +47,7 @@ public class Master{
         System.out.println(Master.host);
 
         try{
-            connectionSocket = new ServerSocket(Master.listenPort);
+            connectionSocket = new ServerSocket(Master.worker_port);
             socket = connectionSocket.accept();
             System.out.println("Client accepteed");
             Master.out = new ObjectOutputStream(socket.getOutputStream());
