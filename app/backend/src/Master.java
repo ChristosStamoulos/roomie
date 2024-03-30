@@ -32,7 +32,7 @@ public class Master extends Thread{
          ObjectInputStream  inWorker=null;
 
          try{
-            workerSocket = new Socket("192.168.1.4",1234);
+            workerSocket = new Socket(Master.host,Master.workerPort);
             outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
 			inWorker = new ObjectInputStream(workerSocket.getInputStream());
 
