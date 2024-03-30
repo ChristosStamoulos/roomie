@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.Properties;
 import java.util.Scanner;
 
-/* DummyUser Class
+/** DummyUser Class
  *
  * @authors: Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
- * @details: This project is being carried out in the course Distributed Systems @ Spring AUEB 2024
+ * @details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024
  *
  * This class is implemented to represent a user.
  */
@@ -59,7 +59,7 @@ public class DummyUser extends Thread{
             System.out.println(Integer.parseInt(prop.getProperty("masterPort")));
             this.automatic = Boolean.parseBoolean(prop.getProperty("automatic"));
 
-            /* Ask if new or existing user */
+            
             int answer;
             do {
                 
