@@ -2,6 +2,15 @@ import java.io.*;
 import java.net.*;
 import java.util.Properties;
 
+/** Master Class
+ *
+ * @authors Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
+ * @details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024
+ *
+ * This class is implemented to handle requests from the User, schedules them for mapping to Workers
+ * and processes the results back to User.
+*/
+
 public class Master extends Thread{
     public static int num_of_workers;
     private static String host;

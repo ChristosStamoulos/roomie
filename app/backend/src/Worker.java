@@ -2,6 +2,14 @@ import java.io.*;
 import java.net.*;
 import java.util.Properties;
 
+/** Worker Class
+ *
+ * @authors Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
+ * @details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024
+ *
+ * This class is implemented to handle requests from the Master and to map the data assigned from the Master.
+*/
+
 public class Worker {
 	private final int id;
     private static int masterPort;

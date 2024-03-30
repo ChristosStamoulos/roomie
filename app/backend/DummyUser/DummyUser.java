@@ -13,7 +13,7 @@ import java.util.Scanner;
  * @details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024
  *
  * This class is implemented to represent a user.
- */
+*/
 
 public class DummyUser extends Thread{
     private final int id;
