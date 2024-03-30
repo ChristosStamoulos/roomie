@@ -19,8 +19,8 @@ public class Master extends Thread{
         }
 
         Master.host = prop.getProperty("host");
-        Master.workerPort = Integer.parseInt(prop.getProperty("worker_port"));
-        Master.ReducerPort = Integer.parseInt(prop.getProperty("reducer_port"));
+        Master.workerPort = Integer.parseInt(prop.getProperty("workerPort"));
+        Master.ReducerPort = Integer.parseInt(prop.getProperty("reducerPort"));
         Master.num_of_workers = Integer.parseInt(prop.getProperty("numberOfWorkers"));
         System.out.println(Integer.parseInt(prop.getProperty("worker_port")));
     }
@@ -32,6 +32,7 @@ public class Master extends Thread{
          ObjectInputStream  inWorker=null;
 
          try{
+            System.out.println("heyyyyyy");
             workerSocket = new Socket(Master.host,Master.workerPort);
             outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
 			inWorker = new ObjectInputStream(workerSocket.getInputStream());
@@ -54,6 +55,7 @@ public class Master extends Thread{
     }
 
     public static void main(String[] args) {
+        init();
         new Master().start();
     }
 }

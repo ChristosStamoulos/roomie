@@ -24,6 +24,7 @@ public class Worker {
     }
 
     public static void main(String[] args) {
+		init();
         new Worker().openServer();
 
     }
