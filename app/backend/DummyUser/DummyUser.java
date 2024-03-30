@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 /** DummyUser Class
  *
- * @authors: Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
+ * @authors Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
  * @details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024
  *
  * This class is implemented to represent a user.
