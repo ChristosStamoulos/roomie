@@ -10,7 +10,7 @@ public class Master extends Thread{
 
      public static void init(){
         Properties prop = new Properties();
-        String filename = "app\\backend\\config\\master.config";
+        String filename = "backend\\config\\master.config";
 
         try (FileInputStream f = new FileInputStream(filename)){
             prop.load(f);
@@ -22,7 +22,7 @@ public class Master extends Thread{
         Master.workerPort = Integer.parseInt(prop.getProperty("workerPort"));
         Master.ReducerPort = Integer.parseInt(prop.getProperty("reducerPort"));
         Master.num_of_workers = Integer.parseInt(prop.getProperty("numberOfWorkers"));
-        System.out.println(Integer.parseInt(prop.getProperty("worker_port")));
+        System.out.println(Integer.parseInt(prop.getProperty("workerPort")));
     }
 
 
