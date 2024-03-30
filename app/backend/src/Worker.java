@@ -4,7 +4,6 @@ import java.util.Properties;
 
 public class Worker {
 	
-    private static String host;
     private static int masterPort;
     private static int ReducerPort;
 	private static int serverPort;
@@ -19,9 +18,8 @@ public class Worker {
             System.err.println("I/O Error\n" + "The system cannot find the path specified");
         }
 
-        Worker.host = prop.getProperty("host");
-        Worker.masterPort = Integer.parseInt(prop.getProperty("masterPort"));
 		Worker.serverPort = Integer.parseInt(prop.getProperty("serverPort"));
+        Worker.masterPort = Integer.parseInt(prop.getProperty("masterPort"));
         System.out.println(Integer.parseInt(prop.getProperty("serverPort")));
     }
 

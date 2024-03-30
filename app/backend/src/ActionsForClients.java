@@ -16,7 +16,6 @@ public class ActionsForClients extends Thread {
 
 	public void run() {
 		try {
-
 			out.writeUTF("Hi blaka");
 			out.flush();
 		} catch (IOException e) {

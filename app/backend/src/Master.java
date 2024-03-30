@@ -35,9 +35,6 @@ public class Master extends Thread{
             workerSocket = new Socket(Master.host,Master.workerPort);
             outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
 			inWorker = new ObjectInputStream(workerSocket.getInputStream());
-
-           
-
             System.out.println(inWorker.readUTF());
 
          } catch (UnknownHostException unknownHost) {
@@ -46,7 +43,8 @@ public class Master extends Thread{
 			ioException.printStackTrace();
 		} finally {
 			try {
-				inWorker.close();	outWorker.close();
+				inWorker.close();	
+                outWorker.close();
 				workerSocket.close();
 			} catch (IOException ioException) {
 				ioException.printStackTrace();
