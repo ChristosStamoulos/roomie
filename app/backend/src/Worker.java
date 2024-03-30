@@ -30,16 +30,16 @@ public class Worker {
 
     }
     ServerSocket providerSocket;
-	Socket connection = null;
+	Socket masterConnection = null;
 
     void openServer() {
 		try {
 			providerSocket = new ServerSocket(Worker.serverPort, 10);
 
 			while (true) {
-				connection = providerSocket.accept();
+				masterConnection = providerSocket.accept();
 
-				Thread t = new ActionsForClients(connection);
+				Thread t = new ActionsForClients(masterConnection);
 				t.start();
 
 			}
