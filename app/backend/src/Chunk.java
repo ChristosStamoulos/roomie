@@ -3,11 +3,12 @@ import java.io.Serializable;
 public class Chunk implements Serializable {    
     private final String userID;
     private final int segmentID;
+    private final Object data;
 
-    public Chunk(String userID, int segmentID){//, Data data){
+    public Chunk(String userID, int segmentID, Object data){
         this.userID = userID;
         this.segmentID = segmentID;
-        //this.data = data;
+        this.data = data;
     }
 
     public String getUserID() {
@@ -18,7 +19,7 @@ public class Chunk implements Serializable {
         return segmentID;
     }
 
-    // public Data getData(){
-    //     return data;
-    // }
+    public Object getData(){
+        return data;
+    }
 }
