@@ -57,5 +57,10 @@ public class Master extends Thread{
     public static void main(String[] args) {
         init();
         new Master().start();
+        for (int i = 1; i <= num_of_workers; i++) {
+            Worker worker = new Worker(i);
+            init();
+            worker.openServer();
+        }
     }
 }

@@ -3,10 +3,14 @@ import java.net.*;
 import java.util.Properties;
 
 public class Worker {
-	
+	private final int id;
     private static int masterPort;
     private static int ReducerPort;
 	private static int serverPort;
+
+	Worker(int id){
+		this.id = id;
+	}
 
 	public static void init(){
         Properties prop = new Properties();
@@ -25,8 +29,6 @@ public class Worker {
 
     public static void main(String[] args) {
 		init();
-        new Worker().openServer();
-
     }
     ServerSocket providerSocket;
 	Socket masterConnection = null;
