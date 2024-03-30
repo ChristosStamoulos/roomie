@@ -1,3 +1,5 @@
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class Chunk implements Serializable {    
@@ -21,5 +23,18 @@ public class Chunk implements Serializable {
 
     public Object getData(){
         return data;
+    }
+
+    public int getLenght(){
+        try {
+            ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+            ObjectOutputStream objectStream = new ObjectOutputStream(byteStream);
+            objectStream.writeObject(this); // Serialize the current Chunk object
+            objectStream.close();
+            return byteStream.toByteArray().length;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0; 
+        }
     }
 }
