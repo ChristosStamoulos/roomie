@@ -37,4 +37,18 @@ public class Chunk implements Serializable {
             return 0; 
         }
     }
+    @Override
+    public boolean equals(Object other) {
+        if (other == null){
+            return false;
+        }
+        if (this == other){
+            return true;
+        }
+        if (!(other instanceof Chunk)){
+            return false;
+        }
+        Chunk o = (Chunk) other;
+        return (this.segmentID == o.segmentID);
+    }
 }
