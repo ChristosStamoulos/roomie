@@ -1,6 +1,10 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Properties;
+
+import org.json.JSONObject;
+import app.utils.Pair;
 
 /** Master Class
  *
@@ -41,7 +45,6 @@ public class Master extends Thread{
          ObjectInputStream  inWorker=null;
 
          try{
-            System.out.println("heyyyyyy");
             workerSocket = new Socket(Master.host,Master.workerPort);
             outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
 			inWorker = new ObjectInputStream(workerSocket.getInputStream());
@@ -63,13 +66,52 @@ public class Master extends Thread{
 
     }
 
+    public ArrayList<Pair<Chunk,Integer>>map(Chunk chunk){
+        ArrayList<Chunk> chunks = new ArrayList<>();
+        Object data = chunk.getData();
+        JSONObject filters = (JSONObject)data;
+
+        int i = 0;
+        for (String key : filters.keySet()){
+            i++;
+            Object pair = new Pair<String,Object>(key,filters.get(key));
+
+            chunks.add(new Chunk("i", i, pair));
+        }
+
+        ArrayList<Pair<Chunk,Integer>>maper = new ArrayList<>();
+
+        for(Chunk chunkaki : chunks){
+            Pair<Chunk,Integer> mapPair = new Pair<Chunk,Integer>(chunkaki, chunk.getLenght());
+            maper.add(mapPair);
+        }
+        return maper;
+    }
+
+    public int hasecode(Object str){
+        return str.hashCode() * 31;
+    }
+
+    public int findWorkerID(Pair<Chunk,Integer> pair){
+        Chunk chunk = pair.getKey();
+        Pair<String,Object> data = (Pair<String,Object>)chunk.getData();
+        Object value =  data.getValue();
+
+        return hasecode(value)%2;
+
+
+    }
+}
+
     public static void main(String[] args) {
-        init();
+        Master.init();
         new Master().start();
-        for (int i = 1; i <= num_of_workers; i++) {
+        for (int i = 1; i <= Master.num_of_workers; i++) {
             Worker worker = new Worker(i);
-            init();
+            Worker.init();
             worker.openServer();
         }
-    }
+
+
+        
 }
