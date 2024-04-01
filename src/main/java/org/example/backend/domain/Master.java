@@ -29,7 +29,8 @@ public class Master extends Thread{
 
     public static void init(){
         Properties prop = new Properties();
-        String filename = "backend\\config\\master.config";
+        String filename = "src/main/java/org/example/backend/config/master.config";
+
 
         try (FileInputStream f = new FileInputStream(filename)){
             prop.load(f);
@@ -107,7 +108,7 @@ public class Master extends Thread{
 
 
     }
-    public void main(String[] args) {
+    public static void main(String[] args) {
         Master.init();
         new Master().start();
         for (int i = 1; i <= Master.num_of_workers; i++) {

@@ -26,7 +26,8 @@ public class Worker {
 
     public static void init(){
         Properties prop = new Properties();
-        String filename = "app\\backend\\config\\worker.config";
+        String filename = "src/main/java/org/example/backend/config/worker.config";
+
 
         try (FileInputStream f = new FileInputStream(filename)){
             prop.load(f);
