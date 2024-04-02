@@ -1,16 +1,20 @@
 package org.example.backend.domain;
 
 import org.example.backend.utils.Pair;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Properties;
+
+import static java.lang.Math.abs;
 
 /** Master Class
  *
@@ -26,6 +30,9 @@ public class Master extends Thread{
     private static String host;
     private static int workerPort;
     private static int ReducerPort;
+    private static int userPort;
+
+    private static Object userInput=null;
 
     public static void init(){
         Properties prop = new Properties();
@@ -42,17 +49,65 @@ public class Master extends Thread{
         Master.workerPort = Integer.parseInt(prop.getProperty("workerPort"));
         Master.ReducerPort = Integer.parseInt(prop.getProperty("reducerPort"));
         Master.num_of_workers = Integer.parseInt(prop.getProperty("numberOfWorkers"));
+        Master.userPort = Integer.parseInt(prop.getProperty("userPort"));
         System.out.println(Integer.parseInt(prop.getProperty("workerPort")));
     }
 
+    @Override
+    public void run() {
 
-    public void run(){
-        Socket workerSocket=null;
-        ObjectOutputStream outWorker=null;
-        ObjectInputStream inWorker=null;
+        ObjectInputStream inUser = null;
+        ServerSocket providerSocket = null;
+        Socket userConnection = null;
 
-        try{
-            workerSocket = new Socket(Master.host,Master.workerPort);
+
+        try {
+            providerSocket = new ServerSocket(Master.userPort, 10);
+            while (true) {
+
+                userConnection = providerSocket.accept();
+                inUser = new ObjectInputStream(userConnection.getInputStream());
+                try {
+                    userInput = inUser.readObject();
+                    Chunk chunk = (Chunk) userInput;
+                    String strObject = (String) chunk.getData();
+                    JSONObject jsonObject = new JSONObject(strObject);
+                    System.out.println(jsonObject.toString());
+
+                    for (Pair<Chunk, Integer> chunkaki : this.map((Chunk) userInput)) {
+                        System.out.println(this.findWorkerID(chunkaki));
+                    }
+                    conectToWorkers();
+
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        } finally {
+            try {
+                providerSocket.close();
+                inUser.close();
+                userConnection.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+
+
+
+
+    }
+
+    public void conectToWorkers() {
+        Socket workerSocket = null;
+        ObjectOutputStream outWorker = null;
+        ObjectInputStream inWorker = null;
+        ServerSocket userSocket = null;
+        try {
+            workerSocket = new Socket(Master.host, Master.workerPort);
             outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
             inWorker = new ObjectInputStream(workerSocket.getInputStream());
             System.out.println(inWorker.readUTF());
@@ -70,29 +125,30 @@ public class Master extends Thread{
                 ioException.printStackTrace();
             }
         }
-
     }
 
     public ArrayList<Pair<Chunk,Integer>> map(Chunk chunk){
         ArrayList<Chunk> chunks = new ArrayList<>();
-        Object data = chunk.getData();
-        JSONObject filters = (JSONObject)data;
-
-        int i = 0;
-        for (String key : filters.keySet()){
+        String data = (String) chunk.getData();
+        JSONObject filter = new JSONObject(data);
+        JSONObject roomData = filter.getJSONObject(String.valueOf(filter.keySet().toString().replace("[", "").replace("]", "")));
+        int i =0;
+        for(String key : roomData.keySet()){
             i++;
-            Object pair = new Pair<String,Object>(key,filters.get(key));
+            Object pair = new Pair<String,Object>(key,roomData.get(key));
 
             chunks.add(new Chunk("i", i, pair));
+
         }
 
-        ArrayList<Pair<Chunk,Integer>>maper = new ArrayList<>();
+
+        ArrayList<Pair<Chunk,Integer>>mapper = new ArrayList<>();
 
         for(Chunk chunkaki : chunks){
             Pair<Chunk,Integer> mapPair = new Pair<Chunk,Integer>(chunkaki, chunk.getLenght());
-            maper.add(mapPair);
+            mapper.add(mapPair);
         }
-        return maper;
+        return mapper;
     }
 
     public int hasecode(Object str){
@@ -104,18 +160,21 @@ public class Master extends Thread{
         Pair<String,Object> data = (Pair<String,Object>)chunk.getData();
         Object value =  data.getValue();
 
-        return hasecode(value)%2;
+        return abs(hasecode(value)%Master.num_of_workers);
 
 
     }
     public static void main(String[] args) {
-        Master.init();
-        new Master().start();
+
+        Master master = new Master();
+        master.init();
+        master.start();
         for (int i = 1; i <= Master.num_of_workers; i++) {
             Worker worker = new Worker(i);
             Worker.init();
             worker.openServer();
         }
+
     }
 }
 
