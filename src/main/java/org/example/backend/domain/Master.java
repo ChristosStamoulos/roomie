@@ -12,6 +12,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Properties;
 
 import static java.lang.Math.abs;
@@ -73,11 +74,20 @@ public class Master extends Thread{
                     String strObject = (String) chunk.getData();
                     JSONObject jsonObject = new JSONObject(strObject);
                     System.out.println(jsonObject.toString());
+                    String keyOfInterest = "roomName";
+                    Pair<String,Object> curentPair = null;
 
                     for (Pair<Chunk, Integer> chunkaki : this.map((Chunk) userInput)) {
-                        System.out.println(this.findWorkerID(chunkaki));
+                        curentPair = (Pair<String,Object>)chunkaki.getKey().getData();
+                        if(Objects.equals(curentPair.getKey(), keyOfInterest)){
+                            System.out.println("Sending the room to worker:"+ this.findWorkerID(chunkaki));
+                            conectToWorkers();
+                            break;
+                        }
+
+
                     }
-                    conectToWorkers();
+
 
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
@@ -110,7 +120,10 @@ public class Master extends Thread{
             workerSocket = new Socket(Master.host, Master.workerPort);
             outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
             inWorker = new ObjectInputStream(workerSocket.getInputStream());
-            System.out.println(inWorker.readUTF());
+
+            outWorker.writeObject(userInput);
+            outWorker.flush();
+            System.out.println("Files are sent to workers!");
 
         } catch (UnknownHostException unknownHost) {
             System.err.println("You are trying to connect to an unknown host!");
@@ -159,6 +172,7 @@ public class Master extends Thread{
         Chunk chunk = pair.getKey();
         Pair<String,Object> data = (Pair<String,Object>)chunk.getData();
         Object value =  data.getValue();
+
 
         return abs(hasecode(value)%Master.num_of_workers);
 
