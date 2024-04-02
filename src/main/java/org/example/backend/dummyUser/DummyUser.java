@@ -1,7 +1,18 @@
 package org.example.backend.dummyUser;
 
+import org.example.backend.domain.Chunk;
+import org.example.backend.domain.Master;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -17,19 +28,27 @@ import java.util.Scanner;
 public class DummyUser extends Thread{
     private final int id;
     private final String path;
-    private String host;
-    private int masterPort;
+    private static String host;
+    private  static int masterPort;
     private boolean automatic = false;
+
+    private static Chunk chunkMessage;
+
+    Socket toMasterSocket=null;
+    ObjectOutputStream outToMaster=null;
+    ObjectInputStream inFromMaster=null;
 
     DummyUser(int id){
         this.id = id;
-        this.path = System.getProperty("user.dir") + "\\dummyuser\\UserData\\" + "User" + id + "\\";
+        this.path =  "src\\main\\java\\org\\example\\backend\\"+ "\\dummyUser\\userData\\" + "userData" + id + "\\";
+
     }
 
     @Override
     public void run() {
         try {
             login();
+            connectMaster();
 
 
 
@@ -45,7 +64,7 @@ public class DummyUser extends Thread{
     private void login(){
         try {
             Properties prop = new Properties();
-            String filename = System.getProperty("user.dir") + "\\app\\backend\\DummyUser\\UserData\\user.config";
+            String filename = "src\\main\\java\\org\\example\\backend\\dummyUser\\userData\\user.config";
 
             try (FileInputStream f = new FileInputStream(filename)){
                 prop.load(f);
@@ -87,6 +106,41 @@ public class DummyUser extends Thread{
         }
     }
 
+    public void connectMaster(){
+        Chunk chunk= null ;
+        try{
+            toMasterSocket = new Socket(DummyUser.host,DummyUser.masterPort);
+            outToMaster = new ObjectOutputStream(toMasterSocket.getOutputStream());
+
+
+            try{
+                String jsonData = new String(Files.readAllBytes(Paths.get("src/main/java/org/example/backend/data/sampleRoom.json")));
+                JSONObject jsonObject = new JSONObject(jsonData);
+                chunk = new Chunk(String.valueOf(this.id),1,(Object) jsonObject.toString());
+                outToMaster.writeObject(chunk);
+                outToMaster.flush();
+                System.out.println("files are sent to master!");
+            } catch (IOException | JSONException e) {
+                System.err.println("Json file not found");
+            e.printStackTrace();
+            }
+
+
+        } catch (UnknownHostException unknownHost) {
+            System.err.println("You are trying to connect to an unknown host!");
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        } finally {
+            try {
+                inFromMaster.close();
+                outToMaster.close();
+                toMasterSocket.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
+
     private void init(){
 
     }
@@ -109,11 +163,12 @@ public class DummyUser extends Thread{
 
     public static void main(String[] args) {
         int numOfUsers = 2;
-
-        DummyUser[] dummyUsers = new DummyUser[numOfUsers];
+          DummyUser dummyUser = new DummyUser(1);
+          dummyUser.start();
+       /* DummyUser[] dummyUsers = new DummyUser[numOfUsers];
         for (int i = 1; i <= numOfUsers; i++) {
             dummyUsers[i-1] = new DummyUser(i);
             dummyUsers[i-1].start();
-        }
+        }*/
     }
 }
