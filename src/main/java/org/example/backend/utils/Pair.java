@@ -44,6 +44,20 @@ public class Pair<K, V> {
         Pair o = (Pair) other;
         return (this.key==o.key) && (this.value == o.value);
     }
+    public boolean equalKeys(Object other) {
+        if (other == null){
+            return false;
+        }
+        if (this == other){
+            return true;
+        }
+        if (!(other instanceof Pair)){
+            return false;
+        }
+        Pair o = (Pair) other;
+        return (this.key==o.key);
+    }
+
 
 
 }
