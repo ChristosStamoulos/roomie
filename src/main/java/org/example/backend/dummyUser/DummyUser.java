@@ -4,6 +4,7 @@ import org.example.backend.domain.Chunk;
 import org.example.backend.domain.Master;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.example.backend.utils.SimpleCalendar;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,6 +14,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.Scanner;
 
@@ -48,6 +50,40 @@ public class DummyUser extends Thread{
     public void run() {
         try {
             login();
+            int option;
+            Chunk chunk= null ;
+            Scanner in = new Scanner(System.in);
+
+            System.out.println("DummyUser " + id + " welcome!\n" + "Please follow the rules below to add a filter to your search");
+            System.out.println("1.Area        |  For filtering your search by place, please enter the place you want else type 'none'");
+            String place = in.nextLine();
+            System.out.println("2.Start Date  |  For filtering your search by the date, please enter the starting date you want (such as '12/11/2024') else type 'none'");
+            String startDate = in.nextLine();
+            System.out.println("2.Finish Date |  For filtering your search by the date, please enter the finishing date you want (such as '14/11/2024') else type 'none'");
+            String finishDate = in.nextLine();
+            System.out.println("3.People      |  For filtering your search by the number of people, please enter the number you want else type 'none'");
+            String numberOfPeople = in.nextLine();
+            System.out.println("4.Low Price   |  For filtering your search by the price, please enter the low boundary price you want else type 'none'");
+            String lowPrice = in.nextLine();
+            System.out.println("4.High Price  |  For filtering your search by the price, please enter the high boundary price you want else type 'none'");
+            String highPrice = in.nextLine();
+            System.out.println("5.Stars       |  For filtering your search by the number of stars, please enter the number you want else type 'none'");
+            String stars = in.nextLine();
+
+            String jsonData = new String(Files.readAllBytes(Paths.get("src/main/java/org/example/backend/data/sampleFilters.json")));
+            JSONObject jsonObject = new JSONObject(jsonData);
+            if(!Objects.equals(place, "none")) jsonObject.getJSONObject("filters").put("area", place);
+            if(!Objects.equals(startDate, "none")) jsonObject.getJSONObject("filters").put("startDate", new SimpleCalendar(startDate));
+            if(!Objects.equals(finishDate, "none")) jsonObject.getJSONObject("filters").put("finishDate", new SimpleCalendar(finishDate));
+            if(!Objects.equals(numberOfPeople, "none")) jsonObject.getJSONObject("filters").put("noOfPeople", Integer.parseInt(numberOfPeople));
+            if(!Objects.equals(lowPrice, "none")) jsonObject.getJSONObject("filters").put("lowPrice", Integer.parseInt(lowPrice));
+            if(!Objects.equals(highPrice, "none")) jsonObject.getJSONObject("filters").put("highPrice", Integer.parseInt(highPrice));
+            if(!Objects.equals(stars, "none")) jsonObject.getJSONObject("filters").put("stars", Double.parseDouble(stars));
+
+            System.out.println(jsonObject.toString());
+
+            chunk = new Chunk(String.valueOf(this.id),1, jsonObject);
+
             connectMaster();
 
 
