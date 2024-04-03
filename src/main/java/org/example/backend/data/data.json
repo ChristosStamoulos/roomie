@@ -1,3 +1,15 @@
 {
-  "room0":{"area":"athens","price":"24","roomImage":"popo.png","noOfReviews":"23","stars":"3.4","noOfPersons = ":"2","roomName":"lover's room"},
-  "room1":{"area":"pathsia","price":"54","roomImage":"maria.png","noOfReviews":"12","stars":"2.3","noOfPersons = ":"4","roomName":"maria room"}}
+  "Rooms":[
+    {"area":"Athens","price":"34","roomImage":"lovers.png","noOfReviews":"12","mid":"1","stars":"4.4","noOfPersons = ":"5","roomName":"lover's room"},
+    {"area":"Crete","price":"40","roomImage":"eleni.png","noOfReviews":"3","mid":"2","stars":"13","noOfPersons = ":"3","roomName":"eleni's rooms"},
+    {"area":"Skiathos","price":"78","roomImage":"lenas.png","noOfReviews":"56","mid":"1","stars":"4.5","noOfPersons = ":"3","roomName":"lena's room"},
+    {"area":"Aegina","price":"400","roomImage":"entireVilla.png","noOfReviews":"40","mid":"2","stars":"5","noOfPersons = ":"5","roomName":"Entire villa"},
+    {"area":"Loutraki","price":"80","roomImage":"OliveGroves.png","noOfReviews":"139","mid":"1","stars":"4.4","noOfPersons = ":"6","roomName":"OliveGroves"},
+    {"area":"Athens","price":"123","roomImage":"romanos.png","noOfReviews":"314","mid":"3","stars":"4.9","noOfPersons = ":"3","roomName":"Romanos"},
+    {"area":"Athens","price":"32","roomImage":"sarn.png","noOfReviews":"12","mid":"1","stars":"2.5","noOfPersons = ":"2","roomName":"Sarn"},
+    {"area":"Kallithea","price":"40","roomImage":"topten.png","noOfReviews":"61","mid":"3","stars":"4.5","noOfPersons = ":"2","roomName":"Top Ten"},
+    {"area":"Pireas","price":"102","roomImage":"bluemotion.png","noOfReviews":"27","mid":"4","stars":"4.6","noOfPersons = ":"4","roomName":"BlueMotion"},
+    {"area":"Pireas","price":"110","roomImage":"whiteBlacksuite.png","noOfReviews":"16","mid":"4","stars":"5","noOfPersons = ":"2","roomName":"White&Black suite"},
+    {"area":"Crete","price":"36","roomImage":"staing.png","noOfReviews":"5","mid":"4","stars":"4.2","noOfPersons = ":"4","roomName":"Staing"}
+  ]
+}
