@@ -2,6 +2,12 @@ package org.example.backend.domain;
 
 import java.util.Objects;
 
+/** Room Class
+ * @author Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
+ * @details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024
+ *
+ * This class represents the entity Room.
+ */
 public class Room {
     private String name;
     private String area;
@@ -10,6 +16,7 @@ public class Room {
     private int noOfReviews;
     private int noOfPersons;
     private double rating;
+    private int mid; //manager's id
 
     private int id;
 
@@ -21,6 +28,14 @@ public class Room {
 
     public int getId() {
         return id;
+    }
+
+    public void setMid(int mid) {
+        this.mid = mid;
+    }
+
+    public int getMid() {
+        return mid;
     }
 
     public void setName(String name) {

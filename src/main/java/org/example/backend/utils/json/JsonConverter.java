@@ -11,6 +11,12 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+/** JsonConverter Class
+ * @author Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
+ * @details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024
+ *
+ * This class is implemented to convert json objects, the rooms in data into objects of type Room.
+ */
 public class JsonConverter {
     private static final String path = "src/main/java/org/example/backend/data/data.json";
     private ArrayList<Room> rooms;
@@ -31,6 +37,7 @@ public class JsonConverter {
                 room.setNoOfReviews(Integer.parseInt((String) jsonRoom.get("noOfReviews")));
                 room.setNoOfPersons(Integer.parseInt((String) jsonRoom.get("noOfPersons")));
                 room.setRoomImage((String) jsonRoom.get("roomImage"));
+                room.setMid(Integer.parseInt((String) jsonRoom.get("mid")));
                 room.setId(i);
                 System.out.println(room.toString());
                 rooms.add(room);
