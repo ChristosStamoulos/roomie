@@ -24,7 +24,7 @@ public class WriteJson {
 
                 System.out.print("noOfPersons = ");
                 ans = in.nextLine();
-                obj.put("noOfPersons = ", ans);
+                obj.put("noOfPersons", ans);
 
                 System.out.print("area = ");
                 ans = in.nextLine();
