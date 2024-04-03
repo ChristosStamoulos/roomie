@@ -1,5 +1,8 @@
 package org.example.backend.domain;
 
+import org.example.backend.utils.SimpleCalendar;
+
+import java.util.ArrayList;
 import java.util.Objects;
 
 /** Room Class
@@ -18,9 +21,15 @@ public class Room {
     private double rating;
     private int mid; //manager's id
 
+    private ArrayList<SimpleCalendar> availableDates;
+    private ArrayList<SimpleCalendar> reservationDates;
+
     private int id;
 
-    public Room(){}
+    public Room(){
+        this.availableDates = new ArrayList<SimpleCalendar>();
+        this.reservationDates = new ArrayList<SimpleCalendar>();
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -92,6 +101,31 @@ public class Room {
 
     public String getRoomImage() {
         return roomImage;
+    }
+
+    public void setAvailableDates(ArrayList<SimpleCalendar> availableDates) {
+        this.availableDates = availableDates;
+    }
+
+    public void setReservationDates(ArrayList<SimpleCalendar> reservationDates) {
+        this.reservationDates = reservationDates;
+    }
+
+    public ArrayList<SimpleCalendar> getReservationDates() {
+        return reservationDates;
+    }
+
+    public ArrayList<SimpleCalendar> getAvailableDates() {
+        return availableDates;
+    }
+
+    public void addAvailableDate(SimpleCalendar date){
+        this.availableDates.add(date);
+    }
+
+    public void addReservationDate(SimpleCalendar date){
+        this.reservationDates.add(date);
+        this.availableDates.remove(date);
     }
 
     @Override
