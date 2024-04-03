@@ -25,10 +25,12 @@ public class Room {
     private ArrayList<SimpleCalendar> reservationDates;
 
     private int id;
+    private static int idCount = 0;
 
     public Room(){
         this.availableDates = new ArrayList<SimpleCalendar>();
         this.reservationDates = new ArrayList<SimpleCalendar>();
+        this.id = idCount++;
     }
 
     public void setId(int id) {
