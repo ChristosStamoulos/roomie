@@ -1,23 +1,23 @@
 package org.example.backend.utils.json;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class json {
+public class WriteJson {
     public static void main(String[] args){
         Scanner in = new Scanner(System.in);
         System.out.println("in = ");
         String inp = in.nextLine();
         try{
-            FileWriter file = new FileWriter("data.json");
-            file.write("{\n");
-            int i = 0;
+            FileWriter file = new FileWriter("src/main/java/org/example/backend/data/dta.json");
+            JSONObject rooms = new JSONObject();
+            JSONArray arr = new JSONArray();
             while(!inp.equals("n")){
                 JSONObject obj = new JSONObject();
-                file.write("\"room" + String.valueOf(i) + "\":");
                 System.out.print("room name = ");
                 String ans = in.nextLine();
                 obj.put("roomName", ans);
@@ -45,17 +45,15 @@ public class json {
                 System.out.print("roomImage = ");
                 ans = in.nextLine();
                 obj.put("roomImage", ans);
-
-                file.write(obj.toString());
-                file.flush();
+                System.out.print("Manager's id = ");
+                ans = in.nextLine();
+                obj.put("mid", ans);
+                arr.put(obj);
                 System.out.println("more?");
                 inp = in.nextLine();
-                if(!inp.equals("n")){
-                    file.write(",\n");
-                }
-                i++;
             }
-            file.write("}");
+            rooms.put("Rooms", arr);
+            file.write(rooms.toString());
             file.flush();
         }catch (IOException e) {
             e.fillInStackTrace();
