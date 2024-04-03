@@ -29,22 +29,26 @@ public class JsonConverter {
             rooms = new ArrayList<Room>();
             for (int i = 0; i < jsonRooms.length(); i++) {
                 JSONObject jsonRoom = (JSONObject) jsonRooms.get(i);
-                Room room = new Room();
-                room.setArea((String) jsonRoom.get("area"));
-                room.setName((String) jsonRoom.get("roomName"));
-                room.setPrice(Double.parseDouble((String) jsonRoom.get("price")));
-                room.setRating(Double.parseDouble((String) jsonRoom.get("stars")));
-                room.setNoOfReviews(Integer.parseInt((String) jsonRoom.get("noOfReviews")));
-                room.setNoOfPersons(Integer.parseInt((String) jsonRoom.get("noOfPersons")));
-                room.setRoomImage((String) jsonRoom.get("roomImage"));
-                room.setMid(Integer.parseInt((String) jsonRoom.get("mid")));
-                room.setId(i);
-                System.out.println(room.toString());
+                Room room = convertToRoom(jsonRoom);
+                //System.out.println(room.toString());
                 rooms.add(room);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Room convertToRoom(JSONObject jsonRoom){
+        Room room = new Room();
+        room.setArea((String) jsonRoom.get("area"));
+        room.setName((String) jsonRoom.get("roomName"));
+        room.setPrice(Double.parseDouble((String) jsonRoom.get("price")));
+        room.setRating(Double.parseDouble((String) jsonRoom.get("stars")));
+        room.setNoOfReviews(Integer.parseInt((String) jsonRoom.get("noOfReviews")));
+        room.setNoOfPersons(Integer.parseInt((String) jsonRoom.get("noOfPersons")));
+        room.setRoomImage((String) jsonRoom.get("roomImage"));
+        room.setMid(Integer.parseInt((String) jsonRoom.get("mid")));
+        return room;
     }
 
     public ArrayList<Room> getRooms() {
