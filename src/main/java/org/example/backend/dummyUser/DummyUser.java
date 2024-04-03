@@ -18,12 +18,10 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.Scanner;
 
-
-
 /** DummyUser Class
  *
  * @author Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
- * @details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024
+ * @Details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024.
  *
  * This class is implemented to represent a user.
  */

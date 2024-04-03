@@ -4,6 +4,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+/** Chunk Class
+ *
+ * @author Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
+ * @Details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024.
+ *
+ * This class is implemented to represent a packet with information about the current request.
+ */
 public class Chunk implements Serializable {
     private final String userID;
     private final int segmentID;

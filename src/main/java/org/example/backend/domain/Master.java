@@ -21,13 +21,12 @@ import static java.lang.Math.abs;
 
 /** Master Class
  *
- * @authors Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
- * @details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024
+ * @author Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
+ * @Details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024.
  *
  * This class is implemented to handle requests from the User, schedules them for mapping to Workers
  * and processes the results back to User.
  */
-
 public class Master{
     public static int num_of_workers;
     private static String host;
