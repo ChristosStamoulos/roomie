@@ -54,7 +54,7 @@ public class ConsoleApp {
                         e.printStackTrace();
                     }
                     try{
-                        connectionSocket = new Socket("localhost", 52153);
+                        connectionSocket = new Socket("localhost", 8080);
                         out = new ObjectOutputStream(connectionSocket.getOutputStream());
                         Chunk c = new Chunk("12", segmentID, room);
                         out.writeObject(c);
