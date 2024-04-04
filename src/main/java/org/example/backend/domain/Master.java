@@ -56,6 +56,7 @@ public class Master{
 
         JsonConverter jsonConverter = new JsonConverter();
         rooms = jsonConverter.getRooms();
+
     }
 
 //    public void run() {
@@ -171,19 +172,20 @@ public class Master{
 
 
 
-    public ArrayList<Integer>findWorkerID(ArrayList<Room> rooms){
-        ArrayList<Integer> workerIds = new ArrayList<>();
-        String roomName ;
-        for (Room room:rooms){
-            workerIds.add(room.getName().hashCode()%num_of_workers);
+    public int findWorkerID(Room room){
 
-        }
-        return workerIds;
+           int  workerId =room.getName().hashCode()%num_of_workers;
+
+        return workerId;
     }
     public static void main(String[] args) {
 
         Master master = new Master();
-
+//        for(Integer i : master.findWorkerID(rooms)){
+//            System.out.println(i);
+//        }
+//
+//        for (Chunk chunk : ma)
         master.init();
 
         try {
@@ -199,6 +201,7 @@ public class Master{
                             ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream());
                             Chunk data = (Chunk) in.readObject();
                             System.out.println(data.getData().toString());
+
                         }catch (ClassNotFoundException e){
                             e.printStackTrace();
                         }
