@@ -59,7 +59,7 @@ public class Master{
         jsonConverter = new JsonConverter();
         rooms = jsonConverter.getRooms();
 
-        workers = new ArrayList<ObjectOutputStream>();
+        Master.workers = new ArrayList<ObjectOutputStream>();
     }
 
 
@@ -102,24 +102,35 @@ public class Master{
         return abs(workerId);
     }
 
-    private static void prosessRequest(int type, Chunk chunk){
+    private static void processRequest(int type, Chunk chunk){
         switch (type){
             case 1:
-                JSONObject data = (JSONObject) chunk.getData();
-                Room room = jsonConverter.convertToRoom(data);
-                int w = room.getId()%Master.num_of_workers;
-                try{
-                workers.get(w).writeObject((String)data.toString());
-                workers.get(w).flush();
-                }catch(IOException e){
-                    e.printStackTrace();
-                }
+
                 break;
             case 2:
                 break;
             case 3:
+                JSONObject data = new JSONObject( (String) chunk.getData());
+                Room room = jsonConverter.convertToRoom(data);
+                int w = 0;//findWorkerID(room);
+                try{
+                    workers.get(w).writeObject((String)data.toString());
+                    workers.get(w).flush();
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
                 break;
             case 4:
+                Pair<Integer, ArrayList<String>> pair = (Pair<Integer, ArrayList<String>>) chunk.getData();
+                int roomID = pair.getKey();
+                ArrayList<String> dates = pair.getValue();
+                int wID = 0;//findWorkerID(rooms.get(roomID));
+                try{
+                    workers.get(wID).writeObject(pair);
+                    workers.get(wID).flush();
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
                 break;
             case 5:
                 break;
@@ -143,17 +154,13 @@ public class Master{
                         try{
                             ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
                             ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream());
-                            Chunk user_request = (Chunk) in.readObject();
                             Chunk data = (Chunk) in.readObject();
-                            prosessRequest((Integer) data.getData(), user_request);
+
+                            processRequest(data.getTypeID() , (Chunk) data);
+
                             System.out.println(data.getData().toString());
-                            System.out.println(user_request.getData().toString());
-                            for(Room room : rooms){
-                                System.out.println(master.findWorkerID(room));
-                            }
-                            for (Pair<Chunk,Integer> pair : master.map(master.splitFilterData(data))){
-                                System.out.println(pair.getKey().getData().toString()+"||"+pair.getValue());
-                            }
+                            System.out.println(data.getTypeID());
+
                             Chunk c1 = new Chunk("i", 2, 0, "heyyyyyy");
                             out.writeObject(c1);
                             out.flush();
@@ -171,32 +178,55 @@ public class Master{
             Thread worker = new Thread(() -> {
                 Socket workerSocket = null;
                 int i =0 ;
-                //while (!Thread.currentThread().isInterrupted()) {
+                while (!Thread.currentThread().isInterrupted()) {
 
-                try{
-                     workerSocket = new Socket(Master.host, Master.workerPort);
-                }catch(UnknownHostException e){
-                    e.printStackTrace();
-                }catch (IOException e){
-                    e.printStackTrace();
+                    try{
+                         workerSocket = new Socket(Master.host, Master.workerPort);
+                    }catch(UnknownHostException e){
+                        e.printStackTrace();
+                    }catch (IOException e){
+                        e.printStackTrace();
+                    }
+                    ObjectOutputStream outWorker=null;
+                    ObjectInputStream inWorker=null;
+                    try {
+                        //outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
+                        workers.add(new ObjectOutputStream(workerSocket.getOutputStream()));
+                        //inWorker = new ObjectInputStream(workerSocket.getInputStream());
+                        //System.out.println(inWorker.readUTF());
+                    } catch (IOException e) {
+                        //System.out.println("heyyyyyyyy");
+                        e.printStackTrace();
+                    }
+                    h();
                 }
-                ObjectOutputStream outWorker=null;
-                ObjectInputStream inWorker=null;
-                try {
-                    //outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
-                    workers.add(new ObjectOutputStream(workerSocket.getOutputStream()));
-                    inWorker = new ObjectInputStream(workerSocket.getInputStream());
-                    System.out.println(inWorker.readUTF());
-                } catch (IOException e) {
-                    //System.out.println("heyyyyyyyy");
-                    e.printStackTrace();
-                }
-                //}
             });
             worker.start();
 
         }catch(IOException e){
             e.printStackTrace();
+        }
+    }
+
+
+    public static void handleWorkers(){
+        synchronized (workers) {
+            //workers.add(out);
+            if (workers.size() >= Master.num_of_workers) workers.notifyAll();
+        }
+    }
+
+    public static void h(){
+        try {
+            synchronized (workers){
+                while (workers.size() < Master.num_of_workers){
+                    System.err.println("Master | Waiting for workers to connect...");
+                    workers.wait();
+                }
+                System.err.println("Master | All workers connected!");
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
     }
 }
