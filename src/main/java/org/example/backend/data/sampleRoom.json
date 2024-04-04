@@ -1,6 +1,6 @@
 {
   "room":{
-    "managerID":1,
+    "mid":1,
     "area":"athens",
     "price":24,
     "roomImage":"popo.png",
