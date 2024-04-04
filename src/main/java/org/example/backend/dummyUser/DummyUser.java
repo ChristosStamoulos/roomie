@@ -34,9 +34,11 @@ public class DummyUser extends Thread{
 
     private static Chunk chunkMessage;
 
-    Socket toMasterSocket=null;
+    Socket MasterSocket=null;
     ObjectOutputStream outToMaster=null;
     ObjectInputStream inFromMaster=null;
+    private static Chunk masterInput=null;
+
 
     DummyUser(int id){
         this.id = id;
@@ -46,8 +48,8 @@ public class DummyUser extends Thread{
 
     @Override
     public void run() {
+        login();
         try {
-            login();
             int option;
             Chunk chunk= null ;
             Scanner in = new Scanner(System.in);
@@ -79,20 +81,84 @@ public class DummyUser extends Thread{
             if(!Objects.equals(stars, "none")) jsonObject.getJSONObject("filters").put("stars", Double.parseDouble(stars));
 
             System.out.println(jsonObject.toString());
+            chunk = new Chunk(String.valueOf(this.id),1, jsonObject.toString());
 
-            chunk = new Chunk(String.valueOf(this.id),1, jsonObject);
+            try{
+                MasterSocket = new Socket(DummyUser.host, DummyUser.masterPort);
+            } catch (UnknownHostException unknownHost) {
+                System.err.println("You are trying to connect to an unknown host!");
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
 
-            connectMaster();
+            connectMaster(MasterSocket, chunk);
+            receiveMaster(MasterSocket);
+            try {
+                inFromMaster.close();
+                outToMaster.close();
+                MasterSocket.close();
 
-
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
 
         }catch(Exception e) {
-
+            System.err.println("I/O error occurred." + e);
         }finally{
 
         }
     }
 
+
+
+
+    public void connectMaster(Socket MasterSocket, Chunk chunk){
+        try{
+            outToMaster = new ObjectOutputStream(MasterSocket.getOutputStream());
+
+            try{
+                outToMaster.writeObject(chunk);//request
+                outToMaster.writeObject(chunk);
+                outToMaster.flush();
+                System.out.println("files are sent to master!");
+            } catch (IOException | JSONException e) {
+                System.err.println("Json file not found");
+            e.printStackTrace();
+            }
+
+        } catch (UnknownHostException unknownHost) {
+            System.err.println("You are trying to connect to an unknown host!");
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        }
+
+
+    public void receiveMaster(Socket MasterSocket){
+        try{
+            inFromMaster = new ObjectInputStream(MasterSocket.getInputStream());
+
+            try{
+                masterInput = (Chunk) inFromMaster.readObject();
+                System.out.println("files are sent from master!");
+            } catch (IOException | JSONException e) {
+                System.err.println("Json file not found");
+                e.printStackTrace();
+            }catch (ClassNotFoundException ex) {
+                System.err.println("Class not found" + ex);
+            }
+            System.out.println((String) masterInput.getData());
+
+        } catch (UnknownHostException unknownHost) {
+            System.err.println("You are trying to connect to an unknown host!");
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    private void init(){
+
+    }
 
     /* Initialize the user */
     private void login(){
@@ -138,45 +204,6 @@ public class DummyUser extends Thread{
         }catch (Exception e){
             System.err.println("Login Error:\n " + " Dummy User " + id + " couln't login");
         }
-    }
-
-    public void connectMaster(){
-        Chunk chunk= null ;
-        try{
-            toMasterSocket = new Socket(DummyUser.host,DummyUser.masterPort);
-            outToMaster = new ObjectOutputStream(toMasterSocket.getOutputStream());
-
-
-            try{
-                String jsonData = new String(Files.readAllBytes(Paths.get("src/main/java/org/example/backend/data/sampleRoom.json")));
-                JSONObject jsonObject = new JSONObject(jsonData);
-                chunk = new Chunk(String.valueOf(this.id),1,(Object) jsonObject.toString());
-                outToMaster.writeObject(chunk);
-                outToMaster.flush();
-                System.out.println("files are sent to master!");
-            } catch (IOException | JSONException e) {
-                System.err.println("Json file not found");
-            e.printStackTrace();
-            }
-
-
-        } catch (UnknownHostException unknownHost) {
-            System.err.println("You are trying to connect to an unknown host!");
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        } finally {
-            try {
-                inFromMaster.close();
-                outToMaster.close();
-                toMasterSocket.close();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
-        }
-    }
-
-    private void init(){
-
     }
 
 
