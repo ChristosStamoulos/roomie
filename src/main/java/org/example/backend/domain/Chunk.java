@@ -33,7 +33,7 @@ public class Chunk implements Serializable {
     public int getTypeID() {
         return typeID;
     }
-    
+
     public Object getData(){
         return data;
     }
