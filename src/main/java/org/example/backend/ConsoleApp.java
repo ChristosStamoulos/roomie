@@ -95,17 +95,46 @@ public class ConsoleApp {
                         id = Integer.parseInt(in.nextLine());
                         out.writeObject(new Chunk("2", segmentID, 4, id));//add dates code 4
 
+                        Chunk dat = null;
+                        try{
+                            dat = (Chunk) inp.readObject();
+                        } catch (ClassNotFoundException e){
+                            System.err.println("Class not found exception.");
+                        }
+                        ArrayList<Room> r = (ArrayList<Room>) dat.getData();
+                        if(r.isEmpty()){
+                            System.out.println("You have no rooms in the system.");
+                        }else{
+                            int c = 0;
+                            for(Room r1: r){
+                                System.out.println(String.valueOf(++c) + r1.toString());
+                            }
+                            System.out.println("Choose the room you want to add dates for reservations.");
+                            int choiceOfRoom = in.nextInt();
+                            ArrayList<String> dates = new ArrayList<>();
+                            System.out.println("Give the dates in this format dd/MM/yyyy\nPress 'y' if you want to add more dates else 'n'.");
+                            String more = "";
+                            while(more.equals("y")){
+                                System.out.print("Add date: ");
+                                String date = in.nextLine();
+                                dates.add(date);
+                                System.out.print("More? ");
+                                more = in.nextLine();
+                            }
+                            out.writeObject(new Chunk("i", segmentID, 4, new Pair<Integer, ArrayList<String>>(r.get(choiceOfRoom-1).getId(), dates)));
+                        }
+
                         break;
                     case 3:
                         System.out.print("What is your id? ");
                         id = Integer.parseInt(in.nextLine());
-                        out.writeObject(new Chunk("2", segmentID, 5, id));//reservations code 5
+                        //out.writeObject(new Chunk("2", segmentID, 5, id));//reservations code 5
                         System.out.print("Enter the period of time you'd like to see the reservations.\n Date format -> dd/MM/yyy\n");
                         System.out.print("Start date: ");
                         String startDate = in.nextLine();
                         System.out.print("\nEnd date: ");
                         String endDate = in.nextLine();
-                        Chunk c =new Chunk("i", ++segmentID, 5, (Object) new Pair<String, String>(startDate, endDate));//code 5 for reservation
+                        Chunk c =new Chunk("i", ++segmentID, 5, (Object) new Pair<Integer, Pair<String, String>>(id, new Pair<String, String>(startDate, endDate)));//code 5 for reservation
                         out.writeObject(c);
                         out.flush();
                         Chunk data = null;
