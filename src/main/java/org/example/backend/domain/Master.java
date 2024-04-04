@@ -139,11 +139,12 @@ public class Master{
 //        }
 //    }
 
-    public ArrayList<Pair<Chunk,Integer>> map(Chunk chunk){
+    public Pair<ArrayList<Chunk>,Integer> splitFilterData(Chunk chunk){
         ArrayList<Chunk> chunks = new ArrayList<>();
         String data = (String) chunk.getData();
         JSONObject filter = new JSONObject(data);
         JSONObject roomData = filter.getJSONObject(String.valueOf(filter.keySet().toString().replace("[", "").replace("]", "")));
+
         int i =0;
         for(String key : roomData.keySet()){
             i++;
@@ -154,25 +155,29 @@ public class Master{
         }
 
 
-        ArrayList<Pair<Chunk,Integer>>mapper = new ArrayList<>();
+        return new Pair<ArrayList<Chunk>,Integer>(chunks,chunk.getLenght());
 
-        for(Chunk chunkaki : chunks){
-            Pair<Chunk,Integer> mapPair = new Pair<Chunk,Integer>(chunkaki, chunk.getLenght());
-            mapper.add(mapPair);
+    }
+
+    public ArrayList<Pair<Chunk,Integer>> map(Pair<ArrayList<Chunk>,Integer> pair){
+        ArrayList<Pair<Chunk,Integer>> maper = new ArrayList<>();
+        for(Chunk chunk : pair.getKey()){
+            Pair<Chunk,Integer> map = new Pair<Chunk,Integer>(chunk ,pair.getValue());
+            maper.add(map);
         }
-        return mapper;
+        return  maper;
     }
 
-    public int hashcode(Object str){
-        return str.hashCode() * 31;
-    }
 
-    public int findWorkerID(Pair<Chunk,Integer> pair){
-        Chunk chunk = pair.getKey();
-        Pair<String,Object> data = (Pair<String,Object>)chunk.getData();
-        Object value =  data.getValue();
 
-        return abs(hashcode(value)%Master.num_of_workers);
+    public ArrayList<Integer>findWorkerID(ArrayList<Room> rooms){
+        ArrayList<Integer> workerIds = new ArrayList<>();
+        String roomName ;
+        for (Room room:rooms){
+            workerIds.add(room.getName().hashCode()%num_of_workers);
+
+        }
+        return workerIds;
     }
     public static void main(String[] args) {
 
@@ -205,7 +210,7 @@ public class Master{
 
             Thread worker = new Thread(() -> {
                 Socket workerSocket = null;
-                //while (!Thread.currentThread().isInterrupted()) {
+                while (!Thread.currentThread().isInterrupted()) {
                 try{
                     workerSocket = new Socket(Master.host, Master.workerPort);
                 }catch(UnknownHostException e){
@@ -222,9 +227,10 @@ public class Master{
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                //}
+                }
             });
             worker.start();
+
         }catch(IOException e){
             e.printStackTrace();
         }
