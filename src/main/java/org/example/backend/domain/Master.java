@@ -143,11 +143,11 @@ public class Master{
                         try{
                             ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
                             ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream());
+                            Chunk user_request = (Chunk) in.readObject();
                             Chunk data = (Chunk) in.readObject();
-                            Chunk c = (Chunk) in.readObject();
-                            //prosessRequest((Integer) data.getData(), c);
+                            prosessRequest((Integer) data.getData(), user_request);
                             System.out.println(data.getData().toString());
-                            System.out.println(c.getData().toString());
+                            System.out.println(user_request.getData().toString());
                             for(Room room : rooms){
                                 System.out.println(master.findWorkerID(room));
                             }
