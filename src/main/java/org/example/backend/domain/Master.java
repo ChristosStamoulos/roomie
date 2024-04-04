@@ -159,10 +159,11 @@ public class Master{
 
     }
 
-    public ArrayList<Pair<Chunk,Integer>> map(Pair<ArrayList<Chunk>,Integer> pair){
+    public ArrayList<Pair<Chunk,Integer>> map(Chunk chunk){
+
         ArrayList<Pair<Chunk,Integer>> maper = new ArrayList<>();
-        for(Chunk chunk : pair.getKey()){
-            Pair<Chunk,Integer> map = new Pair<Chunk,Integer>(chunk ,pair.getValue());
+        for(Chunk chunkaki : splitFilterData(chunk).getKey()){
+            Pair<Chunk,Integer> map = new Pair<Chunk,Integer>(chunkaki ,splitFilterData(chunk).getValue());
             maper.add(map);
         }
         return  maper;
