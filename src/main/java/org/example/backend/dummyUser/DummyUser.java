@@ -51,7 +51,6 @@ public class DummyUser extends Thread{
         try {
             int option;
             Chunk chunk = null;
-            Chunk requestChunk=null;
             Scanner in = new Scanner(System.in);
 
             System.out.println("DummyUser " + id + " welcome!\n" + "Please follow the rules below to add a filter to your search");
@@ -97,7 +96,7 @@ public class DummyUser extends Thread{
                 ioException.printStackTrace();
             }
 
-            connectMaster(masterSocket, requestChunk, chunk);
+            connectMaster(masterSocket, chunk);
             receiveMaster(masterSocket);
             try {
                 outToMaster.close();
@@ -111,11 +110,10 @@ public class DummyUser extends Thread{
         }
     }
 
-    public void connectMaster(Socket MasterSocket, Chunk requestChunk, Chunk chunk){
+    public void connectMaster(Socket MasterSocket, Chunk chunk){
         try{
             outToMaster = new ObjectOutputStream(MasterSocket.getOutputStream());
             try{
-                outToMaster.writeObject(requestChunk);//request
                 outToMaster.writeObject(chunk);
                 outToMaster.flush();
                 System.out.println("files are sent to master!");
