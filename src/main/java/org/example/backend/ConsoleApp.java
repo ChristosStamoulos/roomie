@@ -78,7 +78,7 @@ public class ConsoleApp {
                             System.out.println(obj.get("room"));
                             room = (Object) obj.get("room").toString();
 
-                            Chunk c = new Chunk("12", segmentID, room);
+                            Chunk c = new Chunk("12", segmentID, 3, room);//type 3 add room
                             out.writeObject(c);
                             out.flush();
                             System.out.println("The room was added to Chambre.");
@@ -93,19 +93,19 @@ public class ConsoleApp {
                     case 2:
                         System.out.print("What is your id? ");
                         id = Integer.parseInt(in.nextLine());
-                        out.writeObject(new Chunk("2", segmentID, id));
+                        out.writeObject(new Chunk("2", segmentID, 4, id));//add dates code 4
 
                         break;
                     case 3:
                         System.out.print("What is your id? ");
                         id = Integer.parseInt(in.nextLine());
-                        out.writeObject(new Chunk("2", segmentID, id));
+                        out.writeObject(new Chunk("2", segmentID, 5, id));//reservations code 5
                         System.out.print("Enter the period of time you'd like to see the reservations.\n Date format -> dd/MM/yyy\n");
                         System.out.print("Start date: ");
                         String startDate = in.nextLine();
                         System.out.print("\nEnd date: ");
                         String endDate = in.nextLine();
-                        Chunk c =new Chunk("i", ++segmentID,(Object) new Pair<String, String>(startDate, endDate));
+                        Chunk c =new Chunk("i", ++segmentID, 5, (Object) new Pair<String, String>(startDate, endDate));//code 5 for reservation
                         out.writeObject(c);
                         out.flush();
                         Chunk data = null;

@@ -86,13 +86,8 @@ public class DummyUser extends Thread{
             if (!Objects.equals(stars, "none"))
                 jsonObject.getJSONObject("filters").put("stars", Double.parseDouble(stars));
 
-            String jsonRequest = new String(Files.readAllBytes(Paths.get("src/main/java/org/example/backend/data/sampleRequest.json")));
-            JSONObject jsonObjectRequest = new JSONObject(jsonRequest);
-            jsonObjectRequest.getJSONObject("request").put("type", 1);
-            requestChunk = new Chunk(String.valueOf(this.id), 1, jsonObjectRequest.toString());
-            System.out.println(jsonObjectRequest.toString());
             System.out.println(jsonObject.toString());
-            chunk = new Chunk(String.valueOf(this.id), 1, jsonObject.toString());
+            chunk = new Chunk(String.valueOf(this.id), 1, 1, jsonObject.toString());
 
             try {
                 masterSocket = new Socket(DummyUser.host, DummyUser.masterPort);

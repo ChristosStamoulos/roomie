@@ -76,7 +76,7 @@ public class mas extends Thread{
             i++;
             Object pair = new Pair<String,Object>(key,filters.get(key));
 
-            chunks.add(new Chunk("i", i, pair));
+            chunks.add(new Chunk("i", i, chunk.getTypeID(), pair));
         }
 
         ArrayList<Pair<Chunk,Integer>>maper = new ArrayList<>();

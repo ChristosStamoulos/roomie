@@ -74,7 +74,7 @@ public class Master{
             i++;
             Object pair = new Pair<String,Object>(key,roomData.get(key));
 
-            chunks.add(new Chunk("i", i, pair));
+            chunks.add(new Chunk("i", i, chunk.getTypeID(), pair));
 
         }
 
@@ -154,7 +154,7 @@ public class Master{
                             for (Pair<Chunk,Integer> pair : master.map(master.splitFilterData(data))){
                                 System.out.println(pair.getKey().getData().toString()+"||"+pair.getValue());
                             }
-                            Chunk c1 = new Chunk("i", 2, "heyyyyyy");
+                            Chunk c1 = new Chunk("i", 2, 0, "heyyyyyy");
                             out.writeObject(c1);
                             out.flush();
 
