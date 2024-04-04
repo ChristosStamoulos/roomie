@@ -35,6 +35,8 @@ public class Master{
     private static int userPort;
     private static Object userInput=null;
     private static ArrayList<Room> rooms;
+    private static JsonConverter jsonConverter;
+    private static ArrayList<ObjectOutputStream> workers;
 
     public static void init(){
         Properties prop = new Properties();
@@ -54,90 +56,12 @@ public class Master{
         Master.userPort = Integer.parseInt(prop.getProperty("userPort"));
         System.out.println(Integer.parseInt(prop.getProperty("workerPort")));
 
-        JsonConverter jsonConverter = new JsonConverter();
+        jsonConverter = new JsonConverter();
         rooms = jsonConverter.getRooms();
+
+        workers = new ArrayList<ObjectOutputStream>();
     }
 
-//    public void run() {
-//
-//        ObjectInputStream inUser = null;
-//        ServerSocket providerSocket = null;
-//        Socket userConnection = null;
-//
-//
-//        try {
-//            providerSocket = new ServerSocket(Master.userPort, 10);
-//            while (true) {
-//
-//                userConnection = providerSocket.accept();
-//                inUser = new ObjectInputStream(userConnection.getInputStream());
-//                try {
-//                    userInput = inUser.readObject();
-//                    Chunk chunk = (Chunk) userInput;
-//                    String strObject = (String) chunk.getData();
-//                    JSONObject jsonObject = new JSONObject(strObject);
-//                    System.out.println(jsonObject.toString());
-//                    String keyOfInterest = "roomName";
-//                    Pair<String,Object> curentPair = null;
-//
-//                    for (Pair<Chunk, Integer> chunkaki : this.map((Chunk) userInput)) {
-//                        curentPair = (Pair<String,Object>)chunkaki.getKey().getData();
-//                        if(Objects.equals(curentPair.getKey(), keyOfInterest)){
-//                            System.out.println("Sending the room to worker:"+ this.findWorkerID(chunkaki));
-//                            connectToWorkers();
-//                            break;
-//                        }
-//
-//
-//                    }
-//
-//
-//                } catch (ClassNotFoundException e) {
-//                    throw new RuntimeException(e);
-//                }
-//            }
-//
-//        } catch (IOException ioException) {
-//            ioException.printStackTrace();
-//        } finally {
-//            try {
-//                providerSocket.close();
-//                inUser.close();
-//                userConnection.close();
-//            } catch (IOException ioException) {
-//                ioException.printStackTrace();
-//            }
-//        }
-//    }
-
-//    public void connectToWorkers() {
-//        Socket workerSocket = null;
-//        ObjectOutputStream outWorker = null;
-//        ObjectInputStream inWorker = null;
-//        ServerSocket userSocket = null;
-//        try {
-//            workerSocket = new Socket(Master.host, Master.workerPort);
-//            outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
-//            inWorker = new ObjectInputStream(workerSocket.getInputStream());
-//
-//            outWorker.writeObject(userInput);
-//            outWorker.flush();
-//            System.out.println("Files are sent to workers!");
-//
-//        } catch (UnknownHostException unknownHost) {
-//            System.err.println("You are trying to connect to an unknown host!");
-//        } catch (IOException ioException) {
-//            ioException.printStackTrace();
-//        } finally {
-//            try {
-//                inWorker.close();
-//                outWorker.close();
-//                workerSocket.close();
-//            } catch (IOException ioException) {
-//                ioException.printStackTrace();
-//            }
-//        }
-//    }
 
     public Pair<ArrayList<Chunk>,Integer> splitFilterData(Chunk chunk){
         ArrayList<Chunk> chunks = new ArrayList<>();
@@ -180,6 +104,31 @@ public class Master{
         }
         return workerIds;
     }
+
+    private static void prosessRequest(int type, Chunk chunk){
+        switch (type){
+            case 1:
+                JSONObject data = (JSONObject) chunk.getData();
+                Room room = jsonConverter.convertToRoom(data);
+                int w = room.getId()%Master.num_of_workers;
+                try{
+                workers.get(w).writeObject((String)data.toString());
+                workers.get(w).flush();
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+        }
+    }
+
     public static void main(String[] args) {
 
         Master master = new Master();
@@ -198,7 +147,13 @@ public class Master{
                             ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
                             ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream());
                             Chunk data = (Chunk) in.readObject();
+                            Chunk c = (Chunk) in.readObject();
+                            //prosessRequest((Integer) data.getData(), c);
                             System.out.println(data.getData().toString());
+                            System.out.println(c.getData().toString());
+                            Chunk c1 = new Chunk("i", 2, "heyyyyyy");
+                            out.writeObject(c1);
+                            out.flush();
                         }catch (ClassNotFoundException e){
                             e.printStackTrace();
                         }
@@ -223,10 +178,11 @@ public class Master{
                 ObjectInputStream inWorker=null;
                 try {
                     outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
+                    workers.add(new ObjectOutputStream(workerSocket.getOutputStream()));
                     inWorker = new ObjectInputStream(workerSocket.getInputStream());
-                    System.out.println(inWorker.readUTF());
+                    //System.out.println(inWorker.readUTF());
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    System.out.println("heyyyyyyyy");//e.printStackTrace();
                 }
                 }
             });
@@ -235,13 +191,6 @@ public class Master{
         }catch(IOException e){
             e.printStackTrace();
         }
-
-//        for (int i = 1; i <= Master.num_of_workers; i++) {
-//            Worker worker = new Worker(i);
-//            Worker.init();
-//            worker.openServer();
-//        }
-//
     }
 }
 
