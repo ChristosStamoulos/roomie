@@ -1,11 +1,14 @@
 package org.example.backend.utils;
 
+import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class SimpleCalendar implements  Comparable<SimpleCalendar> {
+public class SimpleCalendar implements  Comparable<SimpleCalendar>, Serializable {
     private static final long MILLIS_PER_DAY = 86400000;
     private Calendar date;
 
@@ -131,6 +134,14 @@ public class SimpleCalendar implements  Comparable<SimpleCalendar> {
     @Override
     public int hashCode() {
         return date == null ? 0 : date.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String strDate = dateFormat.format(date);
+
+        return strDate;
     }
 }
 
