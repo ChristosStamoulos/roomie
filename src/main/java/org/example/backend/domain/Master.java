@@ -83,11 +83,11 @@ public class Master{
 
     }
 
-    public ArrayList<Pair<Chunk,Integer>> map(Chunk chunk){
+    public ArrayList<Pair<Chunk,Integer>> map(Pair<ArrayList<Chunk>,Integer> splt){
 
         ArrayList<Pair<Chunk,Integer>> maper = new ArrayList<>();
-        for(Chunk chunkaki : splitFilterData(chunk).getKey()){
-            Pair<Chunk,Integer> map = new Pair<Chunk,Integer>(chunkaki ,splitFilterData(chunk).getValue());
+        for(Chunk chunkaki : splt.getKey()){
+            Pair<Chunk,Integer> map = new Pair<Chunk,Integer>(chunkaki ,splt.getValue());
             maper.add(map);
         }
         return  maper;
@@ -99,7 +99,7 @@ public class Master{
 
            int  workerId =room.getName().hashCode()%num_of_workers;
 
-        return workerId;
+        return abs(workerId);
     }
 
     private static void prosessRequest(int type, Chunk chunk){
@@ -129,11 +129,7 @@ public class Master{
     public static void main(String[] args) {
 
         Master master = new Master();
-//        for(Integer i : master.findWorkerID(rooms)){
-//            System.out.println(i);
-//        }
-//
-//        for (Chunk chunk : ma)
+
         master.init();
 
         try {
@@ -152,6 +148,12 @@ public class Master{
                             //prosessRequest((Integer) data.getData(), c);
                             System.out.println(data.getData().toString());
                             System.out.println(c.getData().toString());
+                            for(Room room : rooms){
+                                System.out.println(master.findWorkerID(room));
+                            }
+                            for (Pair<Chunk,Integer> pair : master.map(master.splitFilterData(data))){
+                                System.out.println(pair.getKey().getData().toString()+"||"+pair.getValue());
+                            }
                             Chunk c1 = new Chunk("i", 2, "heyyyyyy");
                             out.writeObject(c1);
                             out.flush();
@@ -168,9 +170,11 @@ public class Master{
 
             Thread worker = new Thread(() -> {
                 Socket workerSocket = null;
-                while (!Thread.currentThread().isInterrupted()) {
+                int i =0 ;
+                //while (!Thread.currentThread().isInterrupted()) {
+
                 try{
-                    workerSocket = new Socket(Master.host, Master.workerPort);
+                     workerSocket = new Socket(Master.host, Master.workerPort);
                 }catch(UnknownHostException e){
                     e.printStackTrace();
                 }catch (IOException e){
@@ -179,14 +183,15 @@ public class Master{
                 ObjectOutputStream outWorker=null;
                 ObjectInputStream inWorker=null;
                 try {
-                    outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
+                    //outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
                     workers.add(new ObjectOutputStream(workerSocket.getOutputStream()));
                     inWorker = new ObjectInputStream(workerSocket.getInputStream());
-                    //System.out.println(inWorker.readUTF());
+                    System.out.println(inWorker.readUTF());
                 } catch (IOException e) {
-                    System.out.println("heyyyyyyyy");//e.printStackTrace();
+                    //System.out.println("heyyyyyyyy");
+                    e.printStackTrace();
                 }
-                }
+                //}
             });
             worker.start();
 
