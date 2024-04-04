@@ -95,14 +95,11 @@ public class Master{
 
 
 
-    public ArrayList<Integer>findWorkerID(ArrayList<Room> rooms){
-        ArrayList<Integer> workerIds = new ArrayList<>();
-        String roomName ;
-        for (Room room:rooms){
-            workerIds.add(room.getName().hashCode()%num_of_workers);
+    public int findWorkerID(Room room){
 
-        }
-        return workerIds;
+           int  workerId =room.getName().hashCode()%num_of_workers;
+
+        return workerId;
     }
 
     private static void prosessRequest(int type, Chunk chunk){
@@ -132,7 +129,11 @@ public class Master{
     public static void main(String[] args) {
 
         Master master = new Master();
-
+//        for(Integer i : master.findWorkerID(rooms)){
+//            System.out.println(i);
+//        }
+//
+//        for (Chunk chunk : ma)
         master.init();
 
         try {
@@ -154,6 +155,7 @@ public class Master{
                             Chunk c1 = new Chunk("i", 2, "heyyyyyy");
                             out.writeObject(c1);
                             out.flush();
+
                         }catch (ClassNotFoundException e){
                             e.printStackTrace();
                         }
