@@ -29,21 +29,20 @@ public class DummyUser extends Thread{
     private final int id;
     private final String path;
     private static String host;
-    private  static int masterPort;
+    private static int masterPort;
     private boolean automatic = false;
-
-    private static Chunk chunkMessage;
-
-    Socket MasterSocket=null;
-    ObjectOutputStream outToMaster=null;
-    ObjectInputStream inFromMaster=null;
+    private Socket masterSocket=null;
+    private ObjectOutputStream outToMaster=null;
+    private ObjectInputStream inFromMaster=null;
     private static Chunk masterInput=null;
 
-
+    /**
+     * @Details Constructor of DummyUser class
+     * @param id: The unique identifier of a Dummy User
+     */
     DummyUser(int id){
         this.id = id;
         this.path =  "src\\main\\java\\org\\example\\backend\\"+ "\\dummyUser\\userData\\" + "userData" + id + "\\";
-
     }
 
     @Override
@@ -51,7 +50,8 @@ public class DummyUser extends Thread{
         login();
         try {
             int option;
-            Chunk chunk= null ;
+            Chunk chunk = null;
+            Chunk requestChunk=null;
             Scanner in = new Scanner(System.in);
 
             System.out.println("DummyUser " + id + " welcome!\n" + "Please follow the rules below to add a filter to your search");
@@ -72,50 +72,53 @@ public class DummyUser extends Thread{
 
             String jsonData = new String(Files.readAllBytes(Paths.get("src/main/java/org/example/backend/data/sampleFilters.json")));
             JSONObject jsonObject = new JSONObject(jsonData);
-            if(!Objects.equals(place, "none")) jsonObject.getJSONObject("filters").put("area", place);
-            if(!Objects.equals(startDate, "none")) jsonObject.getJSONObject("filters").put("startDate", new SimpleCalendar(startDate));
-            if(!Objects.equals(finishDate, "none")) jsonObject.getJSONObject("filters").put("finishDate", new SimpleCalendar(finishDate));
-            if(!Objects.equals(numberOfPeople, "none")) jsonObject.getJSONObject("filters").put("noOfPeople", Integer.parseInt(numberOfPeople));
-            if(!Objects.equals(lowPrice, "none")) jsonObject.getJSONObject("filters").put("lowPrice", Integer.parseInt(lowPrice));
-            if(!Objects.equals(highPrice, "none")) jsonObject.getJSONObject("filters").put("highPrice", Integer.parseInt(highPrice));
-            if(!Objects.equals(stars, "none")) jsonObject.getJSONObject("filters").put("stars", Double.parseDouble(stars));
+            if (!Objects.equals(place, "none")) jsonObject.getJSONObject("filters").put("area", place);
+            if (!Objects.equals(startDate, "none"))
+                jsonObject.getJSONObject("filters").put("startDate", new SimpleCalendar(startDate));
+            if (!Objects.equals(finishDate, "none"))
+                jsonObject.getJSONObject("filters").put("finishDate", new SimpleCalendar(finishDate));
+            if (!Objects.equals(numberOfPeople, "none"))
+                jsonObject.getJSONObject("filters").put("noOfPeople", Integer.parseInt(numberOfPeople));
+            if (!Objects.equals(lowPrice, "none"))
+                jsonObject.getJSONObject("filters").put("lowPrice", Integer.parseInt(lowPrice));
+            if (!Objects.equals(highPrice, "none"))
+                jsonObject.getJSONObject("filters").put("highPrice", Integer.parseInt(highPrice));
+            if (!Objects.equals(stars, "none"))
+                jsonObject.getJSONObject("filters").put("stars", Double.parseDouble(stars));
 
+            String jsonRequest = new String(Files.readAllBytes(Paths.get("src/main/java/org/example/backend/data/sampleRequest.json")));
+            JSONObject jsonObjectRequest = new JSONObject(jsonRequest);
+            jsonObjectRequest.getJSONObject("request").put("type", "Search");
+            requestChunk = new Chunk(String.valueOf(this.id), 1, jsonObjectRequest.toString());
+            System.out.println(jsonObjectRequest);
             System.out.println(jsonObject.toString());
-            chunk = new Chunk(String.valueOf(this.id),1, jsonObject.toString());
+            chunk = new Chunk(String.valueOf(this.id), 1, jsonObject.toString());
 
-            try{
-                MasterSocket = new Socket(DummyUser.host, DummyUser.masterPort);
+            try {
+                masterSocket = new Socket(DummyUser.host, DummyUser.masterPort);
             } catch (UnknownHostException unknownHost) {
                 System.err.println("You are trying to connect to an unknown host!");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
 
-            connectMaster(MasterSocket, chunk);
-            receiveMaster(MasterSocket);
+            connectMaster(masterSocket, chunk);
+            receiveMaster(masterSocket);
             try {
-                inFromMaster.close();
                 outToMaster.close();
-                MasterSocket.close();
-
+                inFromMaster.close();
+                masterSocket.close();
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
-
-        }catch(Exception e) {
-            System.err.println("I/O error occurred." + e);
-        }finally{
-
+        } catch (Exception e) {
+            System.err.println("I/O error interacting with the cmd" + e);
         }
     }
-
-
-
 
     public void connectMaster(Socket MasterSocket, Chunk chunk){
         try{
             outToMaster = new ObjectOutputStream(MasterSocket.getOutputStream());
-
             try{
                 outToMaster.writeObject(chunk);//request
                 outToMaster.writeObject(chunk);
@@ -226,7 +229,7 @@ public class DummyUser extends Thread{
         int numOfUsers = 2;
           DummyUser dummyUser = new DummyUser(1);
           dummyUser.start();
-       /* DummyUser[] dummyUsers = new DummyUser[numOfUsers];
+        /* DummyUser[] dummyUsers = new DummyUser[numOfUsers];
         for (int i = 1; i <= numOfUsers; i++) {
             dummyUsers[i-1] = new DummyUser(i);
             dummyUsers[i-1].start();
