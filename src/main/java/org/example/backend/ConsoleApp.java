@@ -1,20 +1,28 @@
 package org.example.backend;
 
 import org.example.backend.domain.Chunk;
+import org.example.backend.domain.Master;
+import org.example.backend.domain.Room;
+import org.example.backend.utils.Pair;
+import org.example.backend.utils.SimpleCalendar;
+import org.example.backend.utils.json.JsonConverter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class ConsoleApp {
+
+    private static String host;
+    private static int masterPort;
 
     private static void printMenu(){
         System.out.println(
@@ -25,95 +33,109 @@ public class ConsoleApp {
                    4. Exit
                        """);
     }
+
+    private static void init(){
+        Properties prop = new Properties();
+        String filename = "src/main/java/org/example/backend/config/user.config";
+
+
+        try (FileInputStream f = new FileInputStream(filename)){
+            prop.load(f);
+        }catch (IOException exception ) {
+            System.err.println("I/O Error\n" + "The system cannot find the path specified");
+        }
+
+        host = prop.getProperty("host");
+        masterPort = Integer.parseInt(prop.getProperty("masterPort"));
+    }
+
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         Socket connectionSocket = null;
         ObjectOutputStream out = null;
+        ObjectInputStream inp = null;
         int id;
         int segmentID = 0;
 
-        while(true){
-            printMenu();
-            System.out.print("Your choice: ");
-            int choice = Integer.parseInt(in.nextLine());
-            Object room = null;
-            switch (choice){
-                case 1:
-                    System.out.println("Give the relative path to the file with the room data");
-                    String roomPath = in.nextLine();
-                    try{
-                        String text = new String(Files.readAllBytes(Paths.get(roomPath)), StandardCharsets.UTF_8);
-                        JSONObject obj = new JSONObject(text);
-                        System.out.println(obj.get("room"));
-                        room = (Object) obj.get("room").toString();
-                    }catch(FileNotFoundException e){
-                        e.printStackTrace();
-                    }catch(IOException e){
-                        e.printStackTrace();
-                    }catch(JSONException e){
-                        e.printStackTrace();
-                    }
-                    try{
-                        connectionSocket = new Socket("localhost", 8080);
-                        out = new ObjectOutputStream(connectionSocket.getOutputStream());
-                        Chunk c = new Chunk("12", segmentID, room);
+        init();
+
+        try{
+            connectionSocket = new Socket(host, masterPort);
+            out = new ObjectOutputStream(connectionSocket.getOutputStream());
+            inp = new ObjectInputStream(connectionSocket.getInputStream());
+            while(true){
+                printMenu();
+                System.out.print("Your choice: ");
+                int choice = Integer.parseInt(in.nextLine());
+                Object room = null;
+                switch (choice){
+                    case 1:
+                        System.out.println("Give the relative path to the file with the room data");
+                        String roomPath = in.nextLine();
+                        try{
+                            String text = new String(Files.readAllBytes(Paths.get(roomPath)), StandardCharsets.UTF_8);
+                            JSONObject obj = new JSONObject(text);
+                            System.out.println(obj.get("room"));
+                            room = (Object) obj.get("room").toString();
+
+                            Chunk c = new Chunk("12", segmentID, room);
+                            out.writeObject(c);
+                            out.flush();
+                            System.out.println("The room was added to Chambre.");
+                        }catch(FileNotFoundException e){
+                            System.err.println("The file was not found. Try again with the correct path.\n");
+                        }catch(IOException e){
+                            System.err.println("IO exception " + e.getMessage());
+                        }catch(JSONException e){
+                            System.err.println("The file you provided was not in correct json format. Please try again.\n");
+                        }
+                        break;
+                    case 2:
+                        System.out.print("What is your id? ");
+                        id = Integer.parseInt(in.nextLine());
+                        out.writeObject(new Chunk("2", segmentID, id));
+
+                        break;
+                    case 3:
+                        System.out.print("What is your id? ");
+                        id = Integer.parseInt(in.nextLine());
+                        out.writeObject(new Chunk("2", segmentID, id));
+                        System.out.print("Enter the period of time you'd like to see the reservations.\n Date format -> dd/MM/yyy\n");
+                        System.out.print("Start date: ");
+                        String startDate = in.nextLine();
+                        System.out.print("\nEnd date: ");
+                        String endDate = in.nextLine();
+                        Chunk c =new Chunk("i", ++segmentID,(Object) new Pair<String, String>(startDate, endDate));
                         out.writeObject(c);
                         out.flush();
-                    }catch(UnknownHostException e){
-                        e.printStackTrace();
-                    }catch(IOException e){
-                        e.printStackTrace();
-                    }finally {
-                        try {
-                            connectionSocket.close();
-                        } catch (IOException ioException) {
-                            ioException.printStackTrace();
+                        Chunk data = null;
+                        try{
+                           data = (Chunk) inp.readObject();
+                        } catch (ClassNotFoundException e){
+                            System.err.println("Class not found exception.");
                         }
-                    }
-                    break;
-                case 2:
-                    System.out.print("What is your id? ");
-                    id = Integer.parseInt(in.nextLine());
-                    try{
-                        connectionSocket = new Socket("localhost", 52153);
-                        out = new ObjectOutputStream(connectionSocket.getOutputStream());
-                        out.writeObject(new Chunk("2", segmentID, id));
-                    }catch(UnknownHostException e){
-                        e.printStackTrace();
-                    }catch(IOException e){
-                        e.printStackTrace();
-                    }finally {
-                        try {
-                            connectionSocket.close();
-                        } catch (IOException ioException) {
-                            ioException.printStackTrace();
+                        ArrayList<Pair<String, Integer>> reservations = (ArrayList<Pair<String,Integer>>) data.getData();
+                        for(Pair<String, Integer> p: reservations){
+                            System.out.println(p.getKey() + ": " + p.getValue());
                         }
-                    }
-                    break;
-                case 3:
-                    System.out.print("What is your id? ");
-                    id = Integer.parseInt(in.nextLine());
-                    try{
-                        connectionSocket = new Socket("localhost", 52153);
-                        out = new ObjectOutputStream(connectionSocket.getOutputStream());
-                        out.writeObject(new Chunk("2", segmentID, id));
-                    }catch(UnknownHostException e){
-                        e.printStackTrace();
-                    }catch(IOException e){
-                        e.printStackTrace();
-                    }finally {
-                        try {
-                            connectionSocket.close();
-                        } catch (IOException ioException) {
-                            ioException.printStackTrace();
-                        }
-                    }
-                    break;
-                case 4:
-                    in.close();
-                    System.exit(0);
+                        break;
+                    case 4:
+                        in.close();
+                        System.exit(0);
+                }
+                segmentID++;
             }
-            segmentID++;
+        }catch(UnknownHostException e){
+            e.printStackTrace();
+        }catch(IOException e){
+            e.printStackTrace();
+        }finally {
+            try {
+                connectionSocket.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
         }
+
     }
 }
