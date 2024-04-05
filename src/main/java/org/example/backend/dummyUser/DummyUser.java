@@ -26,15 +26,14 @@ import java.util.Scanner;
  * This class is implemented to represent a user.
  */
 public class DummyUser extends Thread{
-    private final int id;
-    private final String path;
-    private static String host;
-    private static int masterPort;
-    private boolean automatic = false;
-    private Socket masterSocket=null;
-    private ObjectOutputStream outToMaster=null;
-    private ObjectInputStream inFromMaster=null;
-    private static Chunk masterInput=null;
+    private final int id; // unique identifier for each user
+    private final String path; // path for the user configurations
+    private static String host; // host name of the master
+    private static int masterPort; // port to connect with the master
+    private Socket masterSocket=null; // socket to connect with the master
+    private ObjectOutputStream outToMaster=null; // stream to sent requests to master
+    private ObjectInputStream inFromMaster=null; // stream to receive answers from the master
+    private static Chunk masterInput=null; // package that includes useful information about the request
 
     /**
      * @Details Constructor of DummyUser class
@@ -42,12 +41,15 @@ public class DummyUser extends Thread{
      */
     DummyUser(int id){
         this.id = id;
-        this.path =  "src\\main\\java\\org\\example\\backend\\"+ "\\dummyUser\\userData\\" + "userData" + id + "\\";
+        this.path =  "src\\main\\java\\org\\example\\backend\\dummyUser\\userData\\user.config";
     }
 
+    /**
+     * @Details Basic method that a subclass of Thread should use. It executes any target function belonging to the given thread object, that is currently active.
+     */
     @Override
     public void run() {
-        login();
+        init(); //initialize user data
         try {
             int option;
             Chunk chunk = null;
@@ -73,9 +75,9 @@ public class DummyUser extends Thread{
             JSONObject jsonObject = new JSONObject(jsonData);
             if (!Objects.equals(place, "none")) jsonObject.getJSONObject("filters").put("area", place);
             if (!Objects.equals(startDate, "none"))
-                jsonObject.getJSONObject("filters").put("startDate", new SimpleCalendar(startDate));
+                jsonObject.getJSONObject("filters").put("startDate", new SimpleCalendar(startDate).toString());
             if (!Objects.equals(finishDate, "none"))
-                jsonObject.getJSONObject("filters").put("finishDate", new SimpleCalendar(finishDate));
+                jsonObject.getJSONObject("filters").put("finishDate", new SimpleCalendar(finishDate).toString());
             if (!Objects.equals(numberOfPeople, "none"))
                 jsonObject.getJSONObject("filters").put("noOfPeople", Integer.parseInt(numberOfPeople));
             if (!Objects.equals(lowPrice, "none"))
@@ -89,15 +91,16 @@ public class DummyUser extends Thread{
             chunk = new Chunk(String.valueOf(this.id), 1, 1, jsonObject.toString());
 
             try {
-                masterSocket = new Socket(DummyUser.host, DummyUser.masterPort);
+                masterSocket = new Socket(host, masterPort);
             } catch (UnknownHostException unknownHost) {
                 System.err.println("You are trying to connect to an unknown host!");
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
 
-            connectMaster(masterSocket, chunk);
-            receiveMaster(masterSocket);
+            sentToMaster(masterSocket, chunk);
+            receiveFromMaster(masterSocket);
+
             try {
                 outToMaster.close();
                 inFromMaster.close();
@@ -110,16 +113,21 @@ public class DummyUser extends Thread{
         }
     }
 
-    public void connectMaster(Socket MasterSocket, Chunk chunk){
+    /**
+     * Sends the request with the output stream
+     * @param masterSocket: Socket connected with the master
+     * @param chunk: Package that includes the useful data of the user's request
+     */
+    public void sentToMaster(Socket masterSocket, Chunk chunk){
         try{
-            outToMaster = new ObjectOutputStream(MasterSocket.getOutputStream());
+            outToMaster = new ObjectOutputStream(masterSocket.getOutputStream());
             try{
                 outToMaster.writeObject(chunk);
                 outToMaster.flush();
-                System.out.println("files are sent to master!");
+                System.out.println("Files are sent to master!");
             } catch (IOException | JSONException e) {
                 System.err.println("Json file not found");
-            e.printStackTrace();
+                e.printStackTrace();
             }
 
         } catch (UnknownHostException unknownHost) {
@@ -127,20 +135,22 @@ public class DummyUser extends Thread{
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
-        }
+    }
 
-
-    public void receiveMaster(Socket MasterSocket){
+    /**
+     * Receives an answer with the input stream
+     * @param masterSocket: Socket connected with the master
+     */
+    public void receiveFromMaster(Socket masterSocket){
         try{
-            inFromMaster = new ObjectInputStream(MasterSocket.getInputStream());
-
+            inFromMaster = new ObjectInputStream(masterSocket.getInputStream());
             try{
                 masterInput = (Chunk) inFromMaster.readObject();
-                System.out.println("files are sent from master!");
+                System.out.println("Files are sent back from master!");
             } catch (IOException | JSONException e) {
                 System.err.println("Json file not found");
                 e.printStackTrace();
-            }catch (ClassNotFoundException ex) {
+            } catch (ClassNotFoundException ex) {
                 System.err.println("Class not found" + ex);
             }
             System.out.println((String) masterInput.getData());
@@ -152,58 +162,28 @@ public class DummyUser extends Thread{
         }
     }
 
+    /**
+     * @Details Initializes the useful data of the user
+     */
     private void init(){
+        Properties prop = new Properties();
 
-    }
-
-    /* Initialize the user */
-    private void login(){
-        try {
-            Properties prop = new Properties();
-            String filename = "src\\main\\java\\org\\example\\backend\\dummyUser\\userData\\user.config";
-
-            try (FileInputStream f = new FileInputStream(filename)){
-                prop.load(f);
-            }catch (IOException exception) {
-                System.err.println("I/O Error\n" + "The system cannot find the path specified");
-            }
-
-            this.host = prop.getProperty("host");
-            this.masterPort = Integer.parseInt(prop.getProperty("masterPort"));
-            System.out.println(Integer.parseInt(prop.getProperty("masterPort")));
-            this.automatic = Boolean.parseBoolean(prop.getProperty("automatic"));
-
-
-            int answer;
-            do {
-
-                if (automatic){
-                    answer = 1;
-                    break;
-                }
-                System.out.print("DummyUser " + id + ": 1.New User, 2.Existing User\n\t-> ");
-                System.out.println("Please select\n");
-                answer = getInput();
-            } while (answer != 1 && answer != 2);
-
-            switch (answer) {
-                case 1: {
-                    init();
-                    System.out.println("DummyUser " + id + " created new user!");
-                    break;
-                }
-                case 2: {
-                    System.out.println("DummyUser " + id + " welcome back!");
-                    break;
-                }
-            }
-        }catch (Exception e){
-            System.err.println("Login Error:\n " + " Dummy User " + id + " couln't login");
+        try (FileInputStream f = new FileInputStream(path)){
+            prop.load(f);
+        }catch (IOException exception) {
+            System.err.println("I/O Error\n" + "The system cannot find the path specified for the path:" + path);
         }
+
+        host = prop.getProperty("host");
+        masterPort = Integer.parseInt(prop.getProperty("masterPort"));
+        System.out.println(Integer.parseInt(prop.getProperty("masterPort")));
     }
 
-
-    private int getInput(){
+    /**
+     * @Details Checks the input from the user, so it satisfies the concept of cover kernel failure
+     * @return
+     */
+    private int checkInput(){
         Scanner input = new Scanner(System.in);
 
         int get = 0;
@@ -218,8 +198,12 @@ public class DummyUser extends Thread{
         return get;
     }
 
+    /**
+     * @Details Main class of Dummy User
+     * @param args: Default parameters
+     */
     public static void main(String[] args) {
-        int numOfUsers = 2;
+        //int numOfUsers = 2;
           DummyUser dummyUser = new DummyUser(1);
           dummyUser.start();
         /* DummyUser[] dummyUsers = new DummyUser[numOfUsers];
