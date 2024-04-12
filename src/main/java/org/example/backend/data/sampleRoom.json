@@ -1,12 +1,10 @@
 {
-  "room":{
-    "mid":"1",
-    "area":"athens",
-    "price":"24",
-    "roomImage":"popo.png",
-    "noOfReviews":"23",
-    "stars":"3.4",
-    "noOfPersons":"2",
-    "roomName":"lover's room"
-  }
+  "mid":"1",
+  "area":"athens",
+  "price":"24",
+  "roomImage":"popo.png",
+  "noOfReviews":"23",
+  "stars":"3.4",
+  "noOfPersons":"2",
+  "roomName":"lover's room"
 }
