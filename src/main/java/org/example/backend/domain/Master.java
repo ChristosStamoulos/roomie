@@ -111,20 +111,27 @@ public class Master{
         return abs(workerId);
     }
 
-    private static void processRequest(int type, Chunk chunk){
+    private void processRequest(int type, Chunk chunk){
         switch (type){
             case 1:
-
+                try{
+                    for(int i=0; i<num_of_workers; i++) {
+                        workers.get(i).writeObject(chunk.getData());
+                        workers.get(i).flush();
+                    }
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
                 break;
             case 2:
                 break;
             case 3:
-                JSONObject data = new JSONObject( (String) chunk.getData());
-                Room room = jsonConverter.convertToRoom(data);
-                int w = 0;//findWorkerID(room);
+                JSONObject data1 = new JSONObject( (String) chunk.getData());
+                Room room1 = jsonConverter.convertToRoom(data1);
+                int w1 = 0;//findWorkerID(room);
                 try{
-                    workers.get(w).writeObject((String)data.toString());
-                    workers.get(w).flush();
+                    workers.get(w1).writeObject((String)data1.toString());
+                    workers.get(w1).flush();
                 }catch(IOException e){
                     e.printStackTrace();
                 }
@@ -165,7 +172,7 @@ public class Master{
                             ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream());
                             Chunk data = (Chunk) in.readObject();
 
-                            processRequest(data.getTypeID() , (Chunk) data);
+                            master.processRequest(data.getTypeID() , (Chunk) data);
 
                             System.out.println(data.getData().toString());
                             System.out.println(data.getTypeID());
