@@ -119,11 +119,12 @@ public class Worker {
 
     public static void main(String[] args) {
         init();
+        openServer();
     }
-    ServerSocket providerSocket;
-    Socket masterConnection = null;
+    static ServerSocket providerSocket;
+    static Socket masterConnection = null;
 
-    void openServer() {
+    static void openServer() {
         try {
             providerSocket = new ServerSocket(Worker.serverPort, 10);
 

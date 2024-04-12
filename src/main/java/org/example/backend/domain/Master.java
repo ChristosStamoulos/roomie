@@ -29,9 +29,12 @@ import static java.lang.Math.abs;
  */
 public class Master{
     public static int num_of_workers;
-    private static String host;
-    private static int workerPort;
-    private static int ReducerPort;
+    private static String host1;
+    private static String host2;
+    private static String host3;
+    private static int worker1Port;
+    private static int worker2Port;
+    private static int worker3Port;
     private static int userPort;
     private static Object userInput=null;
     private static ArrayList<Room> rooms;
@@ -48,13 +51,19 @@ public class Master{
         }catch (IOException exception ) {
             System.err.println("I/O Error\n" + "The system cannot find the path specified");
         }
+        Master.host1 = prop.getProperty("host1");
+        Master.host2 = prop.getProperty("host2");
+        Master.host3 = prop.getProperty("host3");
+        Master.worker1Port = Integer.parseInt(prop.getProperty("worker1Port"));
+        Master.worker2Port = Integer.parseInt(prop.getProperty("worker2Port"));
+        Master.worker3Port = Integer.parseInt(prop.getProperty("worker3Port"));
 
-        Master.host = prop.getProperty("host");
-        Master.workerPort = Integer.parseInt(prop.getProperty("workerPort"));
-        Master.ReducerPort = Integer.parseInt(prop.getProperty("reducerPort"));
         Master.num_of_workers = Integer.parseInt(prop.getProperty("numberOfWorkers"));
         Master.userPort = Integer.parseInt(prop.getProperty("userPort"));
-        System.out.println(Integer.parseInt(prop.getProperty("workerPort")));
+        System.out.println(Integer.parseInt(prop.getProperty("worker1Port")));
+        System.out.println(Integer.parseInt(prop.getProperty("worker2Port")));
+
+
 
         jsonConverter = new JsonConverter();
         rooms = jsonConverter.getRooms();
@@ -176,12 +185,18 @@ public class Master{
             client.start();
 
             Thread worker = new Thread(() -> {
-                Socket workerSocket = null;
+                Socket workerSocket1 = null;
+                Socket workerSocket2 = null;
+                //Socket workerSocket3 = null;
                 int i =0 ;
                 while (!Thread.currentThread().isInterrupted()) {
 
                     try{
-                         workerSocket = new Socket(Master.host, Master.workerPort);
+                         workerSocket1 = new Socket(Master.host1, Master.worker1Port);
+                         workerSocket2 = new Socket(Master.host2, Master.worker2Port);
+                         //workerSocket3 = new Socket(Master.host3, Master.worker3Port);
+
+
                     }catch(UnknownHostException e){
                         e.printStackTrace();
                     }catch (IOException e){
@@ -191,7 +206,8 @@ public class Master{
                     ObjectInputStream inWorker=null;
                     try {
                         //outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
-                        workers.add(new ObjectOutputStream(workerSocket.getOutputStream()));
+                        workers.add(new ObjectOutputStream(workerSocket1.getOutputStream()));
+                        workers.add(new ObjectOutputStream(workerSocket2.getOutputStream()));
                         //inWorker = new ObjectInputStream(workerSocket.getInputStream());
                         //System.out.println(inWorker.readUTF());
                     } catch (IOException e) {
