@@ -1,18 +1,14 @@
 package org.example.backend.domain;
 
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 
-public class ActionsForClients extends Thread {
+public class ActionsForWorkers extends Thread {
     ObjectInputStream in;
     ObjectOutputStream out;
     private  static Chunk masterInput;
     private Chunk data;
-    public ActionsForClients(Chunk data) {
+    public ActionsForWorkers(Chunk data) {
         this.data = data;
 //        try {
 //            //out = new ObjectOutputStream(connection.getOutputStream());
