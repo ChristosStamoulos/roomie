@@ -7,15 +7,16 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
 
 public class ActionsForWorkers extends Thread {
     ObjectInputStream in;
-    ObjectOutputStream out;
+    Socket out;
     private  static Chunk masterInput;
     private static ArrayList<Room> rooms;
     private Chunk data;
-    public ActionsForWorkers(Chunk data, ArrayList<Room> rooms, ObjectOutputStream out) {
+    public ActionsForWorkers(Chunk data, ArrayList<Room> rooms, Socket out) {
         this.data = data;
         this.rooms = rooms;
         this.out = out;
@@ -29,8 +30,9 @@ public class ActionsForWorkers extends Thread {
                 Chunk c = new Chunk(data.getUserID(), data.getTypeID(), filteredRooms);
                 c.setSegmentID(data.getSegmentID());
                 try {
-                    out.writeObject(c);
-                    out.flush();
+                    ObjectOutputStream o = new ObjectOutputStream(out.getOutputStream());
+                    o.writeObject(c);
+                    o.flush();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -48,8 +50,9 @@ public class ActionsForWorkers extends Thread {
                 Chunk chunk = new Chunk(data.getUserID(), data.getTypeID(), roomsByManager);
                 chunk.setSegmentID(data.getSegmentID());
                 try {
-                    out.writeObject(chunk);
-                    out.flush();
+                    ObjectOutputStream o = new ObjectOutputStream(out.getOutputStream());
+                    o.writeObject(chunk);
+                    o.flush();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

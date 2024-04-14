@@ -11,6 +11,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -73,26 +74,85 @@ public class Worker {
 
     public static void main(String[] args) {
         init();
-        openServer();
+        //openServer();
+
+
+            try {
+                providerSocket = new ServerSocket(Worker.serverPort);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            //reducerSocket = new Socket(Worker.reducerHost, Worker.reducerPort);
+
+
+            Thread master = new Thread(() -> {
+                while (!Thread.currentThread().isInterrupted()) {
+                    try {
+                        masterConnection = providerSocket.accept();
+                        in = new ObjectInputStream(masterConnection.getInputStream());
+                        System.out.println("Master connected");
+                        try {
+                            System.out.println(in.readObject().toString());
+                            Chunk data = (Chunk) in.readObject();
+                            System.out.println(data.getData().toString());
+                            reducerSocket = new Socket(Worker.reducerHost, Worker.reducerPort);
+                            if (data.getTypeID() == 1) {
+                                rooms.add(jsonConverter.convertToRoom(new JSONObject(data.getData())));
+                            } else {
+                                Thread workerThread = new ActionsForWorkers(data, rooms, reducerSocket);//,reducerSocket);
+                                workerThread.start();
+                            }
+
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+            master.start();
+
+//            Thread reducer = new Thread(() -> {
+//                while (!Thread.currentThread().isInterrupted()) {
+//
+//                    try {
+//                        reducerSocket = new Socket(Worker.reducerHost, Worker.reducerPort);
+//                        ObjectOutputStream ou = new ObjectOutputStream(reducerSocket.getOutputStream());
+//                        ou.writeObject(new Chunk("i", 3, new ArrayList<>()));
+//                        ou.flush();
+//
+//                    } catch (UnknownHostException e) {
+//                        e.printStackTrace();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//            reducer.start();
+
     }
 
     static void openServer() {
         try {
             providerSocket = new ServerSocket(Worker.serverPort);
-            reducerSocket = new Socket(Worker.reducerHost, Worker.reducerPort);
+            //reducerSocket = new Socket(Worker.reducerHost, Worker.reducerPort);
             while (true) {
                 masterConnection = providerSocket.accept();
+                System.out.println("hhhhhhhh");
                 in = new ObjectInputStream(masterConnection.getInputStream());
 
                 try {
                     while(!Thread.currentThread().isInterrupted()) {
-                        Chunk data = (Chunk) in.readObject();
 
+                        System.out.println(in.readObject().toString());
+                        Chunk data = (Chunk) in.readObject();
+                        System.out.println(data.getData().toString());
                         if(data.getTypeID() == 1){
                             rooms.add(jsonConverter.convertToRoom(new JSONObject( data.getData())));
                         }else {
-                            Thread workerThread = new ActionsForWorkers(data, rooms, new ObjectOutputStream(reducerSocket.getOutputStream()));
-                            workerThread.start();
+                            //Thread workerThread = new ActionsForWorkers(data, rooms);//,reducerSocket);
+                            //workerThread.start();
                         }
                         //System.out.println("Worker #" + id + " assigned data: " + data);
                     }
