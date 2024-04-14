@@ -45,7 +45,6 @@ public class Master{
         Properties prop = new Properties();
         String filename = "src/main/java/org/example/backend/config/master.config";
 
-
         try (FileInputStream f = new FileInputStream(filename)){
             prop.load(f);
         }catch (IOException exception ) {
@@ -62,8 +61,6 @@ public class Master{
         Master.userPort = Integer.parseInt(prop.getProperty("userPort"));
         System.out.println(Integer.parseInt(prop.getProperty("worker1Port")));
         System.out.println(Integer.parseInt(prop.getProperty("worker2Port")));
-
-
 
         jsonConverter = new JsonConverter();
         rooms = jsonConverter.getRooms();
@@ -86,10 +83,7 @@ public class Master{
             chunks.add(new Chunk("i", i, chunk.getTypeID(), pair));
 
         }
-
-
         return new Pair<ArrayList<Chunk>,Integer>(chunks,chunk.getLenght());
-
     }
 
     public ArrayList<Pair<Chunk,Integer>> map(Pair<ArrayList<Chunk>,Integer> splt){
@@ -102,8 +96,6 @@ public class Master{
         return  maper;
     }
 
-
-
     public int findWorkerID(Room room){
 
            int  workerId =room.getName().hashCode()%num_of_workers;
@@ -114,10 +106,12 @@ public class Master{
     private void processRequest(int type, Chunk chunk){
         switch (type){
             case 1:
+                System.out.println("Arxi process");
                 try{
                     for(int i=0; i<num_of_workers; i++) {
-                        workers.get(i).writeObject(chunk.getData());
+                        workers.get(i).writeObject(chunk);
                         workers.get(i).flush();
+                        System.out.println("I am process for" + i);
                     }
                 }catch(IOException e){
                     e.printStackTrace();
@@ -195,12 +189,12 @@ public class Master{
                 Socket workerSocket1 = null;
                 Socket workerSocket2 = null;
                 //Socket workerSocket3 = null;
-                int i =0 ;
+                //int i =0 ;
                 while (!Thread.currentThread().isInterrupted()) {
 
                     try{
-                         workerSocket1 = new Socket(Master.host1, Master.worker1Port);
-                         workerSocket2 = new Socket(Master.host2, Master.worker2Port);
+                        workerSocket1 = new Socket(Master.host1, Master.worker1Port);
+                        workerSocket2 = new Socket(Master.host2, Master.worker2Port);
                          //workerSocket3 = new Socket(Master.host3, Master.worker3Port);
 
 

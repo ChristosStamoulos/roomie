@@ -139,7 +139,7 @@ public class Worker {
                     while(!Thread.currentThread().isInterrupted()) {
                         Chunk data = (Chunk) in.readObject();
 
-                        Thread workerThread = new ActionsForClients(data);
+                        Thread workerThread = new ActionsForWorkers(data);
                         workerThread.start();
 
                         //System.out.println("Worker #" + id + " assigned data: " + data);
