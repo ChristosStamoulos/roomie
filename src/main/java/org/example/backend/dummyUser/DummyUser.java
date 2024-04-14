@@ -2,6 +2,8 @@ package org.example.backend.dummyUser;
 
 import org.example.backend.domain.Chunk;
 import org.example.backend.domain.Master;
+import org.example.backend.domain.Room;
+import org.example.backend.utils.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.example.backend.utils.SimpleCalendar;
@@ -14,6 +16,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Properties;
 import java.util.Scanner;
@@ -50,66 +53,98 @@ public class DummyUser extends Thread{
     @Override
     public void run() {
         init(); //initialize user data
+        ArrayList<Room> rooms = new ArrayList<>();
+        int option;
+
         try {
-            int option;
-            Chunk chunk = null;
-            Scanner in = new Scanner(System.in);
+            masterSocket = new Socket(host, masterPort);
+        } catch (UnknownHostException unknownHost) {
+            System.err.println("You are trying to connect to an unknown host!");
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
 
-            System.out.println("DummyUser " + id + " welcome!\n" + "Please follow the rules below to add a filter to your search");
-            System.out.println("1.Area        |  For filtering your search by place, please enter the place you want else type 'none'");
-            String place = in.nextLine();
-            System.out.println("2.Start Date  |  For filtering your search by the date, please enter the starting date you want (such as '12/11/2024') else type 'none'");
-            String startDate = in.nextLine();
-            System.out.println("2.Finish Date |  For filtering your search by the date, please enter the finishing date you want (such as '14/11/2024') else type 'none'");
-            String finishDate = in.nextLine();
-            System.out.println("3.People      |  For filtering your search by the number of people, please enter the number you want else type 'none'");
-            String numberOfPeople = in.nextLine();
-            System.out.println("4.Low Price   |  For filtering your search by the price, please enter the low boundary price you want else type 'none'");
-            String lowPrice = in.nextLine();
-            System.out.println("4.High Price  |  For filtering your search by the price, please enter the high boundary price you want else type 'none'");
-            String highPrice = in.nextLine();
-            System.out.println("5.Stars       |  For filtering your search by the number of stars, please enter the number you want else type 'none'");
-            String stars = in.nextLine();
-
-            String jsonData = new String(Files.readAllBytes(Paths.get("src/main/java/org/example/backend/data/sampleFilters.json")));
-            JSONObject jsonObject = new JSONObject(jsonData);
-            if (!Objects.equals(place, "none")) jsonObject.getJSONObject("filters").put("area", place);
-            if (!Objects.equals(startDate, "none"))
-                jsonObject.getJSONObject("filters").put("startDate", new SimpleCalendar(startDate).toString());
-            if (!Objects.equals(finishDate, "none"))
-                jsonObject.getJSONObject("filters").put("finishDate", new SimpleCalendar(finishDate).toString());
-            if (!Objects.equals(numberOfPeople, "none"))
-                jsonObject.getJSONObject("filters").put("noOfPeople", Integer.parseInt(numberOfPeople));
-            if (!Objects.equals(lowPrice, "none"))
-                jsonObject.getJSONObject("filters").put("lowPrice", Integer.parseInt(lowPrice));
-            if (!Objects.equals(highPrice, "none"))
-                jsonObject.getJSONObject("filters").put("highPrice", Integer.parseInt(highPrice));
-            if (!Objects.equals(stars, "none"))
-                jsonObject.getJSONObject("filters").put("stars", Double.parseDouble(stars));
-
-            System.out.println(jsonObject.toString());
-            chunk = new Chunk(String.valueOf(this.id), 1, jsonObject.toString());
-
+        while (true) {
             try {
-                masterSocket = new Socket(host, masterPort);
-            } catch (UnknownHostException unknownHost) {
-                System.err.println("You are trying to connect to an unknown host!");
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
+                Chunk chunk = null;
+                Scanner in = new Scanner(System.in);
 
-            sentToMaster(masterSocket, chunk);
-            receiveFromMaster(masterSocket);
+                System.out.println("Please choose what you want to do by typing the corresponding number");
+                System.out.println("1. Search by filters");
+                System.out.println("2. Book a room");
+                System.out.println("3. Rate a room");
+                System.out.println("4. Exit");
 
-            try {
-                outToMaster.close();
-                inFromMaster.close();
-                masterSocket.close();
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
+                int choise = Integer.parseInt(in.nextLine());
+
+                switch (choise) {
+                    case 1:
+                        System.out.println("DummyUser " + id + " welcome!\n" + "Please follow the rules below to add a filter to your search");
+                        System.out.println("1.Area        |  For filtering your search by place, please enter the place you want else type 'none'");
+                        String place = in.nextLine();
+                        System.out.println("2.Start Date  |  For filtering your search by the date, please enter the starting date you want (such as '12/11/2024') else type 'none'");
+                        String startDate = in.nextLine();
+                        System.out.println("2.Finish Date |  For filtering your search by the date, please enter the finishing date you want (such as '14/11/2024') else type 'none'");
+                        String finishDate = in.nextLine();
+                        System.out.println("3.People      |  For filtering your search by the number of people, please enter the number you want else type 'none'");
+                        String numberOfPeople = in.nextLine();
+                        System.out.println("4.Low Price   |  For filtering your search by the price, please enter the low boundary price you want else type 'none'");
+                        String lowPrice = in.nextLine();
+                        System.out.println("4.High Price  |  For filtering your search by the price, please enter the high boundary price you want else type 'none'");
+                        String highPrice = in.nextLine();
+                        System.out.println("5.Stars       |  For filtering your search by the number of stars, please enter the number you want else type 'none'");
+                        String stars = in.nextLine();
+
+                        String jsonData = new String(Files.readAllBytes(Paths.get("src/main/java/org/example/backend/data/sampleFilters.json")));
+                        JSONObject jsonObject = new JSONObject(jsonData);
+                        if (!Objects.equals(place, "none")) jsonObject.getJSONObject("filters").put("area", place);
+                        if (!Objects.equals(startDate, "none"))
+                            jsonObject.getJSONObject("filters").put("startDate", new SimpleCalendar(startDate).toString());
+                        if (!Objects.equals(finishDate, "none"))
+                            jsonObject.getJSONObject("filters").put("finishDate", new SimpleCalendar(finishDate).toString());
+                        if (!Objects.equals(numberOfPeople, "none"))
+                            jsonObject.getJSONObject("filters").put("noOfPeople", Integer.parseInt(numberOfPeople));
+                        if (!Objects.equals(lowPrice, "none"))
+                            jsonObject.getJSONObject("filters").put("lowPrice", Integer.parseInt(lowPrice));
+                        if (!Objects.equals(highPrice, "none"))
+                            jsonObject.getJSONObject("filters").put("highPrice", Integer.parseInt(highPrice));
+                        if (!Objects.equals(stars, "none"))
+                            jsonObject.getJSONObject("filters").put("stars", Double.parseDouble(stars));
+
+                        System.out.println(jsonObject.toString());
+                        chunk = new Chunk(String.valueOf(this.id), 1, jsonObject.toString());
+
+                        sentToMaster(masterSocket, chunk);
+                        receiveFromMaster(masterSocket);
+
+                        rooms = (ArrayList<Room>) masterInput.getData();
+
+                        break;
+                    case 2:
+                        System.out.println("Choose the room you want to book. Please type the corresponding number");
+                        int roomId = Integer.parseInt(in.nextLine());
+                        ArrayList<String> dates = new ArrayList<>();
+                        chunk = new Chunk(String.valueOf(this.id), 2, new Pair<Integer, ArrayList<String>>(rooms.get(roomId - 1).getId(), dates));
+                        System.out.println("Successful booking of the room");
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        try {
+                            outToMaster.close();
+                            inFromMaster.close();
+                            masterSocket.close();
+                        } catch (IOException ioException) {
+                            ioException.printStackTrace();
+                        }
+                        System.exit(0);
+                        break;
+                }
+
+
+            } catch (Exception e) {
+                System.err.println("I/O error interacting with the cmd" + e);
             }
-        } catch (Exception e) {
-            System.err.println("I/O error interacting with the cmd" + e);
         }
     }
 
