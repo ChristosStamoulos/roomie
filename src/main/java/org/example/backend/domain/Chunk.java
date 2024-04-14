@@ -13,17 +13,19 @@ import java.io.Serializable;
  */
 public class Chunk implements Serializable {
     private final String userID;
-    private final int segmentID;
+    private static int segmentID;
     private final int typeID;
     private final Object data;
 
-    public Chunk(String userID, int segmentID, int typeID, Object data){
+    public Chunk(String userID, int typeID, Object data){
         this.userID = userID;
-        this.segmentID = segmentID;
         this.typeID = typeID;
         this.data = data;
     }
 
+    public void setSegmentID(int id){
+        this.segmentID = id;
+    }
     public String getUserID() {
         return userID;
     }

@@ -88,7 +88,7 @@ public class DummyUser extends Thread{
                 jsonObject.getJSONObject("filters").put("stars", Double.parseDouble(stars));
 
             System.out.println(jsonObject.toString());
-            chunk = new Chunk(String.valueOf(this.id), 1, 1, jsonObject.toString());
+            chunk = new Chunk(String.valueOf(this.id), 1, jsonObject.toString());
 
             try {
                 masterSocket = new Socket(host, masterPort);

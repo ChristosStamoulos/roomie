@@ -40,6 +40,7 @@ public class Master{
     private static ArrayList<Room> rooms;
     private static JsonConverter jsonConverter;
     private static ArrayList<ObjectOutputStream> workers;
+    private static int segmentIdCount = 0;
 
     public static void init(){
         Properties prop = new Properties();
@@ -80,7 +81,7 @@ public class Master{
             i++;
             Object pair = new Pair<String,Object>(key,roomData.get(key));
 
-            chunks.add(new Chunk("i", i, chunk.getTypeID(), pair));
+            chunks.add(new Chunk("i", chunk.getTypeID(), pair));
 
         }
         return new Pair<ArrayList<Chunk>,Integer>(chunks,chunk.getLenght());
@@ -165,13 +166,13 @@ public class Master{
                             ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
                             ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream());
                             Chunk data = (Chunk) in.readObject();
-
+                            data.setSegmentID(segmentIdCount++);
                             master.processRequest(data.getTypeID() , (Chunk) data);
 
                             System.out.println(data.getData().toString());
                             System.out.println(data.getTypeID());
 
-                            Chunk c1 = new Chunk("i", 2, 0, "heyyyyyy");
+                            Chunk c1 = new Chunk("i", 0, "heyyyyyy");
                             out.writeObject(c1);
                             out.flush();
 
