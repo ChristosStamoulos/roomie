@@ -2,6 +2,7 @@ package org.example.backend.domain;
 
 import org.example.backend.utils.Pair;
 import org.example.backend.utils.SimpleCalendar;
+import org.example.backend.utils.json.JsonConverter;
 import org.json.JSONObject;
 
 import java.io.FileInputStream;
@@ -24,11 +25,16 @@ import java.util.Properties;
 public class Worker {
     private final int id;
     private static int masterPort;
-    private static int ReducerPort;
+    private static int reducerPort;
     private static int serverPort;
-    private ArrayList<Room> rooms;
+    private static ArrayList<Room> rooms;
     private static ObjectInputStream in;
     private static ObjectOutputStream out;
+    static ServerSocket providerSocket;
+    static Socket masterConnection = null;
+    private static Socket reducerSocket = null;
+    private static String reducerHost;
+    private static JsonConverter jsonConverter;
 
     Worker(int id){
         this.id = id;
@@ -48,8 +54,12 @@ public class Worker {
 
         Worker.serverPort = Integer.parseInt(prop.getProperty("serverPort"));
         Worker.masterPort = Integer.parseInt(prop.getProperty("masterPort"));
+        Worker.reducerPort = Integer.parseInt(prop.getProperty("reducerPort"));
+        Worker.reducerHost = prop.getProperty("reducerHost");
         System.out.println(Integer.parseInt(prop.getProperty("serverPort")));
+        jsonConverter = new JsonConverter();
     }
+
 
     /**
      * Adds room to the workers "memory"
@@ -61,76 +71,15 @@ public class Worker {
         }
     }
 
-    /**
-     * Finds the rooms a manager owns.
-     *
-     * @param mid   the manager's id
-     * @return      an ArrayList of objects Room
-     */
-    private ArrayList<Room> findRoomsByManager(int mid){
-        ArrayList<Room> mrooms = new ArrayList<Room>();
-        for(Room r: rooms){
-            if(r.getMid() == mid){
-                mrooms.add(r);
-            }
-        }
-        return mrooms;
-    }
-
-    /**
-     * Finds room by a specific filter the client wants
-     *
-     * @param filter    the filter in json format
-     * @return          an ArrayList of objects Room
-     */
-    private ArrayList<Room> findRoomByFilter(JSONObject filter){
-        ArrayList<Room> mrooms = new ArrayList<Room>();
-        for(Room r: rooms){
-            if((filter.keySet().toArray()[0]).equals("area") && filter.get("area").equals(r.getArea())){//etc
-                mrooms.add(r);
-            }
-        }
-        return mrooms;
-    }
-
-    /**
-     * Adds available dates for reservation in a room
-     *
-     * @param dates     an ArrayList of dates in String
-     */
-    private void addDatetoRoom(Pair<Integer, ArrayList<String>> dates){
-        ArrayList<String> dat = dates.getValue();
-        for(String d: dat){
-            SimpleCalendar date = new SimpleCalendar(d);
-            if(!rooms.get(dates.getKey()).getAvailableDates().contains(date)){
-                rooms.get(dates.getKey()).addAvailableDate(date);
-            }
-        }
-    }
-
-    /**
-     * Adds a reservation a user made
-     *
-     * @param dates a Pair object with key the room id and value the dates the user wants to reserve the room
-     */
-    private void addReservation(Pair<Integer, ArrayList<String>> dates){
-        ArrayList<String> dat = dates.getValue();
-        for(String d: dat){
-            SimpleCalendar date = new SimpleCalendar(d);
-            rooms.get(dates.getKey()).addReservationDate(date);
-        }
-    }
-
     public static void main(String[] args) {
         init();
         openServer();
     }
-    static ServerSocket providerSocket;
-    static Socket masterConnection = null;
 
     static void openServer() {
         try {
             providerSocket = new ServerSocket(Worker.serverPort);
+            reducerSocket = new Socket(Worker.reducerHost, Worker.reducerPort);
             while (true) {
                 masterConnection = providerSocket.accept();
                 in = new ObjectInputStream(masterConnection.getInputStream());
@@ -139,9 +88,12 @@ public class Worker {
                     while(!Thread.currentThread().isInterrupted()) {
                         Chunk data = (Chunk) in.readObject();
 
-                        Thread workerThread = new ActionsForWorkers(data);
-                        workerThread.start();
-
+                        if(data.getTypeID() == 1){
+                            rooms.add(jsonConverter.convertToRoom(new JSONObject( data.getData())));
+                        }else {
+                            Thread workerThread = new ActionsForWorkers(data, rooms, new ObjectOutputStream(reducerSocket.getOutputStream()));
+                            workerThread.start();
+                        }
                         //System.out.println("Worker #" + id + " assigned data: " + data);
                     }
                 } catch (ClassNotFoundException e) {
