@@ -60,14 +60,17 @@ public class ConsoleApp {
         init();
 
         try{
-            connectionSocket = new Socket(host, masterPort);
-            out = new ObjectOutputStream(connectionSocket.getOutputStream());
-            inp = new ObjectInputStream(connectionSocket.getInputStream());
+
             while(true){
                 printMenu();
                 System.out.print("Your choice: ");
                 int choice = Integer.parseInt(in.nextLine());
                 Object room = null;
+
+                connectionSocket = new Socket(host, masterPort);
+                out = new ObjectOutputStream(connectionSocket.getOutputStream());
+                inp = new ObjectInputStream(connectionSocket.getInputStream());
+
                 switch (choice){
                     case 1:
                         System.out.println("Give the relative path to the file with the room data");
@@ -91,6 +94,7 @@ public class ConsoleApp {
                         }
                         break;
                     case 2:
+
                         System.out.print("What is your id? ");
                         id = Integer.parseInt(in.nextLine());
                         out.writeObject(new Chunk("2", 4, id));//add dates code 4
@@ -126,6 +130,7 @@ public class ConsoleApp {
 
                         break;
                     case 3:
+
                         System.out.print("What is your id? ");
                         id = Integer.parseInt(in.nextLine());
                         //out.writeObject(new Chunk("2", segmentID, 5, id));//reservations code 5
