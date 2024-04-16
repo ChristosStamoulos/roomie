@@ -11,28 +11,45 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class ActionsForWorkers extends Thread {
-    ObjectInputStream in;
-    Socket out;
-    private  static Chunk masterInput;
-    private static ArrayList<Room> rooms;
+    private ObjectInputStream in;
+    private ObjectOutputStream out;
     private Chunk data;
-    public ActionsForWorkers(Chunk data, ArrayList<Room> rooms, Socket out) {
-        this.data = data;
-        this.rooms = rooms;
-        this.out = out;
+    private ArrayList<Room> rooms = new ArrayList<>();
+
+    public ActionsForWorkers(Socket masterConnection, Socket reducerConnection) {
+        try {
+            in = new ObjectInputStream(masterConnection.getInputStream());
+            out = new ObjectOutputStream(reducerConnection.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
+
     public void run() {
-        int typeOfRequest = data.getTypeID();
-        switch(typeOfRequest){
+        try {
+            data = (Chunk) in.readObject();
+            processRequest(data.getTypeID(), data);
+            sendResponse(data);
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            closeStreams();
+        }
+    }
+
+    private void processRequest(int type, Chunk chunk) {
+        switch (type) {
             case 1:
                 ArrayList<Room> filteredRooms = findRoomByFilter((JSONObject) data.getData());
                 Chunk c = new Chunk(data.getUserID(), data.getTypeID(), filteredRooms);
                 c.setSegmentID(data.getSegmentID());
+                System.out.println(c.getData().toString());
+                System.out.println(c.getTypeID());
                 try {
-                    ObjectOutputStream o = new ObjectOutputStream(out.getOutputStream());
-                    o.writeObject(c);
-                    o.flush();
+                    out.writeObject(c);
+                    out.flush();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -47,19 +64,37 @@ public class ActionsForWorkers extends Thread {
                 break;
             case 5:
                 ArrayList<Room> roomsByManager = findRoomsByManager((Integer) data.getData());
-                Chunk chunk = new Chunk(data.getUserID(), data.getTypeID(), roomsByManager);
+                //Chunk chunk = new Chunk(data.getUserID(), data.getTypeID(), roomsByManager);
                 chunk.setSegmentID(data.getSegmentID());
                 try {
-                    ObjectOutputStream o = new ObjectOutputStream(out.getOutputStream());
-                    o.writeObject(chunk);
-                    o.flush();
+                    out.writeObject(chunk);
+                    out.flush();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
                 break;
+            default:
+                System.out.println("Invalid request type");
         }
     }
 
+    private void sendResponse(Chunk data) {
+        try {
+            out.writeObject(data);
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void closeStreams() {
+        try {
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Finds the rooms a manager owns.
