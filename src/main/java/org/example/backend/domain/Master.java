@@ -70,8 +70,8 @@ public class Master {
     public static void main(String[] args) {
         init();
 
-        startClientSocketThread();
         startWorkerSocketThread();
+        startClientSocketThread();
     }
 
     private static void startClientSocketThread() {
@@ -80,7 +80,8 @@ public class Master {
                 while (true) {
                     Socket connectionSocket = clientSocket.accept();
                     System.out.println("Client connected");
-                    handleClientRequest(connectionSocket);
+                    // Handle the request in a separate thread
+                    new Thread(() -> handleClientRequest(connectionSocket)).start();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -89,58 +90,54 @@ public class Master {
     }
 
     private static void handleClientRequest(Socket connectionSocket) {
-        try (ObjectOutputStream out = new ObjectOutputStream(connectionSocket.getOutputStream());
-             ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream())) {
+        try (ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream())) {
 
             Chunk data = (Chunk) in.readObject();
             data.setSegmentID(segmentIdCount++);
-            processRequest(1, data);
+            processRequest(data.getTypeID(), data);
+            System.out.println("Request processed successfully.");
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                connectionSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private static void startWorkerSocketThread() {
         new Thread(() -> {
-            while (true) {
-                try {
-                    Socket workerSocket1 = new Socket(Master.host1, Master.worker1Port);
-                    ObjectOutputStream outWorker1 = new ObjectOutputStream(workerSocket1.getOutputStream());
+            try {
+                // Create a worker socket and connect to the worker
+                Socket workerSocket = new Socket(host1, worker1Port);
+                ObjectOutputStream outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
 
-                    synchronized (workers) {
-                        workers.add(outWorker1);
-                    }
+                // Add the output stream to the list of workers
+                synchronized (workers) {
+                    workers.add(outWorker);
+                }
 
-                    // Once connected, the worker thread will handle the connection indefinitely
-                    // without attempting to reset the connection
-                    break; // Exit the loop after successful connection
-                } catch (IOException e) {
-                    // Print error but don't interrupt the thread
-                    e.printStackTrace();
-
-                    // Sleep for a short interval before attempting to reconnect
-                    try {
-                        Thread.sleep(1000); // Adjust as needed
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
+                // Keep the worker socket thread running to handle communication with the worker
+                while (true) {
+                    // Accept requests from the worker
+                    try (ObjectInputStream in = new ObjectInputStream(workerSocket.getInputStream())) {
+                        Chunk data = (Chunk) in.readObject();
+                        // Process the request
+                        processRequest(data.getTypeID(), data);
+                        System.out.println("Request processed successfully.");
+                    } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
                     }
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }).start();
     }
 
-    private static void connectToWorkerNode(String host, int port) {
-        try {
-            Socket workerSocket = new Socket(host, port);
-            ObjectOutputStream outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
-            synchronized (workers) {
-                workers.add(outWorker);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private static void processRequest(int type, Chunk chunk){
         switch (type){
