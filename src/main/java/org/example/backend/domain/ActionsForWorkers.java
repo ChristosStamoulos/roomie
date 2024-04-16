@@ -17,27 +17,19 @@ public class ActionsForWorkers extends Thread {
     private ArrayList<Room> rooms = new ArrayList<>();
 
     public ActionsForWorkers(Chunk data) {
-//        try {
-//            in = new ObjectInputStream(masterConnection.getInputStream());
-//            //out = new ObjectOutputStream(reducerConnection.getOutputStream());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
         this.data = data;
     }
 
 
     public void run() {
-        //try {
-            //data = (Chunk) in.readObject();
+        try {
+            Socket reducerSocket = new Socket("localhost", 52256);
+            out = new ObjectOutputStream(reducerSocket.getOutputStream());
             processRequest(data.getTypeID(), data);
-            sendResponse(data);
-
-//        } catch (IOException | ClassNotFoundException e) {
-//            e.printStackTrace();
-//        } finally {
-//            //closeStreams();
-//        }
+            sendReducer(data);                      //na fygei meta
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void processRequest(int type, Chunk chunk) {
@@ -48,15 +40,10 @@ public class ActionsForWorkers extends Thread {
                 c.setSegmentID(data.getSegmentID());
                 System.out.println(c.getData().toString());
                 System.out.println(c.getTypeID());
-                try {
-                    out.writeObject(c);
-                    out.flush();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                sendReducer(c);
                 break;
             case 2:
-                //addReservation((Pair<Integer, ArrayList<String>>) data.getData());
+                addReservation((Pair<Integer, ArrayList<String>>) data.getData());
                 break;
             case 3:
                 break;
@@ -65,24 +52,17 @@ public class ActionsForWorkers extends Thread {
                 break;
             case 5:
                 ArrayList<Room> roomsByManager = findRoomsByManager((Integer) data.getData());
-                //Chunk chunk = new Chunk(data.getUserID(), data.getTypeID(), roomsByManager);
+                Chunk c1 = new Chunk(data.getUserID(), data.getTypeID(), roomsByManager);
                 chunk.setSegmentID(data.getSegmentID());
-                try {
-                    out.writeObject(chunk);
-                    out.flush();
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                sendReducer(c1);
                 break;
             default:
                 System.out.println("Invalid request type");
         }
     }
 
-    private void sendResponse(Chunk data) {
+    private void sendReducer(Chunk data) {
         try {
-            Socket reducerSocket = new Socket("localhost", 52256);
-            out = new ObjectOutputStream(reducerSocket.getOutputStream());
             out.writeObject(data);
             out.flush();
         } catch (IOException e) {
