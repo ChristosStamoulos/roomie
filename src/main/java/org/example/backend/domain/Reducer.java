@@ -10,62 +10,47 @@ import java.net.Socket;
 import java.util.Properties;
 
 public class Reducer {
-
+    private static ServerSocket providerSocket;
+    private static int serverPort;
     private static String masterHost;
     private static int masterPort;
-    private static int workerPort;
 
-    private static ServerSocket redSocket;
-    private static Socket reducerConnection;
-    private static ObjectInputStream in;
-    private static ObjectOutputStream out;
-
-    Reducer(){
-
-    }
-
-    public static void init(){
+    public static void init() {
         Properties prop = new Properties();
-        String filename = "src/main/java/org/example/backend/config/worker.config";
+        String filename = "src/main/java/org/example/backend/config/reducer.config";
 
-
-        try (FileInputStream f = new FileInputStream(filename)){
+        try (FileInputStream f = new FileInputStream(filename)) {
             prop.load(f);
-        }catch (IOException exception ) {
-            System.err.println("I/O Error\n" + "The system cannot find the path specified");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
         }
 
-        Reducer.masterHost = prop.getProperty("masterHost");
-        Reducer.masterPort = Integer.parseInt(prop.getProperty("masterPort"));
-        Reducer.workerPort = Integer.parseInt(prop.getProperty("workerPort"));
-        System.out.println(Integer.parseInt(prop.getProperty("workerPort")));
+        masterHost = prop.getProperty("masterHost");
+        masterPort = Integer.parseInt(prop.getProperty("masterPort"));
+        serverPort = Integer.parseInt(prop.getProperty("serverPort"));
     }
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
+        init();
+        startReducerServer();
+    }
 
-        try {
-            redSocket = new ServerSocket(Reducer.workerPort);
-
-            while(true){
-                reducerConnection = redSocket.accept();
-                in = new ObjectInputStream(reducerConnection.getInputStream());
-
-                try {
+    private static void startReducerServer() {
+        try (ServerSocket providerSocket = new ServerSocket(serverPort, 100)) {
+            while (true) {
+                Socket workerConnection = providerSocket.accept();
+                System.out.println("Worker connected");
+                try (ObjectInputStream in = new ObjectInputStream(workerConnection.getInputStream())) {
                     Chunk data = (Chunk) in.readObject();
                     System.out.println(data.getData().toString());
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
-
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            try {
-                redSocket.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+            e.printStackTrace();
         }
     }
 }
+
