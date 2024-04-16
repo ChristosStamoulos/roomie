@@ -160,7 +160,7 @@ public class Master {
                 Room room1 = jsonConverter.convertToRoom(data1);
                 int w1 = 0;//findWorkerID(room);
                 try{
-                    workers.get(w1).writeObject((String)data1.toString());
+                    workers.get(w1).writeObject(new Chunk("i", segmentIdCount++, (String)data1.toString()));
                     workers.get(w1).flush();
                     System.out.println("eleni");
                 }catch(IOException e){

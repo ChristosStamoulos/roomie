@@ -69,10 +69,10 @@ public class ConsoleApp {
 
                 connectionSocket = new Socket(host, masterPort);
                 out = new ObjectOutputStream(connectionSocket.getOutputStream());
-                inp = new ObjectInputStream(connectionSocket.getInputStream());
 
                 switch (choice){
                     case 1:
+
                         System.out.println("Give the relative path to the file with the room data");
                         String roomPath = in.nextLine();
                         try{

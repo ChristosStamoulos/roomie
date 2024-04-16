@@ -43,7 +43,7 @@ public class ActionsForWorkers extends Thread {
     private void processRequest(int type, Chunk chunk) {
         switch (type) {
             case 1:
-                ArrayList<Room> filteredRooms = findRoomByFilter((JSONObject) data.getData());
+                ArrayList<Room> filteredRooms = findRoomByFilter(new JSONObject( (String)data.getData()));
                 Chunk c = new Chunk(data.getUserID(), data.getTypeID(), filteredRooms);
                 c.setSegmentID(data.getSegmentID());
                 System.out.println(c.getData().toString());
@@ -56,7 +56,7 @@ public class ActionsForWorkers extends Thread {
                 }
                 break;
             case 2:
-                addReservation((Pair<Integer, ArrayList<String>>) data.getData());
+                //addReservation((Pair<Integer, ArrayList<String>>) data.getData());
                 break;
             case 3:
                 break;
