@@ -16,27 +16,28 @@ public class ActionsForWorkers extends Thread {
     private Chunk data;
     private ArrayList<Room> rooms = new ArrayList<>();
 
-    public ActionsForWorkers(Socket masterConnection, Socket reducerConnection) {
-        try {
-            in = new ObjectInputStream(masterConnection.getInputStream());
-            out = new ObjectOutputStream(reducerConnection.getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public ActionsForWorkers(Chunk data) {
+//        try {
+//            in = new ObjectInputStream(masterConnection.getInputStream());
+//            //out = new ObjectOutputStream(reducerConnection.getOutputStream());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+        this.data = data;
     }
 
 
     public void run() {
-        try {
-            data = (Chunk) in.readObject();
+        //try {
+            //data = (Chunk) in.readObject();
             processRequest(data.getTypeID(), data);
             sendResponse(data);
 
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            closeStreams();
-        }
+//        } catch (IOException | ClassNotFoundException e) {
+//            e.printStackTrace();
+//        } finally {
+//            //closeStreams();
+//        }
     }
 
     private void processRequest(int type, Chunk chunk) {
@@ -80,6 +81,8 @@ public class ActionsForWorkers extends Thread {
 
     private void sendResponse(Chunk data) {
         try {
+            Socket reducerSocket = new Socket("localhost", 52256);
+            out = new ObjectOutputStream(reducerSocket.getOutputStream());
             out.writeObject(data);
             out.flush();
         } catch (IOException e) {

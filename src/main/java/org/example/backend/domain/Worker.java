@@ -52,12 +52,23 @@ public class Worker {
 
     private static void openServer() {
         try (ServerSocket providerSocket = new ServerSocket(serverPort, 100);
-             Socket reducerSocket = new Socket(reducerHost, reducerPort)) {
+             ) {
 
             while (true) {
                 Socket masterConnection = providerSocket.accept();
                 System.out.println("Master connected");
-                new ActionsForWorkers(masterConnection, reducerSocket).start();
+                ObjectInputStream in = new ObjectInputStream(masterConnection.getInputStream());
+
+                try {
+                    while(!Thread.currentThread().isInterrupted()) {
+                        Chunk data = (Chunk) in.readObject();
+
+                        Thread worker = new ActionsForWorkers(data);
+                        worker.start();
+                    }
+                } catch (ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
