@@ -132,7 +132,7 @@ public class DummyUser extends Thread{
                         sentToMaster(masterSocket, chunk);
                         receiveFromMaster(masterSocket);
 
-                        rooms = (ArrayList<Room>) ((Chunk) masterInput.getData()).getData();
+                        rooms = (ArrayList<Room>) ((Chunk) masterInput).getData();
 
                         for(int i=0; i< rooms.size(); i++){
                             System.out.println((i+1) + ": " +  rooms.get(i) + "\n");
