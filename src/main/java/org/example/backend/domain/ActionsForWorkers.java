@@ -10,50 +10,82 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
+/** ActionsForWorkers Class
+ *
+ * @author Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
+ * @Details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024.
+ *
+ * This class is implemented to handle requests from the Worker,
+ * processes the request the worked assigned and
+ * sends the intermediate data to the reducer
+ */
 public class ActionsForWorkers extends Thread {
     private ObjectInputStream in;
     private ObjectOutputStream out;
     private Chunk data;
-    private ArrayList<Room> rooms = new ArrayList<>();
+    private ArrayList<Room> rooms;
 
-    public ActionsForWorkers(Chunk data) {
+    /**
+     * Constructor
+     *
+     * @param data  the data to be processed
+     * @param rooms the rooms in thw worker's memory
+     */
+    public ActionsForWorkers(Chunk data, ArrayList<Room> rooms) {
         this.data = data;
+        this.rooms = rooms;
     }
 
 
+    /**
+     * Starts a connection with the reducer
+     * Processes the data and sends them to the reducer
+     */
     public void run() {
         try {
             Socket reducerSocket = new Socket("localhost", 52256);
             out = new ObjectOutputStream(reducerSocket.getOutputStream());
             processRequest(data.getTypeID(), data);
-            sendReducer(data);                      //na fygei meta
+            //sendReducer(data);                      //na fygei meta
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
+    /**
+     * Process the request the worker has assigned
+     *
+     * @param type  the type of the request
+     * @param chunk the data to be processed
+     */
     private void processRequest(int type, Chunk chunk) {
         switch (type) {
-            case 1:
+            case 1:     //user's request, searches for rooms with given filters
                 ArrayList<Room> filteredRooms = findRoomByFilter(new JSONObject( (String)data.getData()));
                 Chunk c = new Chunk(data.getUserID(), data.getTypeID(), filteredRooms);
                 c.setSegmentID(data.getSegmentID());
                 System.out.println(c.getData().toString());
                 System.out.println(c.getTypeID());
+                System.out.println(filteredRooms);
                 sendReducer(c);
                 break;
-            case 2:
-                addReservation((Pair<Integer, ArrayList<String>>) data.getData());
+            case 2:     //user's request, adds a reservation to the room
+                addReservation((Pair<Integer, ArrayList<SimpleCalendar>>) data.getData());
                 break;
-            case 3:
+            case 3:     //user's request, adds a rating to a room
+                addRating((Pair<Integer, Integer>) data.getData());
                 break;
-            case 4:
+            case 5:     //manager's request, adds a date of availability to the room
                 addDatetoRoom((Pair<Integer, ArrayList<String>>) data.getData());
                 break;
-            case 5:
+            case 6:     //manager's request, finds the rooms the manager owns and the total reservations
+                //to be added, part B
+                break;
+            case 7:     //manager's request, finds the rooms the manager owns
                 ArrayList<Room> roomsByManager = findRoomsByManager((Integer) data.getData());
                 Chunk c1 = new Chunk(data.getUserID(), data.getTypeID(), roomsByManager);
                 chunk.setSegmentID(data.getSegmentID());
+                System.out.println(roomsByManager);
                 sendReducer(c1);
                 break;
             default:
@@ -61,6 +93,11 @@ public class ActionsForWorkers extends Thread {
         }
     }
 
+    /**
+     * Sends the reducer the processed data
+     *
+     * @param data  a Chunk Object of the process data
+     */
     private void sendReducer(Chunk data) {
         try {
             out.writeObject(data);
@@ -102,9 +139,64 @@ public class ActionsForWorkers extends Thread {
      * @return          an ArrayList of objects Room
      */
     private ArrayList<Room> findRoomByFilter(JSONObject filter){
+        filter = filter.getJSONObject("filters");
         ArrayList<Room> mrooms = new ArrayList<Room>();
+
+        String area = (String) filter.get("area");
+        int lowPrice = (Integer) filter.get("lowPrice");
+        int highPrice = (Integer) filter.get("highPrice");
+        SimpleCalendar finishDate = new SimpleCalendar((String) filter.get("finishDate"));
+        SimpleCalendar startDate = new SimpleCalendar((String) filter.get("startDate"));
+        int noOfPeople = (Integer) filter.get("noOfPeople");
+        double stars = (Integer) filter.get("stars");
+
         for(Room r: rooms){
-            if((filter.keySet().toArray()[0]).equals("area") && filter.get("area").equals(r.getArea())){//etc
+            int f1 = 0;
+            if(area.equals("default")){
+                f1++;
+            }else if(area.equals(r.getArea().toLowerCase())){
+                f1++;
+            }
+            if(lowPrice == 0 || lowPrice <= r.getPrice()){
+                f1++;
+            }
+            if(highPrice == 0 || highPrice >= r.getPrice()){
+                f1++;
+            }
+
+            if(finishDate.equals(new SimpleCalendar("01/01/0001"))){
+                f1++;
+            }else{
+                int countAvailability = 0;
+                for(SimpleCalendar date: r.getAvailableDates()){
+                    if(finishDate.after(date)){
+                        countAvailability++;
+                    }
+                }
+                if(countAvailability>0){
+                    f1++;
+                }
+            }
+            if(stars == 0.0 || stars == r.getRating()){
+                f1++;
+            }
+            if(noOfPeople == 0 || noOfPeople == r.getNoOfPersons()){
+                f1++;
+            }
+            if(startDate.equals(new SimpleCalendar("01/01/0001"))){
+                f1++;
+            }else {
+                int countAvailability = 0;
+                for (SimpleCalendar date : r.getAvailableDates()) {
+                    if (startDate.before(date)) {
+                        countAvailability++;
+                    }
+                }
+                if (countAvailability > 0) {
+                    f1++;
+                }
+            }
+            if(f1 == 7){
                 mrooms.add(r);
             }
         }
@@ -116,7 +208,7 @@ public class ActionsForWorkers extends Thread {
      *
      * @param dates     an ArrayList of dates in String
      */
-    private void addDatetoRoom(Pair<Integer, ArrayList<String>> dates){
+    private synchronized void addDatetoRoom(Pair<Integer, ArrayList<String>> dates){
         ArrayList<String> dat = dates.getValue();
         for(String d: dat){
             SimpleCalendar date = new SimpleCalendar(d);
@@ -131,11 +223,23 @@ public class ActionsForWorkers extends Thread {
      *
      * @param dates a Pair object with key the room id and value the dates the user wants to reserve the room
      */
-    private void addReservation(Pair<Integer, ArrayList<String>> dates){
-        ArrayList<String> dat = dates.getValue();
-        for(String d: dat){
-            SimpleCalendar date = new SimpleCalendar(d);
-            rooms.get(dates.getKey()).addReservationDate(date);
+    private synchronized void addReservation(Pair<Integer, ArrayList<SimpleCalendar>> dates){
+        ArrayList<SimpleCalendar> dat = dates.getValue();
+        for(SimpleCalendar d: dat){
+            rooms.get(dates.getKey()).addReservationDate(d);
+        }
+    }
+
+    /**
+     * Adds a rating from the user to the room
+     *
+     * @param rating a Pair<Integer,Integer> with key the room id and value the rating
+     */
+    public void addRating(Pair<Integer, Integer> rating){
+        int roomId = rating.getKey();
+        int rate = rating.getValue();
+        synchronized (rooms.get(roomId)){
+            rooms.get(roomId).addRating(rate);
         }
     }
 }
