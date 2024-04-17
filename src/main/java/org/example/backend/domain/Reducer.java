@@ -16,8 +16,8 @@ public class Reducer {
     private static int serverPort;
     private static String masterHost;
     private static int masterPort;
+    private static int expectedChunks;
     private static Map<Integer, ArrayList<Chunk>> chunkMap = new HashMap<>();
-    private static final int expectedChunks = 3;
 
     private  static final  int numberOfChunks = 1;
 
@@ -35,6 +35,7 @@ public class Reducer {
         masterHost = prop.getProperty("masterHost");
         masterPort = Integer.parseInt(prop.getProperty("masterPort"));
         serverPort = Integer.parseInt(prop.getProperty("serverPort"));
+        expectedChunks = Integer.parseInt(prop.getProperty("expectedChunks"));
     }
 
     public static void main(String[] args) {
