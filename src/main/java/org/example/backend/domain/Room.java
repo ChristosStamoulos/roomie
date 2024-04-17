@@ -295,15 +295,11 @@ public class Room implements Serializable {
      */
     @Override
     public String toString() {
-        return "Room{" +
-                "name='" + name + '\'' +
-                ", area='" + area + '\'' +
-                ", price=" + price +
-                ", roomImage='" + roomImage + '\'' +
-                ", noOfReviews=" + noOfReviews +
-                ", noOfPersons=" + noOfPersons +
-                ", rating=" + rating +
-                ", id=" + id +
-                '}';
+        return "Room name: " + name + '\n' +
+                "area: " + area + '\n' +
+                "price: " + price + " per night\n" +
+                "noOfReviews: " + noOfReviews +
+                "noOfPersons: " + noOfPersons +
+                "rating:" + rating;
     }
 }
