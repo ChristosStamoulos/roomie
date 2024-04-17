@@ -32,7 +32,7 @@ public class Master {
     private static int userPort;                          // Port number for User connections
     private static int reducerPort;                       // Port number for Reducer connections
     private static ArrayList<ObjectOutputStream> workers; // List of output streams to Worker nodes
-    private static Map<Integer, Socket> userSockets;      // Map of User sockets with segment IDs
+    private static Map<Integer, Socket> userSockets = new HashMap<>(); // Map of User sockets with segment IDs
     private static int segmentIdCount;                    // Counter for segment IDs
     private static ArrayList<Room> rooms;                 // List of rooms
     private static JsonConverter jsonConverter;           // JSON converter for room objects
