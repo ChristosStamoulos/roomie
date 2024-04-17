@@ -130,6 +130,7 @@ public class Master {
                 synchronized (workers) {
                     workers.add(outWorker);
                 }
+                splitRooms();
 
                 // Keep the worker socket thread running to handle communication with the worker
                 /*while (true) {
@@ -242,6 +243,20 @@ public class Master {
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
+        }
+    }
+
+    private static void splitRooms(){
+        for(Room r: rooms){
+            synchronized (workers){
+                System.out.println(workers.size());
+                int wID = r.getName().hashCode() % Master.numOfWorkers;
+                try {
+                    workers.get(wID).writeObject(new Chunk("", 3, r));
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
     }
 }
