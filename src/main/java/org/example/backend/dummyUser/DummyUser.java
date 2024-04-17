@@ -132,10 +132,10 @@ public class DummyUser extends Thread{
                         sentToMaster(masterSocket, chunk);
                         receiveFromMaster(masterSocket);
 
-                        rooms = (ArrayList<Room>) masterInput.getData();
+                        rooms = (ArrayList<Room>) ((Chunk) masterInput.getData()).getData();
 
                         for(int i=0; i< rooms.size(); i++){
-                            System.out.println((i+1) + ": " +  rooms.get(i));
+                            System.out.println((i+1) + ": " +  rooms.get(i) + "\n");
                         }
 
                         break;
@@ -235,7 +235,6 @@ public class DummyUser extends Thread{
             } catch (ClassNotFoundException ex) {
                 System.err.println("Class not found" + ex);
             }
-            System.out.println((String) masterInput.getData());
 
         } catch (UnknownHostException unknownHost) {
             System.err.println("You are trying to connect to an unknown host!");
