@@ -22,7 +22,7 @@ public class SimpleCalendar implements  Comparable<SimpleCalendar>, Serializable
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH);
         LocalDate dat = LocalDate.parse(datestr, formatter);
         date = Calendar.getInstance();
-        date.set(dat.getYear(), dat.getMonthValue(), dat.getDayOfMonth());
+        date.set(dat.getYear(), dat.getMonthValue() - 1, dat.getDayOfMonth()); // Adjust month value
         trimToDays(this.date);
     }
 
@@ -138,10 +138,7 @@ public class SimpleCalendar implements  Comparable<SimpleCalendar>, Serializable
 
     @Override
     public String toString() {
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String strDate = dateFormat.format(date);
-
-        return strDate;
+        return String.format("%02d/%02d/%04d", getDayOfMonth(), getMonth(), getYear());
     }
 }
 
