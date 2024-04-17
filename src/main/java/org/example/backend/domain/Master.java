@@ -24,11 +24,11 @@ import java.util.*;
 public class Master {
     private static int numOfWorkers;                      // Number of Worker nodes
     private static String host1;                          // Hostname of the first Worker node
-    private static String host2;                        // Hostname of the second Worker node
-    private static String host3;                        // Hostname of the third  Worker node
+    private static String host2;                          // Hostname of the second Worker node
+    private static String host3;                          // Hostname of the third  Worker node
     private static int worker1Port;                       // Port number of the first Worker node
-    private static int worker2Port;                     // Port number of the second Worker node
-    private static int worker3Port;                     // Port number of the third Worker node
+    private static int worker2Port;                       // Port number of the second Worker node
+    private static int worker3Port;                       // Port number of the third Worker node
     private static int userPort;                          // Port number for User connections
     private static int reducerPort;                       // Port number for Reducer connections
     private static ArrayList<ObjectOutputStream> workers; // List of output streams to Worker nodes
