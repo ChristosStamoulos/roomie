@@ -19,11 +19,23 @@ import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Scanner;
 
+/** ConsoleApp Class
+ *
+ * @author Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
+ * @Details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024.
+ *
+ * This class is implemented for the manager's operations.
+ * A manager can add more rooms to the app, see the total reservations, add available dates for hosting
+ * and see the rooms they own.
+ */
 public class ConsoleApp {
 
     private static String host;
     private static int masterPort;
 
+    /**
+     * Prints the menu of options
+     */
     private static void printMenu(){
         System.out.println(
                 """
@@ -35,6 +47,9 @@ public class ConsoleApp {
                        """);
     }
 
+    /**
+     * Initialises the variables from the configuration file
+     */
     private static void init(){
         Properties prop = new Properties();
         String filename = "src/main/java/org/example/backend/config/user.config";
@@ -56,7 +71,6 @@ public class ConsoleApp {
         ObjectOutputStream out = null;
         ObjectInputStream inp = null;
         int id;
-        int segmentID = 0;
         ArrayList<Room> rooms = new ArrayList<>();
 
         init();
@@ -117,12 +131,8 @@ public class ConsoleApp {
                     case 3:
                         System.out.print("What is your id? ");
                         id = Integer.parseInt(in.nextLine());
-                        System.out.print("Enter the period of time you'd like to see the reservations.\n Date format -> dd/MM/yyy\n");
-                        System.out.print("Start date: ");
-                        String startDate = in.nextLine();
-                        System.out.print("\nEnd date: ");
-                        String endDate = in.nextLine();
-                        Chunk c =new Chunk("i", 6, (Object) new Pair<Integer, Pair<String, String>>(id, new Pair<String, String>(startDate, endDate)));//code 5 for reservation
+
+                        Chunk c =new Chunk("i", 7, id);
                         out.writeObject(c);
                         out.flush();
                         Chunk data = null;
@@ -132,13 +142,16 @@ public class ConsoleApp {
                         } catch (ClassNotFoundException e){
                             System.err.println("Class not found exception.");
                         }
-                        ArrayList<Pair<String, Integer>> reservations = (ArrayList<Pair<String,Integer>>) data.getData();
-                        for(Pair<String, Integer> p: reservations){
-                            System.out.println(p.getKey() + ": " + p.getValue());
+                        ArrayList<Room> reservations = (ArrayList<Room>) ((Chunk) data.getData()).getData();
+                        int j = 0;
+                        for(Room p: reservations){
+                            System.out.println("\n" + (++j) +". " + p.getName() + "\nReservations");
+                            for(SimpleCalendar d : p.getReservationDates()) {
+                                System.out.println("    " + d.toString());
+                            }
                         }
                         break;
                     case 4:
-
                         System.out.print("What is your id? ");
                         id = Integer.parseInt(in.nextLine());
                         out.writeObject(new Chunk("2", 7, id));//search by manager id code 7
@@ -164,12 +177,11 @@ public class ConsoleApp {
                         in.close();
                         System.exit(0);
                 }
-                segmentID++;
             }
         }catch(UnknownHostException e){
-            e.printStackTrace();
+            System.err.println("Host is unknown.");
         }catch(IOException e){
-            e.printStackTrace();
+            System.err.println("IO Exception.");
         }finally {
             try {
                 connectionSocket.close();
