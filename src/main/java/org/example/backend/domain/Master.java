@@ -97,12 +97,12 @@ public class Master {
     }
 
     private static void handleClientRequest(Socket userSocket) {
-        try (ObjectInputStream in = new ObjectInputStream(userSocket.getInputStream())) {
-
+        try{
+            ObjectInputStream in = new ObjectInputStream(userSocket.getInputStream());
             Chunk data = (Chunk) in.readObject();
             System.out.println(data.getData().toString());
 
-            data.setSegmentID(segmentIdCount++);
+            data.setSegmentID(++segmentIdCount);
             userSockets.put(segmentIdCount, userSocket);
 
             processRequest(data.getTypeID(), data);
@@ -110,12 +110,6 @@ public class Master {
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                userSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
