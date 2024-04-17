@@ -28,6 +28,7 @@ public class Worker {
     private static int reducerPort;
     private static int serverPort;
     private static String reducerHost;
+    private static ArrayList<Room> rooms;
 
     public static void init() {
         Properties prop = new Properties();
@@ -43,6 +44,7 @@ public class Worker {
         serverPort = Integer.parseInt(prop.getProperty("serverPort"));
         reducerPort = Integer.parseInt(prop.getProperty("reducerPort"));
         reducerHost = prop.getProperty("reducerHost");
+        rooms = new ArrayList<Room>();
     }
 
     public static void main(String[] args) {
@@ -62,9 +64,12 @@ public class Worker {
                 try {
                     while(!Thread.currentThread().isInterrupted()) {
                         Chunk data = (Chunk) in.readObject();
-
-                        Thread worker = new ActionsForWorkers(data);
-                        worker.start();
+                        if(data.getTypeID() == 4){
+                            rooms.add((Room) data.getData());
+                        }else {
+                            Thread worker = new ActionsForWorkers(data, rooms);
+                            worker.start();
+                        }
                     }
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
