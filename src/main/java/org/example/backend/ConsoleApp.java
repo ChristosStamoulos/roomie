@@ -30,7 +30,8 @@ public class ConsoleApp {
                    1. Add room
                    2. Add more available dates for your rooms.
                    3. See the reservations of your rooms.
-                   4. Exit
+                   4  See the rooms you own.
+                   5. Exit
                        """);
     }
 
@@ -56,6 +57,7 @@ public class ConsoleApp {
         ObjectInputStream inp = null;
         int id;
         int segmentID = 0;
+        ArrayList<Room> rooms = new ArrayList<>();
 
         init();
 
@@ -94,46 +96,27 @@ public class ConsoleApp {
                         }
                         break;
                     case 2:
-
-                        System.out.print("What is your id? ");
-                        id = Integer.parseInt(in.nextLine());
-                        out.writeObject(new Chunk("2", 7, id));//search by manager id code 7
-
-                        Chunk dat = null;
-                        try{
-                            dat = (Chunk) inp.readObject();
-                        } catch (ClassNotFoundException e){
-                            System.err.println("Class not found exception.");
-                        }
-                        ArrayList<Room> r = (ArrayList<Room>) dat.getData();
-                        if(r.isEmpty()){
-                            System.out.println("You have no rooms in the system.");
-                        }else{
-                            int c = 0;
-                            for(Room r1: r){
-                                System.out.println(String.valueOf(++c) + r1.toString());
-                            }
+                        if(!rooms.isEmpty()) {
                             System.out.println("Choose the room you want to add dates for reservations.");
-                            int choiceOfRoom = in.nextInt();
+                            int choiceOfRoom = Integer.parseInt(in.nextLine());
                             ArrayList<String> dates = new ArrayList<>();
                             System.out.println("Give the dates in this format dd/MM/yyyy\nPress 'y' if you want to add more dates else 'n'.");
-                            String more = "";
-                            while(more.equals("y")){
+                            String more = "y";
+                            while (more.equals("y")) {
                                 System.out.print("Add date: ");
                                 String date = in.nextLine();
                                 dates.add(date);
                                 System.out.print("More? ");
                                 more = in.nextLine();
                             }
-                            out.writeObject(new Chunk("i", 5, new Pair<Integer, ArrayList<String>>(r.get(choiceOfRoom-1).getId(), dates)));
+                            out.writeObject(new Chunk("i", 5, new Pair<Integer, ArrayList<String>>(rooms.get(choiceOfRoom - 1).getId(), dates)));
+                        }else{
+                            System.err.println("There are no rooms to choose from.");
                         }
-
                         break;
                     case 3:
-
                         System.out.print("What is your id? ");
                         id = Integer.parseInt(in.nextLine());
-                        //out.writeObject(new Chunk("2", segmentID, 5, id));//reservations code 5
                         System.out.print("Enter the period of time you'd like to see the reservations.\n Date format -> dd/MM/yyy\n");
                         System.out.print("Start date: ");
                         String startDate = in.nextLine();
@@ -144,7 +127,8 @@ public class ConsoleApp {
                         out.flush();
                         Chunk data = null;
                         try{
-                           data = (Chunk) inp.readObject();
+                            inp = new ObjectInputStream(connectionSocket.getInputStream());
+                            data = (Chunk) inp.readObject();
                         } catch (ClassNotFoundException e){
                             System.err.println("Class not found exception.");
                         }
@@ -154,6 +138,29 @@ public class ConsoleApp {
                         }
                         break;
                     case 4:
+
+                        System.out.print("What is your id? ");
+                        id = Integer.parseInt(in.nextLine());
+                        out.writeObject(new Chunk("2", 7, id));//search by manager id code 7
+
+                        Chunk dat = null;
+                        try{
+                            inp = new ObjectInputStream(connectionSocket.getInputStream());
+                            dat = (Chunk) inp.readObject();
+                        } catch (ClassNotFoundException e){
+                            System.err.println("Class not found exception.");
+                        }
+                        rooms = (ArrayList<Room>) ((Chunk) dat.getData()).getData();
+                        if(rooms.isEmpty()){
+                            System.out.println("You have no rooms in the system.");
+                        }else {
+                            int i = 0;
+                            for (Room r : rooms) {
+                                System.out.println(String.valueOf(++i) + ". " + r.toString() +"\n");
+                            }
+                        }
+                        break;
+                    case 5:
                         in.close();
                         System.exit(0);
                 }
