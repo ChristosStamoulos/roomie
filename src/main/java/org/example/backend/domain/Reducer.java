@@ -19,7 +19,7 @@ public class Reducer {
     private static int expectedChunks;
     private static Map<Integer, ArrayList<Chunk>> chunkMap = new HashMap<>();
 
-    private  static final  int numberOfChunks = 1;
+    private static final int numberOfChunks = 1;
 
     public static void init() {
         Properties prop = new Properties();
@@ -55,7 +55,8 @@ public class Reducer {
             throw new RuntimeException(ex);
         }
     }
-    private static void handleWorkerRequest(Socket workerSocket){
+
+    private static void handleWorkerRequest(Socket workerSocket) {
         try {
             ObjectInputStream in = new ObjectInputStream(workerSocket.getInputStream());
             while (true) {
@@ -82,7 +83,7 @@ public class Reducer {
         }
     }
 
-    private static void sentToMaster(Chunk chunk){
+    private static void sentToMaster(Chunk chunk) {
         try {
             Socket masterSocket = new Socket(masterHost, masterPort); // Connect to the master
             ObjectOutputStream out = new ObjectOutputStream(masterSocket.getOutputStream());
@@ -99,18 +100,16 @@ public class Reducer {
     }
 
     private static Chunk mergeChunks(ArrayList<Chunk> chunks) {
-        String userID = "";
-        int id = 0;
-        int type = 0;
-        ArrayList<Chunk> workerChunk = new ArrayList<>();
-        ArrayList<Chunk> finalList = new ArrayList<>();
-        for(int i=0; i<expectedChunks; i++) {
-            workerChunk = (ArrayList<Chunk>) chunks.get(i).getData();
-            for(int j=0; j<workerChunk.size(); j++){
+        String userID = chunks.get(0).getUserID();
+        int id = chunks.get(0).getSegmentID();
+        int type = chunks.get(0).getSegmentID();
+
+        ArrayList<Room> workerChunk = new ArrayList<>();
+        ArrayList<Room> finalList = new ArrayList<>();
+        for (int i = 0; i < expectedChunks; i++) {
+            workerChunk = (ArrayList<Room>) chunks.get(i).getData();
+            for (int j = 0; j < workerChunk.size(); j++) {
                 finalList.add(workerChunk.get(j));
-                userID = workerChunk.get(j).getUserID();
-                id = workerChunk.get(j).getSegmentID();
-                type = workerChunk.get(j).getSegmentID();
             }
         }
         Chunk finalChunk = new Chunk(userID, type, finalList);
