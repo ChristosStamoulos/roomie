@@ -4,11 +4,13 @@ import org.example.backend.utils.Pair;
 import org.example.backend.utils.SimpleCalendar;
 import org.json.JSONObject;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Properties;
 
 /** ActionsForWorkers Class
  *
@@ -24,6 +26,8 @@ public class ActionsForWorkers extends Thread {
     private ObjectOutputStream out;
     private Chunk data;
     private ArrayList<Room> rooms;
+    private int reducerPort;
+    private String reducerHost;
 
     /**
      * Constructor
@@ -36,6 +40,23 @@ public class ActionsForWorkers extends Thread {
         this.rooms = rooms;
     }
 
+    /**
+     * Initializes the ports and host for the reducer from the config file
+     */
+    public void init(){
+        Properties prop = new Properties();
+        String filename = "src/main/java/org/example/backend/config/worker.config";
+
+        try (FileInputStream f = new FileInputStream(filename)) {
+            prop.load(f);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        reducerPort = Integer.parseInt(prop.getProperty("reducerPort"));
+        reducerHost = prop.getProperty("reducerHost");
+    }
 
     /**
      * Starts a connection with the reducer
@@ -43,10 +64,10 @@ public class ActionsForWorkers extends Thread {
      */
     public void run() {
         try {
-            Socket reducerSocket = new Socket("localhost", 52256);
+            init();
+            Socket reducerSocket = new Socket(reducerHost, reducerPort);
             out = new ObjectOutputStream(reducerSocket.getOutputStream());
             processRequest(data.getTypeID(), data);
-            //sendReducer(data);                      //na fygei meta
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -142,7 +163,7 @@ public class ActionsForWorkers extends Thread {
         filter = filter.getJSONObject("filters");
         ArrayList<Room> mrooms = new ArrayList<Room>();
 
-        String area = (String) filter.get("area");
+        String area = ((String) filter.get("area")).toLowerCase();
         int lowPrice = (Integer) filter.get("lowPrice");
         int highPrice = (Integer) filter.get("highPrice");
         SimpleCalendar finishDate = new SimpleCalendar((String) filter.get("finishDate"));
@@ -151,21 +172,21 @@ public class ActionsForWorkers extends Thread {
         double stars = (Integer) filter.get("stars");
 
         for(Room r: rooms){
-            int f1 = 0;
+            int filterCounter = 0;
             if(area.equals("default")){
-                f1++;
+                filterCounter++;
             }else if(area.equals(r.getArea().toLowerCase())){
-                f1++;
+                filterCounter++;
             }
             if(lowPrice == 0 || lowPrice <= r.getPrice()){
-                f1++;
+                filterCounter++;
             }
             if(highPrice == 0 || highPrice >= r.getPrice()){
-                f1++;
+                filterCounter++;
             }
 
             if(finishDate.equals(new SimpleCalendar("01/01/0001"))){
-                f1++;
+                filterCounter++;
             }else{
                 int countAvailability = 0;
                 for(SimpleCalendar date: r.getAvailableDates()){
@@ -174,17 +195,17 @@ public class ActionsForWorkers extends Thread {
                     }
                 }
                 if(countAvailability>0){
-                    f1++;
+                    filterCounter++;
                 }
             }
             if(stars == 0.0 || stars == r.getRating()){
-                f1++;
+                filterCounter++;
             }
             if(noOfPeople == 0 || noOfPeople == r.getNoOfPersons()){
-                f1++;
+                filterCounter++;
             }
             if(startDate.equals(new SimpleCalendar("01/01/0001"))){
-                f1++;
+                filterCounter++;
             }else {
                 int countAvailability = 0;
                 for (SimpleCalendar date : r.getAvailableDates()) {
@@ -193,10 +214,10 @@ public class ActionsForWorkers extends Thread {
                     }
                 }
                 if (countAvailability > 0) {
-                    f1++;
+                    filterCounter++;
                 }
             }
-            if(f1 == 7){
+            if(filterCounter == 7){
                 mrooms.add(r);
             }
         }
