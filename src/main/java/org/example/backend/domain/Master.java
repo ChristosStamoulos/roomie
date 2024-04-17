@@ -117,12 +117,18 @@ public class Master {
         new Thread(() -> {
             try {
                 // Create a worker socket and connect to the worker
-                Socket workerSocket = new Socket(host1, worker1Port);
-                ObjectOutputStream outWorker = new ObjectOutputStream(workerSocket.getOutputStream());
+                Socket workerSocket1 = new Socket(host1, worker1Port);
+                Socket workerSocket2 = new Socket(host2, worker2Port);
+                Socket workerSocket3 = new Socket(host3, worker3Port);
+                ObjectOutputStream outWorker1 = new ObjectOutputStream(workerSocket1.getOutputStream());
+                ObjectOutputStream outWorker2 = new ObjectOutputStream(workerSocket2.getOutputStream());
+                ObjectOutputStream outWorker3 = new ObjectOutputStream(workerSocket3.getOutputStream());
 
                 // Add the output stream to the list of workers
                 synchronized (workers) {
-                    workers.add(outWorker);
+                    workers.add(outWorker1);
+                    workers.add(outWorker2);
+                    workers.add(outWorker3);
                 }
                 splitRooms();
 
@@ -146,7 +152,8 @@ public class Master {
 
     private static void startReducerSocketThread(){
         new Thread(() -> {
-            try (ServerSocket reducerServerSocket = new ServerSocket(reducerPort)) {
+            try {
+                ServerSocket reducerServerSocket = new ServerSocket(reducerPort);
                 while (true) {
                     Socket reducerSocket = reducerServerSocket.accept();
                     System.out.println("Reducer connected");
@@ -218,7 +225,7 @@ public class Master {
                 int roomID1 = room1.getId();
                 int w3 = hashRequestToWorker(roomID1, numOfWorkers);
                 try{
-                    Chunk c = new Chunk("i", 3, (String)data1.toString());
+                    Chunk c = new Chunk("i", 4, data1);
                     workers.get(w3).writeObject(c);
                     workers.get(w3).flush();
                     System.out.println("eleni");
@@ -240,7 +247,7 @@ public class Master {
         for(Room r: rooms){
             synchronized (workers){
                 System.out.println(workers.size());
-                int wID = r.getName().hashCode() % Master.numOfWorkers;
+                int wID = hashRequestToWorker(r.getId(),numOfWorkers);
                 try {
                     workers.get(wID).writeObject(new Chunk("", 4, r));
                 } catch (IOException e) {
