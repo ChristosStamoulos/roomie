@@ -99,9 +99,23 @@ public class Reducer {
     }
 
     private static Chunk mergeChunks(ArrayList<Chunk> chunks) {
-        Chunk chunk = chunks.get(0);
-
-        return new Chunk(chunk.getUserID(), chunk.getTypeID(), chunks);
+        String userID = "";
+        int id = 0;
+        int type = 0;
+        ArrayList<Chunk> workerChunk = new ArrayList<>();
+        ArrayList<Chunk> finalList = new ArrayList<>();
+        for(int i=0; i<expectedChunks; i++) {
+            workerChunk = (ArrayList<Chunk>) chunks.get(i).getData();
+            for(int j=0; j<workerChunk.size(); j++){
+                finalList.add(workerChunk.get(j));
+                userID = workerChunk.get(j).getUserID();
+                id = workerChunk.get(j).getSegmentID();
+                type = workerChunk.get(j).getSegmentID();
+            }
+        }
+        Chunk finalChunk = new Chunk(userID, type, finalList);
+        finalChunk.setSegmentID(id);
+        return finalChunk;
     }
 }
 
