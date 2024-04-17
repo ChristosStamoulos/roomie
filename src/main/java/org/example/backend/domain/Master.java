@@ -12,10 +12,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 
 import static java.lang.Math.abs;
 
@@ -36,7 +33,9 @@ public class Master {
     private static int worker2Port;
     private static int worker3Port;
     private static int userPort;
+    private static int reducerPort;
     private static ArrayList<ObjectOutputStream> workers;
+    private static Map<Integer, Socket> userSockets = new HashMap<>();
     private static int segmentIdCount = 0;
     private static ArrayList<Room> rooms;
     private static JsonConverter jsonConverter;
@@ -60,6 +59,7 @@ public class Master {
         worker3Port = Integer.parseInt(prop.getProperty("worker3Port"));
         numOfWorkers = Integer.parseInt(prop.getProperty("numberOfWorkers"));
         userPort = Integer.parseInt(prop.getProperty("userPort"));
+        reducerPort = Integer.parseInt(prop.getProperty("reducerPort"));
 
         jsonConverter = new JsonConverter();
         rooms = jsonConverter.getRooms();
@@ -70,8 +70,15 @@ public class Master {
     public static void main(String[] args) {
         init();
 
-        startWorkerSocketThread();
+        // Start listening for user requests
         startClientSocketThread();
+
+        // Start listening for chunks from workers
+        startWorkerSocketThread();
+
+        // Start listening for results from reducer
+        startReducerSocketThread();
+
     }
 
     private static void startClientSocketThread() {
@@ -89,11 +96,15 @@ public class Master {
         }).start();
     }
 
-    private static void handleClientRequest(Socket connectionSocket) {
-        try (ObjectInputStream in = new ObjectInputStream(connectionSocket.getInputStream())) {
+    private static void handleClientRequest(Socket userSocket) {
+        try (ObjectInputStream in = new ObjectInputStream(userSocket.getInputStream())) {
 
             Chunk data = (Chunk) in.readObject();
+            System.out.println(data.getData().toString());
+
             data.setSegmentID(segmentIdCount++);
+            userSockets.put(segmentIdCount, userSocket);
+
             processRequest(data.getTypeID(), data);
             System.out.println("Request processed successfully.");
 
@@ -101,7 +112,7 @@ public class Master {
             e.printStackTrace();
         } finally {
             try {
-                connectionSocket.close();
+                userSocket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -121,7 +132,7 @@ public class Master {
                 }
 
                 // Keep the worker socket thread running to handle communication with the worker
-                while (true) {
+                /*while (true) {
                     // Accept requests from the worker
                     try (ObjectInputStream in = new ObjectInputStream(workerSocket.getInputStream())) {
                         Chunk data = (Chunk) in.readObject();
@@ -131,6 +142,21 @@ public class Master {
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
                     }
+                }*/
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    private static void startReducerSocketThread(){
+        new Thread(() -> {
+            try (ServerSocket reducerServerSocket = new ServerSocket(reducerPort)) {
+                while (true) {
+                    Socket reducerSocket = reducerServerSocket.accept();
+                    System.out.println("Reducer connected");
+                    // Handle reducer response in a separate thread
+                    new Thread(() -> handleReducerResponse(reducerSocket)).start();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -138,51 +164,84 @@ public class Master {
         }).start();
     }
 
+    private static void handleReducerResponse(Socket reducerSocket) {
+        try {
+            // Read reducer response
+            ObjectInputStream in = new ObjectInputStream(reducerSocket.getInputStream());
+            Chunk resultChunk = (Chunk) in.readObject();
+            //in.close(); /////////////////////////////////////////////////////////////////////////////TEST//////////////////////////////////////////////////////
+
+            processResultsFromReducer(resultChunk);
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void processResultsFromReducer(Chunk result) {
+        int segmentId = result.getSegmentID();
+        Socket userSocket = userSockets.get(segmentId);
+        if (userSocket != null) {
+            try (ObjectOutputStream out = new ObjectOutputStream(userSocket.getOutputStream())) {
+                out.writeObject(result);
+                out.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("User socket not found for segment ID: " + segmentId);
+        }
+    }
 
     private static void processRequest(int type, Chunk chunk){
         switch (type){
-            case 1:
-                System.out.println("Arxi process");
-                try{
-                    for(int i=0; i<numOfWorkers; i++) {
+            case 1, 6, 7:
+                for(int i=0; i<numOfWorkers; i++) {
+                    try {
                         workers.get(i).writeObject(chunk);
                         workers.get(i).flush();
-                        System.out.println("I am process for" + i);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                }catch(IOException e){
-                    e.printStackTrace();
+                    System.out.println(chunk.getData());
                 }
                 break;
-            case 2:
-                break;
-            case 3:
-                JSONObject data1 = new JSONObject( (String) chunk.getData());
-                Room room1 = jsonConverter.convertToRoom(data1);
+            case 2, 3:
                 int w1 = 0;//findWorkerID(room);
                 try{
-                    Chunk c = new Chunk("i", 3, (String)data1.toString());
-                    c.setSegmentID(segmentIdCount++);
-                    workers.get(w1).writeObject(c);
+                    workers.get(w1).writeObject(chunk);
                     workers.get(w1).flush();
-                    System.out.println("eleni");
                 }catch(IOException e){
                     e.printStackTrace();
                 }
                 break;
             case 4:
-                Pair<Integer, ArrayList<String>> pair = (Pair<Integer, ArrayList<String>>) chunk.getData();
-                int roomID = pair.getKey();
-                ArrayList<String> dates = pair.getValue();
-                int wID = 0;//findWorkerID(rooms.get(roomID));
+                JSONObject data1 = new JSONObject( (String) chunk.getData());
+                Room room1 = jsonConverter.convertToRoom(data1);
+                int w3 = 0;//findWorkerID(room);
                 try{
-                    workers.get(wID).writeObject(pair);
-                    workers.get(wID).flush();
+                    Chunk c = new Chunk("i", 3, (String)data1.toString());
+                    workers.get(w3).writeObject(c);
+                    workers.get(w3).flush();
+                    System.out.println("eleni");
                 }catch(IOException e){
                     e.printStackTrace();
                 }
                 break;
             case 5:
+                Pair<Integer, ArrayList<String>> pair = (Pair<Integer, ArrayList<String>>) chunk.getData();
+                int roomID = pair.getKey();
+                ArrayList<String> dates = pair.getValue();
+                int w4 = 0;//findWorkerID(rooms.get(roomID));
+                try{
+                    workers.get(w4).writeObject(pair);
+                    workers.get(w4).flush();
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
                 break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + type);
         }
     }
 }
