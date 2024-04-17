@@ -241,7 +241,9 @@ public class Room implements Serializable {
      * @param date  a SimpleCalendar date
      */
     public void addAvailableDate(SimpleCalendar date){
-        this.availableDates.add(date);
+        if(!this.availableDates.contains(date)) {
+            this.availableDates.add(date);
+        }
     }
 
     /**
@@ -250,8 +252,10 @@ public class Room implements Serializable {
      * @param date  a SimpleCalendar date
      */
     public void addReservationDate(SimpleCalendar date){
-        this.reservationDates.add(date);
-        this.availableDates.remove(date);
+        if(!this.reservationDates.contains(date)) {
+            this.reservationDates.add(date);
+            this.availableDates.remove(date);
+        }
     }
 
     /**
