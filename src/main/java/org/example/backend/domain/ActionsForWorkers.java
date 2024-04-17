@@ -227,10 +227,14 @@ public class ActionsForWorkers extends Thread {
      */
     private synchronized void addDatetoRoom(Pair<Integer, ArrayList<String>> dates){
         ArrayList<String> dat = dates.getValue();
-        for(String d: dat){
-            SimpleCalendar date = new SimpleCalendar(d);
-            if(!rooms.get(dates.getKey()).getAvailableDates().contains(date)){
-                rooms.get(dates.getKey()).addAvailableDate(date);
+        for(Room r: rooms){
+            if(r.getId() == dates.getKey()){
+                for(String d: dat){
+                    SimpleCalendar date = new SimpleCalendar(d);
+                    if(!r.getAvailableDates().contains(date)){
+                        r.addAvailableDate(date);
+                    }
+                }
             }
         }
     }
@@ -242,9 +246,15 @@ public class ActionsForWorkers extends Thread {
      */
     private synchronized void addReservation(Pair<Integer, ArrayList<SimpleCalendar>> dates){
         ArrayList<SimpleCalendar> dat = dates.getValue();
-        for(SimpleCalendar d: dat){
-            rooms.get(dates.getKey()).addReservationDate(d);
+        for(Room r: rooms){
+            if(r.getId() == dates.getKey()){
+                for(SimpleCalendar d: dat){
+                    r.addReservationDate(d);
+                }
+            }
         }
+
+
     }
 
     /**
@@ -255,8 +265,13 @@ public class ActionsForWorkers extends Thread {
     public void addRating(Pair<Integer, Integer> rating){
         int roomId = rating.getKey();
         int rate = rating.getValue();
-        synchronized (rooms.get(roomId)){
-            rooms.get(roomId).addRating(rate);
+        for(Room r: rooms){
+            if(r.getId() == roomId){
+                synchronized (r){
+                    r.addRating(rate);
+                }
+            }
         }
+
     }
 }
