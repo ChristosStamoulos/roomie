@@ -172,7 +172,7 @@ public class DummyUser extends Thread{
                         System.out.println("Please type the rating. Ratings represent the number of stars so please enter an integer from 1-5");
                         int rating = Integer.parseInt(in.nextLine());
 
-                        chunk = new Chunk(String.valueOf(this.id), 3, rating);
+                        chunk = new Chunk(String.valueOf(this.id), 3, new Pair<>(rooms.get(rateId - 1).getId(),rating));
                         sentToMaster(masterSocket, chunk);
 
                         System.out.println("Successful rating of the room");

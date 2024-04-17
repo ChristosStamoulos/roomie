@@ -81,7 +81,7 @@ public class ConsoleApp {
                             System.out.println(obj.get("room"));
                             room = (Object) obj.get("room").toString();
 
-                            Chunk c = new Chunk("12", 3, room);//type 3 add room
+                            Chunk c = new Chunk("12", 4, room);//type 4 add room
                             out.writeObject(c);
                             out.flush();
                             System.out.println("The room was added to Chambre.");
@@ -97,7 +97,7 @@ public class ConsoleApp {
 
                         System.out.print("What is your id? ");
                         id = Integer.parseInt(in.nextLine());
-                        out.writeObject(new Chunk("2", 4, id));//add dates code 4
+                        out.writeObject(new Chunk("2", 7, id));//search by manager id code 7
 
                         Chunk dat = null;
                         try{
@@ -125,7 +125,7 @@ public class ConsoleApp {
                                 System.out.print("More? ");
                                 more = in.nextLine();
                             }
-                            out.writeObject(new Chunk("i", 4, new Pair<Integer, ArrayList<String>>(r.get(choiceOfRoom-1).getId(), dates)));
+                            out.writeObject(new Chunk("i", 5, new Pair<Integer, ArrayList<String>>(r.get(choiceOfRoom-1).getId(), dates)));
                         }
 
                         break;
@@ -139,7 +139,7 @@ public class ConsoleApp {
                         String startDate = in.nextLine();
                         System.out.print("\nEnd date: ");
                         String endDate = in.nextLine();
-                        Chunk c =new Chunk("i", 5, (Object) new Pair<Integer, Pair<String, String>>(id, new Pair<String, String>(startDate, endDate)));//code 5 for reservation
+                        Chunk c =new Chunk("i", 6, (Object) new Pair<Integer, Pair<String, String>>(id, new Pair<String, String>(startDate, endDate)));//code 5 for reservation
                         out.writeObject(c);
                         out.flush();
                         Chunk data = null;
