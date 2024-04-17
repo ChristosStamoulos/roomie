@@ -26,20 +26,20 @@ import java.util.Scanner;
  * @author Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
  * @Details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024.
  *
- * This class is implemented to represent a user.
+ * This class is implemented to represent a User.
  */
 public class DummyUser extends Thread{
-    private final int id; // unique identifier for each user
-    private final String path; // path for the user configurations
-    private static String host; // host name of the master
-    private static int masterPort; // port to connect with the master
-    private Socket masterSocket = null; // socket to connect with the master
-    private ObjectOutputStream outToMaster = null; // stream to sent requests to master
-    private ObjectInputStream inFromMaster = null; // stream to receive answers from the master
-    private static Chunk masterInput = null; // package that includes useful information about the request
+    private final int id;                          // Unique identifier for each user
+    private final String path;                     // Path for the user configurations
+    private static String host;                    // Host name of the master
+    private static int masterPort;                 // Port to connect with the master
+    private Socket masterSocket = null;            // Socket to connect with the master
+    private ObjectOutputStream outToMaster = null; // Stream to sent requests to master
+    private ObjectInputStream inFromMaster = null; // Stream to receive answers from the master
+    private static Chunk masterInput = null;       // Package that includes useful information about the request
 
     /**
-     * @Details Constructor of DummyUser class
+     * Constructor of DummyUser class
      * @param id: The unique identifier of a Dummy User
      */
     DummyUser(int id){
@@ -48,9 +48,10 @@ public class DummyUser extends Thread{
     }
 
     /**
-     * @Details Initializes the useful data of the user
+     * Initializes the useful data of the User
      */
     private void init(){
+        // Load configuration from file
         Properties prop = new Properties();
 
         try (FileInputStream f = new FileInputStream(path)){
@@ -59,10 +60,14 @@ public class DummyUser extends Thread{
             System.err.println("I/O Error\n" + "The system cannot find the path specified for the path:" + path);
         }
 
+        // Read properties from the configuration file
         host = prop.getProperty("host");
         masterPort = Integer.parseInt(prop.getProperty("masterPort"));
     }
 
+    /**
+     * Prints the menu options for the User to choose from.
+     */
     private static void printMenu(){
         System.out.println(
                 """
@@ -75,13 +80,14 @@ public class DummyUser extends Thread{
     }
 
     /**
-     * @Details Basic method that a subclass of Thread should use. It executes any target function belonging to the given thread object, that is currently active.
+     * Basic method that a subclass of Thread should use.
+     * It executes any target function belonging to the given thread object, that is currently active.
      */
     @Override
     public void run() {
         Scanner in = new Scanner(System.in);
-
-        init(); //initialize user data
+        //initialize user data
+        init();
         ArrayList<Room> rooms = new ArrayList<>();
         try {
             while (true) {
@@ -129,7 +135,9 @@ public class DummyUser extends Thread{
                         System.out.println(jsonObject.toString());
                         chunk = new Chunk(String.valueOf(this.id), 1, jsonObject.toString());
 
+                        // Send filter request to master
                         sentToMaster(masterSocket, chunk);
+                        // Receive filtered rooms from master
                         receiveFromMaster(masterSocket);
 
                         rooms = (ArrayList<Room>) ((Chunk) masterInput).getData();
@@ -137,7 +145,6 @@ public class DummyUser extends Thread{
                         for(int i=0; i< rooms.size(); i++){
                             System.out.println((i+1) + ": " +  rooms.get(i) + "\n");
                         }
-
                         break;
                     case 2:
                         ArrayList<SimpleCalendar> dates = new ArrayList<>();
@@ -159,7 +166,7 @@ public class DummyUser extends Thread{
                             bookStartDateSimple = bookStartDateSimple.addDays(1); // Move to the next day
                             System.out.println(bookStartDateSimple.toString());
                         }
-
+                        // Send booking request to master
                         chunk = new Chunk(String.valueOf(this.id), 2, new Pair<>(rooms.get(roomId - 1).getId(), dates));
                         sentToMaster(masterSocket, chunk);
 
@@ -173,32 +180,38 @@ public class DummyUser extends Thread{
                         int rating = Integer.parseInt(in.nextLine());
 
                         chunk = new Chunk(String.valueOf(this.id), 3, new Pair<>(rooms.get(rateId - 1).getId(),rating));
+                        // Send rating request to master
                         sentToMaster(masterSocket, chunk);
 
                         System.out.println("Successful rating of the room");
                         break;
                     case 4:
+                        // Exit the program
                         in.close();
                         System.exit(0);
                 }
             }
         } catch (UnknownHostException e) {
+            // If the host is unknown, wrap the exception in a RuntimeException and throw it
             throw new RuntimeException(e);
         } catch (IOException e) {
+            // If an IO error occurs, wrap the exception in a RuntimeException and throw it
             throw new RuntimeException(e);
-        }finally {
+        } finally {
+            // Finally block to ensure that the master socket is closed regardless of exceptions
             try {
-                masterSocket.close();
+                masterSocket.close(); // Close the master socket
             } catch (IOException ioException) {
-                ioException.printStackTrace();
+                ioException.printStackTrace(); // Print stack trace if an error occurs while closing the socket
             }
         }
     }
 
     /**
-     * Sends the request with the output stream
-     * @param masterSocket: Socket connected with the master
-     * @param chunk: Package that includes the useful data of the user's request
+     * Sends a Chunk object to the master.
+     *
+     * @param masterSocket The socket connected with the master.
+     * @param chunk The Chunk object to be sent to the master.
      */
     public void sentToMaster(Socket masterSocket, Chunk chunk){
         try{
@@ -208,20 +221,23 @@ public class DummyUser extends Thread{
                 outToMaster.flush();
                 System.out.println("Files are sent to master!");
             } catch (IOException | JSONException e) {
+                // Handle IOException and JSONException if occurred during writing object or processing JSON
                 System.err.println("Json file not found");
                 e.printStackTrace();
             }
-
         } catch (UnknownHostException unknownHost) {
+            // Handle UnknownHostException if occurred during socket creation
             System.err.println("You are trying to connect to an unknown host!");
         } catch (IOException ioException) {
+            // Handle IOException if occurred during socket initialization
             ioException.printStackTrace();
         }
     }
 
     /**
-     * Receives an answer with the input stream
-     * @param masterSocket: Socket connected with the master
+     * Receives a Chunk object from the master.
+     *
+     * @param masterSocket The socket connected with the master.
      */
     public void receiveFromMaster(Socket masterSocket){
         try{
@@ -230,25 +246,30 @@ public class DummyUser extends Thread{
                 masterInput = (Chunk) inFromMaster.readObject();
                 System.out.println("Files are sent back from master!");
             } catch (IOException | JSONException e) {
+                // Handle IOException and JSONException if occurred during reading object or processing JSON
                 System.err.println("Json file not found");
                 e.printStackTrace();
             } catch (ClassNotFoundException ex) {
+                // Handle ClassNotFoundException if the class of the serialized object cannot be found
                 System.err.println("Class not found" + ex);
             }
-
         } catch (UnknownHostException unknownHost) {
+            // Handle UnknownHostException if occurred during socket creation
             System.err.println("You are trying to connect to an unknown host!");
         } catch (IOException ioException) {
+            // Handle IOException if occurred during socket initialization
             ioException.printStackTrace();
         }
     }
 
     /**
-     * @Details Main class of Dummy User
-     * @param args: Default parameters
+     * Main class of Dummy User
+     * @param args Default parameters
      */
     public static void main(String[] args) {
+        // Create a DummyUser instance with ID 1
         DummyUser dummyUser = new DummyUser(1);
+        // Start the dummy user thread
         dummyUser.start();
     }
 }
