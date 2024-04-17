@@ -163,7 +163,7 @@ public class DummyUser extends Thread{
                         chunk = new Chunk(String.valueOf(this.id), 2, new Pair<>(rooms.get(roomId - 1).getId(), dates));
                         sentToMaster(masterSocket, chunk);
 
-                        System.out.println("Successful booking of the room");
+                        System.out.println("Successful booking of the room " + rooms.get(roomId-1).getName() +".");
                         break;
                     case 3:
                         System.out.println("Choose the room you want to rate. Please type the corresponding number");

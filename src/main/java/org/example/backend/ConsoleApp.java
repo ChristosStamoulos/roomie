@@ -163,7 +163,7 @@ public class ConsoleApp {
                         } catch (ClassNotFoundException e){
                             System.err.println("Class not found exception.");
                         }
-                        rooms = (ArrayList<Room>) ((Chunk) dat.getData()).getData();
+                        rooms = (ArrayList<Room>) ((Chunk) dat).getData();
                         if(rooms.isEmpty()){
                             System.out.println("You have no rooms in the system.");
                         }else {
