@@ -299,7 +299,7 @@ public class Room implements Serializable {
                 "area: " + area + '\n' +
                 "price: " + price + " per night\n" +
                 "noOfReviews: " + noOfReviews +
-                "noOfPersons: " + noOfPersons +
-                "rating:" + rating;
+                "\nnoOfPersons: " + noOfPersons +
+                "\nrating:" + rating;
     }
 }
