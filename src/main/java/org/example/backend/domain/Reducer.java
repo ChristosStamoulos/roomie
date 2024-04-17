@@ -1,10 +1,5 @@
 package org.example.backend.domain;
 
-
-import org.example.backend.utils.Pair;
-import org.example.backend.utils.json.JsonConverter;
-import org.json.JSONObject;
-
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -14,18 +9,17 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class Reducer {
-    private static ServerSocket providerSocket;
     private static int serverPort;
     private static String masterHost;
     private static int masterPort;
-    private static ArrayList<ArrayList<Room>> roomsOfSameRequest = new ArrayList<ArrayList<Room>>();
-    private static ArrayList<Room> mergedRooms = new ArrayList<Room>();
-    private static HashMap<Integer,Integer> searches = new HashMap<Integer,Integer>();
+    private static Map<Integer, ArrayList<Chunk>> chunkMap = new HashMap<>();
+    private static final int expectedChunks = 3;
 
-    private  static final  int numberOfChunks = 3;
+    private  static final  int numberOfChunks = 1;
 
     public static void init() {
         Properties prop = new Properties();
@@ -50,72 +44,63 @@ public class Reducer {
 
     private static void startReducerServer() {
         try (ServerSocket providerSocket = new ServerSocket(serverPort, 100)) {
-            int conectionCaunter = 0;
             while (true) {
-                Socket workerConnection = providerSocket.accept();
+                Socket workerSocket = providerSocket.accept();
                 System.out.println("Worker connected");
-                conectionCaunter++;
-                try (ObjectInputStream in = new ObjectInputStream(workerConnection.getInputStream())) {
-                    Chunk data = (Chunk) in.readObject();
-                    if(!searches.containsKey(data.getSegmentID())){
-                        searches.put(data.getSegmentID(),0);
-                    }else{
-                        int sum = searches.get((data.getSegmentID()));
-                        sum++;
-                        searches.put((data.getSegmentID()) ,sum);
-                    }
-                    reduce(data);
-                    System.out.println(data.getData().toString());
-                    System.out.println(data.getSegmentID());
 
-                } catch (ClassNotFoundException e) {
-                    throw new RuntimeException(e);
+                new Thread(() -> handleWorkerRequest(workerSocket)).start();
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+    private static void handleWorkerRequest(Socket workerSocket){
+        try {
+            ObjectInputStream in = new ObjectInputStream(workerSocket.getInputStream());
+            while (true) {
+                Chunk chunk = (Chunk) in.readObject(); // Read chunks sent by the worker
+                // Add the chunk to the map based on its ID
+                synchronized (chunkMap) {
+                    int chunkId = chunk.getSegmentID();
+                    if (!chunkMap.containsKey(chunkId)) {
+                        chunkMap.put(chunkId, new ArrayList<>());
+                    }
+                    chunkMap.get(chunkId).add(chunk);
+
+                    if (chunkMap.get(chunkId).size() == expectedChunks) {
+                        ArrayList<Chunk> chunks = chunkMap.get(chunkId);
+                        Chunk mergedChunk = mergeChunks(chunks);
+                        sentToMaster(mergedChunk);
+
+                        chunkMap.remove(chunkId); // Clear the chunks from the map
+                    }
                 }
             }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void sentToMaster(Chunk chunk){
+        try {
+            Socket masterSocket = new Socket(masterHost, masterPort); // Connect to the master
+            ObjectOutputStream out = new ObjectOutputStream(masterSocket.getOutputStream());
+
+            out.writeObject(chunk); // Send the merged chunk to the master
+            out.flush();
+
+            // Close connections
+            out.close();                                    ///////////////////////////////////////////////////////////////////////
+            masterSocket.close();                           ///////////////////////////////////////////////////////////////////////
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    private static Chunk mergeChunks(ArrayList<Chunk> chunks) {
+        Chunk chunk = chunks.get(0);
 
-    public static void reduce(Chunk payLoadToReduce) {
-
-        if (searches.get((payLoadToReduce.getSegmentID()))<numberOfChunks) {
-            roomsOfSameRequest.add((ArrayList<Room>) payLoadToReduce.getData());
-        } else {
-
-            for (ArrayList<Room> workerRooms : roomsOfSameRequest) {
-                for (Room room : workerRooms) {
-                    Room roomOfInterst = room;
-                    if (mergedRooms.isEmpty()) {
-                        mergedRooms.add(roomOfInterst);
-                    } else {
-                        if (!mergedRooms.contains(roomOfInterst)) {
-                            mergedRooms.add(roomOfInterst);
-                        }
-                    }
-                }
-            }
-            sentBackToMaster();
-        }
-
+        return new Chunk(chunk.getUserID(), chunk.getTypeID(), chunks);
     }
-
-
-
-    public static void sentBackToMaster(){
-        //try {
-            //Socket masterSocket = new Socket(masterHost,masterPort);
-           // ObjectOutputStream out = new ObjectOutputStream(masterSocket.getOutputStream());
-            System.out.println("my  final list size: "+mergedRooms.size());
-            mergedRooms.clear();
-            roomsOfSameRequest.clear();
-       // } catch (UnknownHostException e) {
-           // throw new RuntimeException(e);
-        //} catch (IOException e) {
-          //  throw new RuntimeException(e);
-        //}
-    }
-
 }
 
