@@ -1,6 +1,7 @@
 package org.example.backend.utils.json;
 
 import org.example.backend.domain.Room;
+import org.example.backend.utils.SimpleCalendar;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -30,7 +31,6 @@ public class JsonConverter {
             for (int i = 0; i < jsonRooms.length(); i++) {
                 JSONObject jsonRoom = (JSONObject) jsonRooms.get(i);
                 Room room = convertToRoom(jsonRoom);
-                //System.out.println(room.toString());
                 rooms.add(room);
             }
         } catch (IOException e) {
@@ -38,6 +38,12 @@ public class JsonConverter {
         }
     }
 
+    /**
+     * Converts a json object to a Room Object
+     *
+     * @param jsonRoom  a Json object
+     * @return  a Room object
+     */
     public Room convertToRoom(JSONObject jsonRoom){
         Room room = new Room();
         room.setArea((String) jsonRoom.get("area"));
@@ -48,9 +54,29 @@ public class JsonConverter {
         room.setNoOfPersons(Integer.parseInt((String) jsonRoom.get("noOfPersons")));
         room.setRoomImage((String) jsonRoom.get("roomImage"));
         room.setMid(Integer.parseInt((String) jsonRoom.get("mid")));
+        JSONArray jsonAvailableDates = new JSONArray( jsonRoom.getJSONArray("availableDates"));
+        ArrayList<SimpleCalendar> avDates = new ArrayList<SimpleCalendar>();
+        for(int i = 0; i<jsonAvailableDates.length(); i++){
+            JSONObject date = (JSONObject) jsonAvailableDates.get(i);
+            avDates.add(new SimpleCalendar((String) date.get("date")));
+        }
+        JSONArray jsonReservationDates = new JSONArray( jsonRoom.getJSONArray("reservationDates"));
+        ArrayList<SimpleCalendar> resDates = new ArrayList<SimpleCalendar>();
+        for(int i = 0; i<jsonReservationDates.length(); i++){
+            JSONObject date = (JSONObject) jsonReservationDates.get(i);
+            resDates.add(new SimpleCalendar((String) date.get("date")));
+        }
+        room.setAvailableDates(avDates);
+        room.setReservationDates(resDates);
+
         return room;
     }
 
+    /**
+     * Gets the coverted rooms
+     *
+     * @return  an ArrayList of Rooms
+     */
     public ArrayList<Room> getRooms() {
         readFile();
         return rooms;
