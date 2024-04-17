@@ -73,7 +73,7 @@ public class Master {
         // Start listening for user requests
         startClientSocketThread();
 
-        // Start listening for chunks from workers
+        // Start requesting to send chunks from workers
         startWorkerSocketThread();
 
         // Start listening for results from reducer
@@ -207,8 +207,10 @@ public class Master {
                     System.out.println(chunk.getData());
                 }
                 break;
-            case 2, 3:
-                int w1 = 0;//findWorkerID(room);
+            case 2, 3, 5:
+                Pair<Integer, ArrayList<String>> pair = (Pair<Integer, ArrayList<String>>) chunk.getData();
+                int roomID = pair.getKey();
+                int w1 = hashRequestToWorker(roomID, numOfWorkers);
                 try{
                     workers.get(w1).writeObject(chunk);
                     workers.get(w1).flush();
@@ -219,7 +221,8 @@ public class Master {
             case 4:
                 JSONObject data1 = new JSONObject( (String) chunk.getData());
                 Room room1 = jsonConverter.convertToRoom(data1);
-                int w3 = 0;//findWorkerID(room);
+                int roomID1 = room1.getId();
+                int w3 = hashRequestToWorker(roomID1, numOfWorkers);
                 try{
                     Chunk c = new Chunk("i", 3, (String)data1.toString());
                     workers.get(w3).writeObject(c);
@@ -229,21 +232,14 @@ public class Master {
                     e.printStackTrace();
                 }
                 break;
-            case 5:
-                Pair<Integer, ArrayList<String>> pair = (Pair<Integer, ArrayList<String>>) chunk.getData();
-                int roomID = pair.getKey();
-                ArrayList<String> dates = pair.getValue();
-                int w4 = 0;//findWorkerID(rooms.get(roomID));
-                try{
-                    workers.get(w4).writeObject(pair);
-                    workers.get(w4).flush();
-                }catch(IOException e){
-                    e.printStackTrace();
-                }
-                break;
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
         }
+    }
+
+    public static int hashRequestToWorker(int roomID, int numOfWorkers) {
+        // Modulo operation to map the segment ID to a worker index
+        return roomID % numOfWorkers;
     }
 
     private static void splitRooms(){
@@ -252,7 +248,7 @@ public class Master {
                 System.out.println(workers.size());
                 int wID = r.getName().hashCode() % Master.numOfWorkers;
                 try {
-                    workers.get(wID).writeObject(new Chunk("", 3, r));
+                    workers.get(wID).writeObject(new Chunk("", 4, r));
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
