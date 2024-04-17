@@ -24,11 +24,11 @@ import java.util.*;
 public class Master {
     private static int numOfWorkers;                      // Number of Worker nodes
     private static String host1;                          // Hostname of the first Worker node
-    //private static String host2;                        // Hostname of the second Worker node
-    //private static String host3;                        // Hostname of the third  Worker node
+    private static String host2;                        // Hostname of the second Worker node
+    private static String host3;                        // Hostname of the third  Worker node
     private static int worker1Port;                       // Port number of the first Worker node
-    //private static int worker2Port;                     // Port number of the second Worker node
-    //private static int worker3Port;                     // Port number of the third Worker node
+    private static int worker2Port;                     // Port number of the second Worker node
+    private static int worker3Port;                     // Port number of the third Worker node
     private static int userPort;                          // Port number for User connections
     private static int reducerPort;                       // Port number for Reducer connections
     private static ArrayList<ObjectOutputStream> workers; // List of output streams to Worker nodes
@@ -54,11 +54,11 @@ public class Master {
 
         // Read properties from the configuration file
         host1 = prop.getProperty("host1");
-        //host2 = prop.getProperty("host2");
-        //host3 = prop.getProperty("host3");
+        host2 = prop.getProperty("host2");
+        host3 = prop.getProperty("host3");
         worker1Port = Integer.parseInt(prop.getProperty("worker1Port"));
-        //worker2Port = Integer.parseInt(prop.getProperty("worker2Port"));
-        //worker3Port = Integer.parseInt(prop.getProperty("worker3Port"));
+        worker2Port = Integer.parseInt(prop.getProperty("worker2Port"));
+        worker3Port = Integer.parseInt(prop.getProperty("worker3Port"));
         numOfWorkers = Integer.parseInt(prop.getProperty("numberOfWorkers"));
         userPort = Integer.parseInt(prop.getProperty("userPort"));
         reducerPort = Integer.parseInt(prop.getProperty("reducerPort"));
@@ -149,17 +149,17 @@ public class Master {
             try {
                 // Create a Worker socket and connect to the Worker
                 Socket workerSocket1 = new Socket(host1, worker1Port);
-                //Socket workerSocket2 = new Socket(host2, worker2Port);
-                //Socket workerSocket3 = new Socket(host3, worker3Port);
+                Socket workerSocket2 = new Socket(host2, worker2Port);
+                Socket workerSocket3 = new Socket(host3, worker3Port);
                 ObjectOutputStream outWorker1 = new ObjectOutputStream(workerSocket1.getOutputStream());
-                //ObjectOutputStream outWorker2 = new ObjectOutputStream(workerSocket2.getOutputStream());
-                //ObjectOutputStream outWorker3 = new ObjectOutputStream(workerSocket3.getOutputStream());
+                ObjectOutputStream outWorker2 = new ObjectOutputStream(workerSocket2.getOutputStream());
+                ObjectOutputStream outWorker3 = new ObjectOutputStream(workerSocket3.getOutputStream());
 
                 // Add the output stream to the list of Workers
                 synchronized (workers) {
                     workers.add(outWorker1);
-                    //workers.add(outWorker2);
-                    //workers.add(outWorker3);
+                    workers.add(outWorker2);
+                    workers.add(outWorker3);
                 }
                 splitRooms();
 
@@ -279,7 +279,6 @@ public class Master {
                     Chunk c = new Chunk("i", 4, data1);
                     workers.get(w3).writeObject(c);
                     workers.get(w3).flush();
-                    System.out.println("eleni");
                 }catch(IOException e){
                     e.printStackTrace();
                 }
