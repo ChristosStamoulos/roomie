@@ -85,9 +85,6 @@ public class ActionsForWorkers extends Thread {
                 ArrayList<Room> filteredRooms = findRoomByFilter(new JSONObject( (String)data.getData()));
                 Chunk c = new Chunk(data.getUserID(), data.getTypeID(), filteredRooms);
                 c.setSegmentID(data.getSegmentID());
-                System.out.println(c.getData().toString());
-                System.out.println(c.getTypeID());
-                System.out.println(filteredRooms);
                 sendReducer(c);
                 break;
             case 2:     //user's request, adds a reservation to the room
@@ -106,7 +103,6 @@ public class ActionsForWorkers extends Thread {
                 ArrayList<Room> roomsByManager = findRoomsByManager((Integer) data.getData());
                 Chunk c1 = new Chunk(data.getUserID(), data.getTypeID(), roomsByManager);
                 chunk.setSegmentID(data.getSegmentID());
-                System.out.println(roomsByManager);
                 sendReducer(c1);
                 break;
             default:

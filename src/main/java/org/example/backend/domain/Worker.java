@@ -25,11 +25,12 @@ import java.util.Properties;
 
 public class Worker {
     private static int id = 0;
-    private static int reducerPort;
     private static int serverPort;
-    private static String reducerHost;
     private static ArrayList<Room> rooms;
 
+    /**
+     * Initialises the variables from the config file
+     */
     public static void init() {
         Properties prop = new Properties();
         String filename = "src/main/java/org/example/backend/config/worker.config";
@@ -42,8 +43,6 @@ public class Worker {
         }
 
         serverPort = Integer.parseInt(prop.getProperty("serverPort"));
-        reducerPort = Integer.parseInt(prop.getProperty("reducerPort"));
-        reducerHost = prop.getProperty("reducerHost");
         rooms = new ArrayList<Room>();
     }
 
@@ -52,6 +51,10 @@ public class Worker {
         openServer();
     }
 
+    /**
+     * Opens Worker server to listen for requests from master,
+     * and handles those requests in ActionsForWorkers
+     */
     private static void openServer() {
         try (ServerSocket providerSocket = new ServerSocket(serverPort, 100);
              ) {
