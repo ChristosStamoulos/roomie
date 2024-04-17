@@ -142,7 +142,7 @@ public class ConsoleApp {
                         } catch (ClassNotFoundException e){
                             System.err.println("Class not found exception.");
                         }
-                        ArrayList<Room> reservations = (ArrayList<Room>) ((Chunk) data.getData()).getData();
+                        ArrayList<Room> reservations = (ArrayList<Room>) ((Chunk) data).getData();
                         int j = 0;
                         for(Room p: reservations){
                             System.out.println("\n" + (++j) +". " + p.getName() + "\nReservations");
