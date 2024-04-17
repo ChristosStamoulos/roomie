@@ -33,10 +33,10 @@ public class DummyUser extends Thread{
     private final String path; // path for the user configurations
     private static String host; // host name of the master
     private static int masterPort; // port to connect with the master
-    private Socket masterSocket=null; // socket to connect with the master
-    private ObjectOutputStream outToMaster=null; // stream to sent requests to master
-    private ObjectInputStream inFromMaster=null; // stream to receive answers from the master
-    private static Chunk masterInput=null; // package that includes useful information about the request
+    private Socket masterSocket = null; // socket to connect with the master
+    private ObjectOutputStream outToMaster = null; // stream to sent requests to master
+    private ObjectInputStream inFromMaster = null; // stream to receive answers from the master
+    private static Chunk masterInput = null; // package that includes useful information about the request
 
     /**
      * @Details Constructor of DummyUser class
@@ -48,36 +48,51 @@ public class DummyUser extends Thread{
     }
 
     /**
+     * @Details Initializes the useful data of the user
+     */
+    private void init(){
+        Properties prop = new Properties();
+
+        try (FileInputStream f = new FileInputStream(path)){
+            prop.load(f);
+        }catch (IOException exception) {
+            System.err.println("I/O Error\n" + "The system cannot find the path specified for the path:" + path);
+        }
+
+        host = prop.getProperty("host");
+        masterPort = Integer.parseInt(prop.getProperty("masterPort"));
+    }
+
+    private static void printMenu(){
+        System.out.println(
+                """
+                   Please choose what you want to do by typing the corresponding number
+                   1. Search by filters.
+                   2. Book a room.
+                   3. Rate a room.
+                   4. Exit
+                       """);
+    }
+
+    /**
      * @Details Basic method that a subclass of Thread should use. It executes any target function belonging to the given thread object, that is currently active.
      */
     @Override
     public void run() {
+        Scanner in = new Scanner(System.in);
+
         init(); //initialize user data
         ArrayList<Room> rooms = new ArrayList<>();
-        int option;
-
         try {
-            masterSocket = new Socket(host, masterPort);
-        } catch (UnknownHostException unknownHost) {
-            System.err.println("You are trying to connect to an unknown host!");
-        } catch (IOException ioException) {
-            ioException.printStackTrace();
-        }
-
-        while (true) {
-            try {
+            while (true) {
                 Chunk chunk = null;
-                Scanner in = new Scanner(System.in);
+                printMenu();
+                System.out.print("Your choice: ");
+                int choice = Integer.parseInt(in.nextLine());
 
-                System.out.println("Please choose what you want to do by typing the corresponding number");
-                System.out.println("1. Search by filters");
-                System.out.println("2. Book a room");
-                System.out.println("3. Rate a room");
-                System.out.println("4. Exit");
+                masterSocket = new Socket(host, masterPort);
 
-                int choise = Integer.parseInt(in.nextLine());
-
-                switch (choise) {
+                switch (choice) {
                     case 1:
                         System.out.println("DummyUser " + id + " welcome!\n" + "Please follow the rules below to add a filter to your search");
                         System.out.println("1.Area        |  For filtering your search by place, please enter the place you want else type 'none'");
@@ -119,31 +134,63 @@ public class DummyUser extends Thread{
 
                         rooms = (ArrayList<Room>) masterInput.getData();
 
+                        for(int i=0; i< rooms.size(); i++){
+                            System.out.println((i+1) + ": " +  rooms.get(i));
+                        }
+
                         break;
                     case 2:
+                        ArrayList<SimpleCalendar> dates = new ArrayList<>();
+
                         System.out.println("Choose the room you want to book. Please type the corresponding number");
                         int roomId = Integer.parseInt(in.nextLine());
-                        ArrayList<String> dates = new ArrayList<>();
-                        chunk = new Chunk(String.valueOf(this.id), 2, new Pair<Integer, ArrayList<String>>(rooms.get(roomId - 1).getId(), dates));
+
+                        System.out.println("Please enter the starting date you want (such as '12/11/2024')");
+                        String bookStartDate = in.nextLine();
+                        System.out.println("Please enter the finishing date you want (such as '24/03/2025')");
+                        String bookFinishDate = in.nextLine();
+
+                        SimpleCalendar bookStartDateSimple = new SimpleCalendar(bookStartDate);
+                        SimpleCalendar bookFinishDateSimple = new SimpleCalendar(bookFinishDate);
+
+                        // Add each day from the start date to the end date to the list
+                        while (bookStartDateSimple.compareTo(bookFinishDateSimple) <= 0) {
+                            dates.add(bookStartDateSimple);
+                            bookStartDateSimple = bookStartDateSimple.addDays(1); // Move to the next day
+                            System.out.println(bookStartDateSimple.toString());
+                        }
+
+                        chunk = new Chunk(String.valueOf(this.id), 2, new Pair<>(rooms.get(roomId - 1).getId(), dates));
+                        sentToMaster(masterSocket, chunk);
+
                         System.out.println("Successful booking of the room");
                         break;
                     case 3:
+                        System.out.println("Choose the room you want to rate. Please type the corresponding number");
+                        int rateId = Integer.parseInt(in.nextLine());
+
+                        System.out.println("Please type the rating. Ratings represent the number of stars so please enter an integer from 1-5");
+                        int rating = Integer.parseInt(in.nextLine());
+
+                        chunk = new Chunk(String.valueOf(this.id), 3, rating);
+                        sentToMaster(masterSocket, chunk);
+
+                        System.out.println("Successful rating of the room");
                         break;
                     case 4:
-                        try {
-                            outToMaster.close();
-                            inFromMaster.close();
-                            masterSocket.close();
-                        } catch (IOException ioException) {
-                            ioException.printStackTrace();
-                        }
+                        in.close();
                         System.exit(0);
-                        break;
                 }
-
-
-            } catch (Exception e) {
-                System.err.println("I/O error interacting with the cmd" + e);
+            }
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }finally {
+            try {
+                masterSocket.close();
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
             }
         }
     }
@@ -198,53 +245,11 @@ public class DummyUser extends Thread{
     }
 
     /**
-     * @Details Initializes the useful data of the user
-     */
-    private void init(){
-        Properties prop = new Properties();
-
-        try (FileInputStream f = new FileInputStream(path)){
-            prop.load(f);
-        }catch (IOException exception) {
-            System.err.println("I/O Error\n" + "The system cannot find the path specified for the path:" + path);
-        }
-
-        host = prop.getProperty("host");
-        masterPort = Integer.parseInt(prop.getProperty("masterPort"));
-        System.out.println(Integer.parseInt(prop.getProperty("masterPort")));
-    }
-
-    /**
-     * @Details Checks the input from the user, so it satisfies the concept of cover kernel failure
-     * @return
-     */
-    private int checkInput(){
-        Scanner input = new Scanner(System.in);
-
-        int get = 0;
-        try{
-            get = input.nextInt();
-            return get;
-        }catch (Exception e){
-            get = 0;
-        }
-
-        input.close();
-        return get;
-    }
-
-    /**
      * @Details Main class of Dummy User
      * @param args: Default parameters
      */
     public static void main(String[] args) {
-        //int numOfUsers = 2;
-          DummyUser dummyUser = new DummyUser(1);
-          dummyUser.start();
-        /* DummyUser[] dummyUsers = new DummyUser[numOfUsers];
-        for (int i = 1; i <= numOfUsers; i++) {
-            dummyUsers[i-1] = new DummyUser(i);
-            dummyUsers[i-1].start();
-        }*/
+        DummyUser dummyUser = new DummyUser(1);
+        dummyUser.start();
     }
 }
