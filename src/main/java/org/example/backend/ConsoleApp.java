@@ -43,7 +43,8 @@ public class ConsoleApp {
                    2. Add more available dates for your rooms.
                    3. See the reservations of your rooms.
                    4  See the rooms you own.
-                   5. Exit
+                   5. See the total reservations you have by area and date.
+                   6. Exit
                        """);
     }
 
@@ -174,6 +175,34 @@ public class ConsoleApp {
                         }
                         break;
                     case 5:
+                        System.out.print("What is your id? ");
+                        id = Integer.parseInt(in.nextLine());
+                        System.out.println("What time period would you like to see? Give the dates in this format dd/MM/yyyy");
+                        System.out.print("Start Date: ");
+                        SimpleCalendar startDate = new SimpleCalendar(in.nextLine());
+                        System.out.print("End Date: ");
+                        SimpleCalendar endDate = new SimpleCalendar(in.nextLine());
+
+                        out.writeObject(new Chunk("2", 8, new Pair<Integer, Pair<SimpleCalendar, SimpleCalendar>>(id, new Pair<SimpleCalendar, SimpleCalendar>(startDate, endDate))));//search  code 8
+
+                        Chunk d = null;
+                        try{
+                            inp = new ObjectInputStream(connectionSocket.getInputStream());
+                            dat = (Chunk) inp.readObject();
+                        } catch (ClassNotFoundException e){
+                            System.err.println("Class not found exception.");
+                        }
+                        ArrayList<Pair<String, Integer>> results = (ArrayList<Pair<String, Integer>>) ((Chunk) d).getData();
+                        if(results.isEmpty()){
+                            System.out.println("You have no rooms in the system.");
+                        }else {
+                            int i = 0;
+                            for (Pair<String, Integer> r : results) {
+                                System.out.println(String.valueOf(++i) + ". " + r.getKey() + ": " + String.valueOf(r.getValue()));
+                            }
+                        }
+                        break;
+                    case 6:
                         in.close();
                         System.exit(0);
                 }

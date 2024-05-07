@@ -105,6 +105,12 @@ public class ActionsForWorkers extends Thread {
                 chunk.setSegmentID(data.getSegmentID());
                 sendReducer(c1);
                 break;
+            case 8:
+                Pair<Integer, Pair<SimpleCalendar, SimpleCalendar>> dat = (Pair<Integer, Pair<SimpleCalendar, SimpleCalendar>>) chunk.getData();
+                Chunk d = new Chunk(data.getUserID(), data.getTypeID(), findbyAreanTime(dat));
+                d.setSegmentID(data.getSegmentID());
+                sendReducer(d);
+                break;
             default:
                 System.out.println("Invalid request type");
         }
@@ -273,5 +279,56 @@ public class ActionsForWorkers extends Thread {
             }
         }
 
+    }
+
+    /**
+     * Finds the rooms a manager owns and calculates the total
+     * reservations the rooms have grouped by area
+     *
+     * @param data a pair of the Manager's id and the Time period
+     * @return an ArrayList of Pair Objects
+     */
+    public ArrayList<Pair<String, Integer>> findbyAreanTime(Pair<Integer, Pair<SimpleCalendar, SimpleCalendar>> data){
+        ArrayList<Room> room = findRoomsByManager(data.getKey());
+        SimpleCalendar startDate = data.getValue().getKey();
+        SimpleCalendar endDate = data.getValue().getValue();
+        ArrayList<Pair<String, Integer>> totalres = new ArrayList<Pair<String, Integer>>();
+        for(Room r : room){
+            int res = 0;
+            for(SimpleCalendar d: r.getReservationDates()){
+                if(d.before(endDate) && d.after(startDate)){
+                    res++;
+                }
+            }
+            Pair<Boolean, Integer> exists = findArea(totalres, r.getArea());
+            if(exists.getKey()){
+                Pair<String, Integer> i = totalres.get(exists.getValue());
+                totalres.remove(exists.getValue());
+                totalres.add(new Pair<String, Integer>(r.getArea(), i.getValue() + res));
+            }else{
+                totalres.add(new Pair<String, Integer>(r.getArea(), res));
+            }
+        }
+        return totalres;
+    }
+
+    /**
+     * Checks if there is already a Pair of an Area and its total reservations
+     * and if it does then it returns true along with the index of the pair
+     * else false
+     *
+     * @param areas an ArrayList of String Areas and total reservations
+     * @param area  a String name of an Area
+     * @return  a pair of true/false and an index
+     */
+    private Pair<Boolean, Integer> findArea(ArrayList<Pair<String, Integer>> areas, String area){
+        int i = 0;
+        for(Pair<String, Integer> a: areas){
+            if(a.getKey().equals(area)){
+               return new Pair<Boolean, Integer>(true, i);
+            }
+            i++;
+        }
+        return new Pair<Boolean, Integer>(false, 0);
     }
 }

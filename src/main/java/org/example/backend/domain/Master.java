@@ -243,7 +243,7 @@ public class Master {
      */
     private static void processRequest(int type, Chunk chunk){
         switch (type){
-            case 1, 6, 7:
+            case 1, 6, 7, 8:
                 // Iterate all workers
                 for(int i=0; i<numOfWorkers; i++) {
                     try {
