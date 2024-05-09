@@ -1,0 +1,11 @@
+{
+  "filters": {
+    "area": "default",
+    "startDate": "01/01/0001",
+    "finishDate": "01/01/0001",
+    "noOfPeople": 0,
+    "lowPrice": 0,
+    "highPrice": 0,
+    "stars": 0.0
+  }
+}
