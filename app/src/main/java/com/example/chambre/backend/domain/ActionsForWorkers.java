@@ -47,7 +47,7 @@ public class ActionsForWorkers extends Thread {
      */
     public void init(){
         Properties prop = new Properties();
-        String filename = "src/main/java/org/example/backend/config/worker.config";
+        String filename = "app\\src\\main\\java\\com\\example\\chambre\\backend\\config\\worker.config";
 
         try (FileInputStream f = new FileInputStream(filename)) {
             prop.load(f);

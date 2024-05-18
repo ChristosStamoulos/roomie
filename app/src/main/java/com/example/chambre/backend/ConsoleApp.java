@@ -52,7 +52,7 @@ public class ConsoleApp {
      */
     private static void init() {
         Properties prop = new Properties();
-        String filename = "src/main/java/org/example/backend/config/user.config";
+        String filename = "app\\src\\main\\java\\com\\example\\chambre\\backend\\config\\user.config";
 
 
         try (FileInputStream f = new FileInputStream(filename)) {
