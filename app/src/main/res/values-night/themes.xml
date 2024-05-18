@@ -2,6 +2,6 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Chambre" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <item name="android:statusBarColor">#4d5eae</item>
     </style>
 </resources>

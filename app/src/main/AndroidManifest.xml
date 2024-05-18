@@ -13,7 +13,11 @@
         android:theme="@style/Theme.Chambre"
         tools:targetApi="31">
         <activity
-            android:name=".frontend.MainActivity"
+            android:name=".frontend.authentication.SignUpActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".frontend.authentication.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

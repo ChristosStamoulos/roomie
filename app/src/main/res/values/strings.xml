@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">Chambre</string>
+    <string name="login">Welcome Back!</string>
+    <string name="username">Username</string>
+    <string name="prompt_password">Password</string>
+    <string name="log_in">Log In</string>
+    <string name="dont_have_acount">Dont have an account?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="log_in_to_chambre">Log in to Chambre:</string>
+    <string name="signup_for_chambre">SignUp for Chambre:</string>
+    <string name="signup">SignUp</string>
+    <string name="full_name">Full name</string>
+    <string name="prompt_email">Email</string>
+    <string name="phone">+30</string>
+    <string name="mobile_number">mobile number</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="have_we_met_before">Already have an account?</string>
+    <string name="ok">OK</string>
 </resources>
