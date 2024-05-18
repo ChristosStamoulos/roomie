@@ -44,7 +44,7 @@ public class DummyUser extends Thread{
      */
     DummyUser(int id){
         this.id = id;
-        this.path =  "src\\main\\java\\org\\example\\backend\\dummyUser\\userData\\user.config";
+        this.path =  "app\\src\\main\\java\\com\\example\\chambre\\backend\\dummyUser\\userData\\user.config";
     }
 
     /**
@@ -219,7 +219,7 @@ public class DummyUser extends Thread{
                 outToMaster.writeObject(chunk);
                 outToMaster.flush();
                 System.out.println("Files are sent to master!");
-            } catch (IOException | JSONException e) {
+            } catch (IOException e) {
                 // Handle IOException and JSONException if occurred during writing object or processing JSON
                 System.err.println("Json file not found");
                 e.printStackTrace();
@@ -244,7 +244,7 @@ public class DummyUser extends Thread{
             try{
                 masterInput = (Chunk) inFromMaster.readObject();
                 System.out.println("Files are sent back from master!");
-            } catch (IOException | JSONException e) {
+            } catch (IOException e) {
                 // Handle IOException and JSONException if occurred during reading object or processing JSON
                 System.err.println("Json file not found");
                 e.printStackTrace();

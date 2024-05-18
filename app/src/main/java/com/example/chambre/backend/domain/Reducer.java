@@ -34,7 +34,7 @@ public class Reducer {
     public static void init() {
         // Load configuration from file
         Properties prop = new Properties();
-        String filename = "src/main/java/org/example/backend/config/reducer.config";
+        String filename = "app\\src\\main\\java\\com\\example\\chambre\\backend\\config\\reducer.config";
 
         try (FileInputStream f = new FileInputStream(filename)) {
             prop.load(f);
