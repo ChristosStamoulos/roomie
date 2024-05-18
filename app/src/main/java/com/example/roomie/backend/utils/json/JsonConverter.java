@@ -1,13 +1,12 @@
-package com.example.chambre.backend.utils.json;
+package com.example.roomie.backend.utils.json;
 
-import com.example.chambre.backend.domain.Room;
-import com.example.chambre.backend.utils.SimpleCalendar;
+import com.example.roomie.backend.domain.Room;
+import com.example.roomie.backend.utils.SimpleCalendar;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;

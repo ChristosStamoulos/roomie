@@ -1,7 +1,7 @@
-package com.example.chambre.backend.domain;
+package com.example.roomie.backend.domain;
 
-import com.example.chambre.backend.utils.Pair;
-import com.example.chambre.backend.utils.json.JsonConverter;
+import com.example.roomie.backend.utils.Pair;
+import com.example.roomie.backend.utils.json.JsonConverter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,7 +45,7 @@ public class Master {
     public static void init() {
         // Load configuration from file
         Properties prop = new Properties();
-        String filename = "app\\src\\main\\java\\com\\example\\chambre\\backend\\config\\master.config";
+        String filename = "app\\src\\main\\java\\com\\example\\roomie\\backend\\config\\master.config";
 
         try (FileInputStream f = new FileInputStream(filename)) {
             prop.load(f);

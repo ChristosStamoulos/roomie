@@ -1,4 +1,4 @@
-package com.example.chambre.backend.domain;
+package com.example.roomie.backend.domain;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class Worker {
      */
     public static void init() {
         Properties prop = new Properties();
-        String filename = "app\\src\\main\\java\\com\\example\\chambre\\backend\\config\\worker.config";
+        String filename = "app\\src\\main\\java\\com\\example\\roomie\\backend\\config\\worker.config";
 
         try (FileInputStream f = new FileInputStream(filename)) {
             prop.load(f);

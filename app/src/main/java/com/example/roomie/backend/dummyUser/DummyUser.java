@@ -1,12 +1,11 @@
-package com.example.chambre.backend.dummyUser;
+package com.example.roomie.backend.dummyUser;
 
-import com.example.chambre.backend.domain.Chunk;
-import com.example.chambre.backend.domain.Master;
-import com.example.chambre.backend.domain.Room;
-import com.example.chambre.backend.utils.Pair;
+import com.example.roomie.backend.domain.Chunk;
+import com.example.roomie.backend.domain.Room;
+import com.example.roomie.backend.utils.Pair;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.example.chambre.backend.utils.SimpleCalendar;
+import com.example.roomie.backend.utils.SimpleCalendar;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -44,7 +43,7 @@ public class DummyUser extends Thread{
      */
     DummyUser(int id){
         this.id = id;
-        this.path =  "app\\src\\main\\java\\com\\example\\chambre\\backend\\dummyUser\\userData\\user.config";
+        this.path =  "app\\src\\main\\java\\com\\example\\roomie\\backend\\dummyUser\\userData\\user.config";
     }
 
     /**

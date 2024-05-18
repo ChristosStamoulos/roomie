@@ -1,11 +1,10 @@
-package com.example.chambre.backend;
+package com.example.roomie.backend;
 
-import com.example.chambre.backend.domain.Chunk;
-import com.example.chambre.backend.domain.Master;
-import com.example.chambre.backend.domain.Room;
-import com.example.chambre.backend.utils.Pair;
-import com.example.chambre.backend.utils.SimpleCalendar;
-import com.example.chambre.backend.utils.json.JsonConverter;
+import com.example.roomie.backend.domain.Chunk;
+import com.example.roomie.backend.domain.Room;
+import com.example.roomie.backend.utils.Pair;
+import com.example.roomie.backend.utils.SimpleCalendar;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,7 +51,7 @@ public class ConsoleApp {
      */
     private static void init() {
         Properties prop = new Properties();
-        String filename = "app\\src\\main\\java\\com\\example\\chambre\\backend\\config\\user.config";
+        String filename = "app\\src\\main\\java\\com\\example\\roomie\\backend\\config\\user.config";
 
 
         try (FileInputStream f = new FileInputStream(filename)) {

@@ -1,4 +1,4 @@
-package com.example.chambre;
+package com.example.roomie;
 
 import org.junit.Test;
 

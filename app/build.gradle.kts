@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.chambre"
+    namespace = "com.example.roomie"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.chambre"
+        applicationId = "com.example.roomie"
         minSdk = 26
         targetSdk = 34
         versionCode = 1

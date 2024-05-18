@@ -1,4 +1,4 @@
-package com.example.chambre.backend.utils.json;
+package com.example.roomie.backend.utils.json;
 
 import org.json.JSONArray;
 import org.json.JSONException;

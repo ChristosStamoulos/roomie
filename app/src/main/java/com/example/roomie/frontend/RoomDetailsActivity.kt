@@ -1,8 +1,8 @@
-package com.example.chambre.frontend
+package com.example.roomie.frontend
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.example.chambre.R
+import com.example.roomie.R
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import java.util.HashSet
