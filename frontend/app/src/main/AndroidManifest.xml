@@ -15,6 +15,9 @@
         <activity
             android:name=".frontend.AvailabilityDecorator"
             android:exported="false" />
+        <activity
+            android:name=".frontend.SearchActivity"
+            android:exported="false" />
         <activity android:name=".frontend.HomeScreenActivity"
             android:exported="true">
             <intent-filter>
