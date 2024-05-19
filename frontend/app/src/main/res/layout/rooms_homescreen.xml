@@ -3,19 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:background="@drawable/room_bg"
+    android:elevation="4dp"
+    android:layout_margin="5dp">
+
 
     <ImageView
         android:id="@+id/roomImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="135dp"
+        android:layout_height="125dp"
         android:layout_marginStart="26dp"
         android:layout_marginTop="13dp"
         android:layout_marginBottom="6dp"
+        android:src="@drawable/istockphoto_904608018_612x612_removebg_preview"
         app:layout_constraintBottom_toTopOf="@+id/roomArea"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name"
-        tools:srcCompat="@tools:sample/avatars" />
+        app:layout_constraintTop_toBottomOf="@+id/name" />
 
     <TextView
         android:id="@+id/name"
