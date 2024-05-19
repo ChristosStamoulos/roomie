@@ -17,7 +17,7 @@ import com.example.roomie.frontend.Adapters.RoomsAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 
-class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.OnRoomClickListener {
+class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
 
     var bottomNavigationView: BottomNavigationView? = null
     var recyclerView: RecyclerView? = null
@@ -55,7 +55,7 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.OnRoomClickListener
 
     }
 
-    override fun onRoomClick(room: Room?) {
+    override fun onRoomClick(room: Room, view: View) {
         var intent = Intent(this, RoomDetailsActivity::class.java)
         startActivity(intent)
     }

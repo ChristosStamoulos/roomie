@@ -15,8 +15,7 @@
         <activity
             android:name=".frontend.AvailabilityDecorator"
             android:exported="false" />
-        <activity
-            android:name=".frontend.RoomDetailsActivity"
+        <activity android:name=".frontend.HomeScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,6 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".frontend.RoomDetailsActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>
