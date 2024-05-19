@@ -1,0 +1,8 @@
+<!-- res/drawable/background_with_insets.xml -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetTop="0dp"
+    android:insetBottom="48dp"> <!-- Adjust the inset bottom value to include the height of your BottomNavigationView -->
+    <shape android:shape="rectangle">
+        <solid android:color="@color/offwhite" />
+    </shape>
+</inset>

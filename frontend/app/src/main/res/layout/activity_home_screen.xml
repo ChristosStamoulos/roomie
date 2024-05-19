@@ -7,7 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".frontend.HomeScreenActivity"
-    android:background="@color/white">
+    android:background="@drawable/backg"
+    android:fitsSystemWindows="true">
 
 
     <TextView
@@ -38,15 +39,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="4dp"
         android:background="@drawable/bottom_nav_bg"
-        app:elevation="20dp"
+        app:elevation="10dp"
         app:itemIconSize="25dp"
         app:itemIconTint="@drawable/bottom_nav_selector"
         app:itemRippleColor="@android:color/transparent"
         app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/recyclerView"
         app:menu="@menu/activity_menu" />
