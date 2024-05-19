@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/homeBtn"
+        android:icon="@drawable/ic_launcher_background"
+        android:title="Home"
+        />
+
+    <item android:id="@+id/trendbtn"
+        android:icon="@drawable/ic_launcher_background"
+        android:title="Trend"
+        />
+
+    <item android:id="@+id/reservbtn"
+        android:icon="@drawable/ic_launcher_background"
+        android:title="Account"
+        />
+    <item android:id="@+id/accountbtn"
+        android:icon="@drawable/ic_launcher_background"
+        android:title="Setting"
+        />
+
+
+</menu>
