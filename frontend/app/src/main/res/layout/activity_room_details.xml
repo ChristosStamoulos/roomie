@@ -1,110 +1,197 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <!-- Price and Booking Button Widget -->
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="67dp"
+        android:background="#FFFFFF">
 
-        <!-- Room Images -->
         <TextView
+            android:id="@+id/dollar_sign"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Photos"
-            android:textSize="20sp"
+            android:layout_marginStart="30dp"
+            android:layout_marginBottom="16dp"
+            android:text="$"
+            android:textColor="#FF5722"
+            android:textSize="18sp"
             android:textStyle="bold"
-            android:paddingBottom="8dp"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
-        <HorizontalScrollView
+        <TextView
+            android:id="@+id/price_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="16dp"
+            android:text="100"
+            android:textColor="#FF5722"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/dollar_sign" />
+
+        <TextView
+            android:id="@+id/night_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginBottom="16dp"
+            android:text="/ night"
+            android:textColor="#FF5722"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/price_value" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="Book Now"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F5F5F5">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="16dp">
+            android:orientation="vertical"
+            android:padding="16dp">
 
+            <!-- Photo Gallery -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp"
+                android:id="@+id/photo_scroll_view">
+
+                <LinearLayout
+                    android:id="@+id/photo_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Example Images -->
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="360dp"
+                            android:layout_height="250dp"
+                            android:layout_marginEnd="8dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/img" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="360dp"
+                            android:layout_height="250dp"
+                            android:layout_marginEnd="8dp"
+                            android:src="@drawable/img_1"
+                            android:scaleType="centerCrop" />
+                    </FrameLayout>
+
+                    <FrameLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:layout_width="360dp"
+                            android:layout_height="250dp"
+                            android:src="@drawable/img_2"
+                            android:scaleType="centerCrop" />
+                    </FrameLayout>
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <!-- Room Name -->
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/room_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="0dp"
+                    android:text="Maria's Room"
+                    android:textColor="#000000"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Room Description -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingTop="8dp">
+
+                <TextView
+                    android:id="@+id/room_description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="A cozy room with a beautiful view."
+                    android:textSize="16sp"
+                    android:textColor="#666666"
+                    android:paddingStart="0dp" />
+            </LinearLayout>
+
+
+            <!-- Room Availability Calendar -->
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:text="Availability"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp" />
 
-                <!-- Example Images -->
-                <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:layout_marginEnd="8dp"
-                    android:src="@drawable/istockphoto_1146701730_612x612"
-                    android:scaleType="centerCrop"/>
+            <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                android:id="@+id/calendar_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:mcv_showOtherDates="all"
+                android:paddingBottom="16dp" />
 
-                <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:layout_marginEnd="8dp"
-                    android:src="@drawable/istockphoto_1146701730_612x612"
-                    android:scaleType="centerCrop"/>
-
-                <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:src="@drawable/istockphoto_1146701730_612x612"
-                    android:scaleType="centerCrop"/>
-
-            </LinearLayout>
-        </HorizontalScrollView>
-
-        <!-- Room Name -->
-        <TextView
-            android:id="@+id/room_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Room Name"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:paddingBottom="8dp"/>
-
-        <!-- Room Description -->
-        <TextView
-            android:id="@+id/room_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Room Description"
-            android:textSize="16sp"
-            android:paddingBottom="8dp"/>
-
-        <!-- Room Price -->
-        <TextView
-            android:id="@+id/room_price"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Price: $100 per night"
-            android:textSize="18sp"
-            android:textStyle="italic"
-            android:paddingBottom="16dp"/>
-
-
-        <!-- Room Availability Calendar -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Availability"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:paddingBottom="8dp"/>
-
-         <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-            android:id="@+id/calendar_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:mcv_showOtherDates="all"
-            android:paddingBottom="16dp"/>
-
-        <!-- Book Button -->
-        <Button
-            android:id="@+id/book_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Book Now"
-            android:textSize="18sp"/>
-    </LinearLayout>
-</ScrollView>
+            <!-- Book Button -->
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#FF5722"
+                android:text="Book Now"
+                android:textSize="18sp"
+                android:textColor="#FFFFFF"
+                android:textAllCaps="false"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:elevation="4dp" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
