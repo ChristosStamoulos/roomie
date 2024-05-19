@@ -4,4 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="offwhite">#FEF5EA</color>
     <color name="snow">#FFFAFA</color>
+    <color name="mandarin">#FF5722</color>
+    <color name="grey">#666666</color>
+    <color name="light_black">#1F1F1F</color>
 </resources>
