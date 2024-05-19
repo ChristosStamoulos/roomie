@@ -11,17 +11,33 @@
     android:fitsSystemWindows="true">
 
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="80dp"
-        android:layout_height="37dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/app_name"
-        android:textSize="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/searchlinear"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="@drawable/bottom_nav_bg"
+        android:elevation="5dp"
+        android:paddingLeft="5dp"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="20dp">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/search_bar"
+            style="@style/MySearchView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:defaultQueryHint="Search..." />
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:background="@drawable/search_icon_bg"
+            android:padding="10dp"
+            android:src="@drawable/search_icon" />
+    </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -41,17 +57,120 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/activity_menu" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="409dp"
-        android:layout_height="604dp"
-        android:layout_marginStart="1dp"
-        android:layout_marginEnd="1dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="581dp"
+        android:layout_marginBottom="1dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/bottomNav"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/searchlinear"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/whenbtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="19dp"
+            android:background="@drawable/bottom_nav_bg"
+            android:gravity="center_vertical"
+            android:paddingLeft="50dp"
+            android:text="When"
+            android:textSize="16dp" />
+
+        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+            android:id="@+id/when_expanded"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bottom_nav_bg"
+            android:paddingBottom="16dp"
+            android:visibility="gone"
+            app:mcv_showOtherDates="all" />
+
+        <TextView
+            android:id="@+id/whobtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="19dp"
+            android:background="@drawable/bottom_nav_bg"
+            android:gravity="center_vertical"
+            android:paddingLeft="50dp"
+            android:text="Who"
+            android:textSize="16dp" />
+
+        <LinearLayout
+            android:id="@+id/who_expanded"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="19dp"
+            android:background="@drawable/bottom_nav_bg"
+            android:orientation="vertical"
+            android:paddingLeft="50dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/people_expanded"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center_vertical"
+                android:text="Who's coming?"
+                android:textSize="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/ppltxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="People"
+                    android:textSize="16dp" />
+
+                <Button
+                    android:id="@+id/minusppl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="19dp"
+                    android:background="@drawable/bottom_nav_bg"
+                    android:text="-"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/minppl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="19dp"
+                    android:text="0"
+                    android:textSize="16dp" />
+
+                <Button
+                    android:id="@+id/plusppl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="19dp"
+                    android:text="+"
+                    android:textSize="16dp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/starsbtn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_margin="19dp"
+            android:background="@drawable/bottom_nav_bg"
+            android:gravity="center_vertical"
+            android:paddingLeft="50dp"
+            android:text="Stars"
+            android:textSize="16dp" />
 
 
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

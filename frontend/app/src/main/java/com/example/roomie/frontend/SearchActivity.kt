@@ -2,27 +2,30 @@ package com.example.roomie.frontend
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.roomie.R
-import com.example.roomie.backend.domain.Room
-import com.example.roomie.frontend.Adapters.RoomsAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
+import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 
 class SearchActivity : AppCompatActivity() {
 
     var bottomNavigationView: BottomNavigationView? = null
+    var whenbtn: TextView? = null
+    var whobtn: TextView? = null
+    var when_expanded: MaterialCalendarView? = null
+    var who_expanded: LinearLayout? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_home_screen)
+        setContentView(R.layout.activity_search)
 
         bottomNavigationView = findViewById<View>(R.id.bottomNav) as BottomNavigationView?
 
@@ -45,10 +48,28 @@ class SearchActivity : AppCompatActivity() {
                         R.anim.slide_in// Animation for the exiting activity
                 )
                 startActivity(intent, options.toBundle())
-                //startActivity(intent)
             }
             item.setChecked(true)
             true
         })
+        whobtn = findViewById<TextView>(R.id.whobtn) as TextView?
+        who_expanded = findViewById(R.id.who_expanded)
+        whobtn!!.setOnClickListener {
+            if (who_expanded!!.visibility == View.VISIBLE){
+                who_expanded!!.visibility = View.GONE
+            }else{
+                who_expanded!!.visibility = View.VISIBLE
+            }
+        }
+
+        whenbtn = findViewById(R.id.whenbtn)
+        when_expanded = findViewById(R.id.when_expanded)
+        whenbtn!!.setOnClickListener {
+            if (when_expanded!!.visibility == View.VISIBLE){
+                when_expanded!!.visibility = View.GONE
+            }else{
+                when_expanded!!.visibility = View.VISIBLE
+            }
+        }
     }
 }

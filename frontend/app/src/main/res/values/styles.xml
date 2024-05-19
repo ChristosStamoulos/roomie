@@ -9,4 +9,10 @@
         <item name="android:activityOpenEnterAnimation">@anim/slide_in</item>
         <item name="android:activityOpenExitAnimation">@anim/slide_out</item>
     </style>
+
+    <style name="MySearchView" parent="Widget.AppCompat.SearchView.ActionBar">
+        <item name="searchHintIcon">@null</item>
+        <item name="queryBackground">@android:color/holo_red_dark</item>
+        <item name="searchIcon">@null</item>
+    </style>
 </resources>
