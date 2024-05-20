@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,8 +16,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.roomie"
         tools:targetApi="31">
+
+        <!-- Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBcoEr79BSCNAeru8sgl04fZ7KlBa6rZFM"/>
+
         <activity
-            android:name=".frontend.AvailabilityDecorator"
+            android:name=".frontend.utils.AvailabilityDecorator"
             android:exported="false" />
         <activity
             android:name=".frontend.SearchActivity"
