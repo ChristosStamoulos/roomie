@@ -16,4 +16,7 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="have_we_met_before">Already have an account?</string>
     <string name="ok">OK</string>
+    <string name="change_account_information">Change account info</string>
+    <string name="log_out">Log out</string>
+    <string name="your_personal_data">Your personal data:</string>
 </resources>
