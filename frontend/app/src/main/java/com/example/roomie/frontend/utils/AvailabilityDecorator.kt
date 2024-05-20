@@ -1,4 +1,4 @@
-package com.example.roomie.frontend
+package com.example.roomie.frontend.utils
 
 import android.graphics.Color
 import android.text.style.ForegroundColorSpan
