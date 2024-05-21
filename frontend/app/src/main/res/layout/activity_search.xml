@@ -10,37 +10,465 @@
     android:background="@drawable/backg"
     android:fitsSystemWindows="true">
 
-
-
-    <LinearLayout
-        android:id="@+id/searchlinear"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:background="@drawable/bottom_nav_bg"
-        android:elevation="5dp"
-        android:paddingLeft="5dp"
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="80dp"
+        android:layout_height="37dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/app_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="20dp">
+        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+        android:textSize="24dp"/>
 
-        <androidx.appcompat.widget.SearchView
-            android:id="@+id/search_bar"
-            style="@style/MySearchView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            app:defaultQueryHint="Search..." />
+    <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="607dp"
+        android:isScrollContainer="false"
+        app:layout_constraintBottom_toTopOf="@+id/bottomNav"
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <ImageView
-            android:layout_width="60dp"
-            android:layout_height="match_parent"
-            android:background="@drawable/search_icon_bg"
-            android:padding="10dp"
-            android:src="@drawable/search_icon" />
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="581dp"
+            android:layout_marginBottom="1dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toTopOf="@+id/bottomNav"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0">
+
+            <LinearLayout
+                android:id="@+id/wherebtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/bottom_nav_bg"
+                android:elevation="5dp"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                tools:layout_editor_absoluteX="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bottom_nav_bg"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="50dp"
+                    android:text="Where"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/wheretxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/search_icon_bg"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="Place"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/where_expanded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/bottom_nav_bg"
+                android:elevation="5dp"
+                android:orientation="vertical"
+                android:padding="40dp"
+                android:paddingLeft="5dp"
+                android:visibility="gone"
+                tools:layout_editor_absoluteX="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="Where are you going?"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/placeQuery"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:hint="Search Places"
+                    android:padding="10dp"
+                    android:textSize="16dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/skipWhere"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/white"
+                        android:text="Skip"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/nextWhere"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/mandarin"
+                        android:text="Next"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/whenbtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/bottom_nav_bg"
+                android:elevation="5dp"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                tools:layout_editor_absoluteX="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bottom_nav_bg"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="50dp"
+                    android:text="When"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/whentxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/search_icon_bg"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="Date"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/when_expanded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/bottom_nav_bg"
+                android:elevation="5dp"
+                android:orientation="vertical"
+                android:padding="40dp"
+                android:paddingLeft="5dp"
+                android:visibility="gone"
+                tools:layout_editor_absoluteX="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="When are you going?"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+                <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                    android:id="@+id/when_calendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bottom_nav_bg"
+                    android:paddingBottom="16dp"
+                    android:visibility="visible"
+                    app:mcv_showOtherDates="all" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/skipWhen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/white"
+                        android:text="Skip"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/nextWhen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/mandarin"
+                        android:text="Next"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/whobtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/bottom_nav_bg"
+                android:elevation="5dp"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                tools:layout_editor_absoluteX="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bottom_nav_bg"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="50dp"
+                    android:text="Who"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/whotxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/search_icon_bg"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="People"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/who_expanded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/bottom_nav_bg"
+                android:elevation="5dp"
+                android:orientation="vertical"
+                android:padding="40dp"
+                android:paddingLeft="5dp"
+                android:visibility="gone"
+                tools:layout_editor_absoluteX="20dp">
+
+                <TextView
+                    android:id="@+id/people_expanded"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center_vertical"
+                    android:text="Who's coming?"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/ppltxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="People"
+                        android:textSize="16dp" />
+
+                    <Button
+                        android:id="@+id/minusppl"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="19dp"
+                        android:backgroundTint="@color/white"
+                        android:text="-"
+                        android:textColor="@color/black"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/minppl"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textSize="16dp" />
+
+                    <Button
+                        android:id="@+id/plusppl"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="19dp"
+                        android:backgroundTint="@color/white"
+                        android:text="+"
+                        android:textColor="@color/black"
+                        android:textSize="16dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/skipWho"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/white"
+                        android:text="Skip"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/nextWho"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/mandarin"
+                        android:text="Next"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/starsbtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/bottom_nav_bg"
+                android:elevation="5dp"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                tools:layout_editor_absoluteX="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bottom_nav_bg"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="50dp"
+                    android:text="Stars"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/starstxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/search_icon_bg"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="stars"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/pricebtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/bottom_nav_bg"
+                android:elevation="5dp"
+                android:orientation="horizontal"
+                android:paddingLeft="5dp"
+                tools:layout_editor_absoluteX="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/bottom_nav_bg"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="50dp"
+                    android:text="Price"
+                    android:textSize="16dp" />
+
+                <TextView
+                    android:id="@+id/pricetxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/search_icon_bg"
+                    android:gravity="center_vertical"
+                    android:padding="10dp"
+                    android:text="Value"
+                    android:textSize="16dp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/price_expanded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/bottom_nav_bg"
+                android:elevation="5dp"
+                android:orientation="vertical"
+                android:padding="40dp"
+                android:paddingLeft="5dp"
+                android:visibility="gone"
+                tools:layout_editor_absoluteX="20dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center_vertical"
+                    android:text="How much?"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+                <SeekBar
+                    android:id="@+id/priceBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/skipPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/white"
+                        android:text="Skip"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/nextPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/mandarin"
+                        android:text="Next"
+                        android:textColor="@color/white" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-
         android:id="@+id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -57,120 +485,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/activity_menu" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="581dp"
-        android:layout_marginBottom="1dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/bottomNav"
-        app:layout_constraintEnd_toEndOf="@+id/searchlinear"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0">
-
-
-        <TextView
-            android:id="@+id/whenbtn"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="19dp"
-            android:background="@drawable/bottom_nav_bg"
-            android:gravity="center_vertical"
-            android:paddingLeft="50dp"
-            android:text="When"
-            android:textSize="16dp" />
-
-        <com.prolificinteractive.materialcalendarview.MaterialCalendarView
-            android:id="@+id/when_expanded"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bottom_nav_bg"
-            android:paddingBottom="16dp"
-            android:visibility="gone"
-            app:mcv_showOtherDates="all" />
-
-        <TextView
-            android:id="@+id/whobtn"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="19dp"
-            android:background="@drawable/bottom_nav_bg"
-            android:gravity="center_vertical"
-            android:paddingLeft="50dp"
-            android:text="Who"
-            android:textSize="16dp" />
-
-        <LinearLayout
-            android:id="@+id/who_expanded"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="19dp"
-            android:background="@drawable/bottom_nav_bg"
-            android:orientation="vertical"
-            android:paddingLeft="50dp"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/people_expanded"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:gravity="center_vertical"
-                android:text="Who's coming?"
-                android:textSize="16dp" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:id="@+id/ppltxt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="People"
-                    android:textSize="16dp" />
-
-                <Button
-                    android:id="@+id/minusppl"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="19dp"
-                    android:background="@drawable/bottom_nav_bg"
-                    android:text="-"
-                    android:textSize="16dp" />
-
-                <TextView
-                    android:id="@+id/minppl"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="19dp"
-                    android:text="0"
-                    android:textSize="16dp" />
-
-                <Button
-                    android:id="@+id/plusppl"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="19dp"
-                    android:text="+"
-                    android:textSize="16dp" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/starsbtn"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_margin="19dp"
-            android:background="@drawable/bottom_nav_bg"
-            android:gravity="center_vertical"
-            android:paddingLeft="50dp"
-            android:text="Stars"
-            android:textSize="16dp" />
-
-
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
