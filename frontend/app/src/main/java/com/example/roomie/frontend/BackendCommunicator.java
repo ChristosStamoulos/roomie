@@ -1,5 +1,7 @@
 package com.example.roomie.frontend;
 
+import android.util.Log;
+
 import com.example.roomie.backend.domain.Chunk;
 
 import org.json.JSONException;
@@ -28,9 +30,11 @@ public class BackendCommunicator {
 
     public void attemptConnection(){
         try {
-            this.socket = new Socket("192.168.1.3", 8080);
-            this.outputStream = new ObjectOutputStream(socket.getOutputStream());
-            this.inputStream = new ObjectInputStream(socket.getInputStream());
+
+            Log.d("BC", "yo");
+            this.socket = new Socket("192.168.1.3", 9090);
+
+            Log.d("BC", "yopo");
             this.connectionEstablished = true;
         } catch (IOException e) {
             System.out.println(e);
@@ -44,20 +48,28 @@ public class BackendCommunicator {
 
     public void sendMasterInfo(Chunk chunk) {
         if (!connectionEstablished) attemptConnection();
+        try {
+            this.outputStream = new ObjectOutputStream(socket.getOutputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         try {
+            Log.d("BC", "yoooooooo");
             this.outputStream.writeObject(chunk);
             this.outputStream.flush();
-            String answer = (String) this.inputStream.readObject();
         } catch (IOException e) {
             System.err.print(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
         }
     }
 
     public Chunk sendClientInfo(){
         Chunk masterInput = null;
+        try {
+            this.inputStream = new ObjectInputStream(socket.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         try{
             masterInput = (Chunk) this.inputStream.readObject();

@@ -14,15 +14,22 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.roomie.R
+import com.example.roomie.backend.domain.Chunk
 import com.example.roomie.backend.domain.Room
 import com.example.roomie.frontend.Adapters.RoomsAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.json.JSONObject
 
 class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
 
     var bottomNavigationView: BottomNavigationView? = null
     var recyclerView: RecyclerView? = null
+    var backendCommunicator: BackendCommunicator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,15 +63,40 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
         })
 
         recyclerView = findViewById<RecyclerView>(R.id.recyclerView)!!
-        val grid = GridLayoutManager(this,2)
+        val grid = GridLayoutManager(this, 2)
         recyclerView!!.layoutManager = grid
+        var rooms = ArrayList<Room>()
 
-        val rt = RoomTester()
-        val rooms = rt.getRooms()
+        /*
+        backendCommunicator = BackendCommunicator()
+        backendCommunicator!!.attemptConnection()
+        backendCommunicator!!.sendMasterInfo(Chunk("", 1, generateFilterAll()))
+
+        var masterInput = backendCommunicator!!.sendClientInfo()
+        val rooms = masterInput.data as ArrayList<Room>
+
         Log.d("HomeScreen", rooms.toString())
         val roomsAdapter = RoomsAdapter(rooms, this)
-        recyclerView!!.adapter = roomsAdapter
+        recyclerView!!.adapter = roomsAdapter*/
 
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+
+            val to = Chunk("", 1, generateFilterAll().toString())
+
+            val backendCommunicator = BackendCommunicator()
+            Log.d("HomeScreen1", rooms.toString())
+            backendCommunicator.sendMasterInfo(to)
+            Log.d("HomeScreen2", rooms.toString())
+            val answer = backendCommunicator.sendClientInfo()
+
+            rooms = answer.data as ArrayList<Room>
+
+            Log.d("HomeScreen", rooms.toString())
+
+        }
+        val roomsAdapter = RoomsAdapter(rooms, this)
+        recyclerView!!.adapter = roomsAdapter
     }
 
     override fun onRoomClick(room: Room, view: View) {
@@ -76,5 +108,20 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
         )
         startActivity(intent, options.toBundle())
         //startActivity(intent)
+    }
+
+    fun generateFilterAll(): JSONObject{
+        var filter = JSONObject()
+        filter.put("area", "default")
+        filter.put("startDate", "01/01/0001")
+        filter.put("finishDate", "01/01/0001")
+        filter.put("noOfPeople", 0)
+        filter.put("lowPrice", 0)
+        filter.put("highPrice", 0)
+        filter.put("stars", 0.0)
+
+        var f = JSONObject()
+        f.put("filters", filter)
+        return f
     }
 }
