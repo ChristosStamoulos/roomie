@@ -1,12 +1,11 @@
-package org.example.backend.utils.json;
+package com.example.roomie.backend.utils.json;
 
-import org.example.backend.domain.Room;
-import org.example.backend.utils.SimpleCalendar;
+import com.example.roomie.backend.domain.Room;
+import com.example.roomie.backend.utils.SimpleCalendar;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -19,7 +18,7 @@ import java.util.ArrayList;
  * This class is implemented to convert json objects, the rooms in data into objects of type Room.
  */
 public class JsonConverter {
-    private static final String path = "src/main/java/org/example/backend/data/data.json";
+    private static final String path = "src/main/java/com/example/roomie/backend/data/data.json";
     private ArrayList<Room> rooms;
 
     private void readFile() {

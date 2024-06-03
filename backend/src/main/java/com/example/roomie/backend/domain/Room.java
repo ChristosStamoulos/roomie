@@ -1,6 +1,6 @@
-package org.example.backend.domain;
+package com.example.roomie.backend.domain;
 
-import org.example.backend.utils.SimpleCalendar;
+import com.example.roomie.backend.utils.SimpleCalendar;
 
 import java.io.Serializable;
 import java.util.ArrayList;

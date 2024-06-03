@@ -1,4 +1,4 @@
-package org.example.backend.domain;
+package com.example.roomie.backend.domain;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class Reducer {
     public static void init() {
         // Load configuration from file
         Properties prop = new Properties();
-        String filename = "src/main/java/org/example/backend/config/reducer.config";
+        String filename = "src/main/java/com/example/roomie/backend/config/reducer.config";
 
         try (FileInputStream f = new FileInputStream(filename)) {
             prop.load(f);

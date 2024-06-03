@@ -1,8 +1,6 @@
-package org.example.backend.utils;
+package com.example.roomie.backend.utils;
 
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;

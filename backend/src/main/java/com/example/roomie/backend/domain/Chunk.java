@@ -1,4 +1,4 @@
-package org.example.backend.domain;
+package com.example.roomie.backend.domain;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;

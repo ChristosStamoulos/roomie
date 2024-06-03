@@ -1,12 +1,11 @@
-package org.example.backend.dummyUser;
+package com.example.roomie.backend.dummyUser;
 
-import org.example.backend.domain.Chunk;
-import org.example.backend.domain.Master;
-import org.example.backend.domain.Room;
-import org.example.backend.utils.Pair;
+import com.example.roomie.backend.domain.Chunk;
+import com.example.roomie.backend.domain.Room;
+import com.example.roomie.backend.utils.Pair;
+import com.example.roomie.backend.utils.SimpleCalendar;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.example.backend.utils.SimpleCalendar;
 
 import java.io.FileInputStream;
 import java.io.IOException;

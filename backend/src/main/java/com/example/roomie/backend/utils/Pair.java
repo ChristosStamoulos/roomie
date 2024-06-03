@@ -1,4 +1,4 @@
-package org.example.backend.utils;
+package com.example.roomie.backend.utils;
 
 import java.io.Serializable;
 

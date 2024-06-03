@@ -1,11 +1,9 @@
-package org.example.backend;
+package com.example.roomie.backend;
 
-import org.example.backend.domain.Chunk;
-import org.example.backend.domain.Master;
-import org.example.backend.domain.Room;
-import org.example.backend.utils.Pair;
-import org.example.backend.utils.SimpleCalendar;
-import org.example.backend.utils.json.JsonConverter;
+import com.example.roomie.backend.domain.Chunk;
+import com.example.roomie.backend.domain.Room;
+import com.example.roomie.backend.utils.Pair;
+import com.example.roomie.backend.utils.SimpleCalendar;
 import org.json.JSONException;
 import org.json.JSONObject;
 

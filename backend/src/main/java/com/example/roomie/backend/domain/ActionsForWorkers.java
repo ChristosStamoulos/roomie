@@ -1,7 +1,7 @@
-package org.example.backend.domain;
+package com.example.roomie.backend.domain;
 
-import org.example.backend.utils.Pair;
-import org.example.backend.utils.SimpleCalendar;
+import com.example.roomie.backend.utils.Pair;
+import com.example.roomie.backend.utils.SimpleCalendar;
 import org.json.JSONObject;
 
 import java.io.FileInputStream;
@@ -45,7 +45,7 @@ public class ActionsForWorkers extends Thread {
      */
     public void init(){
         Properties prop = new Properties();
-        String filename = "src/main/java/org/example/backend/config/worker.config";
+        String filename = "src/main/java/com/example/roomie/backend/config/worker.config";
 
         try (FileInputStream f = new FileInputStream(filename)) {
             prop.load(f);

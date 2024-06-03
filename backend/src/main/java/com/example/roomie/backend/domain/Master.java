@@ -1,7 +1,7 @@
-package org.example.backend.domain;
+package com.example.roomie.backend.domain;
 
-import org.example.backend.utils.Pair;
-import org.example.backend.utils.json.JsonConverter;
+import com.example.roomie.backend.utils.Pair;
+import com.example.roomie.backend.utils.json.JsonConverter;
 import org.json.JSONObject;
 
 import java.io.FileInputStream;
@@ -43,7 +43,7 @@ public class Master {
     public static void init() {
         // Load configuration from file
         Properties prop = new Properties();
-        String filename = "src/main/java/org/example/backend/config/master.config";
+        String filename = "src/main/java/com/example/roomie/backend/config/master.config";
 
         try (FileInputStream f = new FileInputStream(filename)) {
             prop.load(f);

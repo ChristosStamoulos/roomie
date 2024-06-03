@@ -1,17 +1,10 @@
-package org.example.backend.domain;
-
-import org.example.backend.utils.Pair;
-import org.example.backend.utils.SimpleCalendar;
-import org.example.backend.utils.json.JsonConverter;
-import org.json.JSONObject;
+package com.example.roomie.backend.domain;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -33,7 +26,7 @@ public class Worker {
      */
     public static void init() {
         Properties prop = new Properties();
-        String filename = "src/main/java/org/example/backend/config/worker.config";
+        String filename = "src/main/java/com/example/roomie/backend/config/worker.config";
 
         try (FileInputStream f = new FileInputStream(filename)) {
             prop.load(f);
