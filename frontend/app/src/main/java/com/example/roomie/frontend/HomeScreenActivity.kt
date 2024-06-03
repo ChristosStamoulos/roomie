@@ -94,7 +94,9 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
 
             Log.d("HomeScreen", rooms.toString())
 
+
         }
+        Log.d("RRRRRRRRRRRRRRRRRR", rooms.toString())
         val roomsAdapter = RoomsAdapter(rooms, this)
         recyclerView!!.adapter = roomsAdapter
     }
