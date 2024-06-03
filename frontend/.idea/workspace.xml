@@ -27,28 +27,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="38015f67-24e4-49cd-96eb-04ee9418e5c2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/ConsoleApp.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/ConsoleApp.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/config/encoding.config" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/config/encoding.config" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/config/master.config" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/config/master.config" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/config/reducer.config" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/config/reducer.config" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/config/user.config" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/config/user.config" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/config/worker.config" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/config/worker.config" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/data/data.json" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/data/data.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/data/sampleFilters.json" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/data/sampleFilters.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/data/sampleRoom.json" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/data/sampleRoom.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/domain/ActionsForWorkers.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/domain/ActionsForWorkers.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/domain/Chunk.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/domain/Chunk.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/domain/Master.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/domain/Master.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/domain/Reducer.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/domain/Reducer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/domain/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/domain/Room.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/domain/Worker.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/domain/Worker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/dummyUser/DummyUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/dummyUser/DummyUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/dummyUser/userData/user.config" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/dummyUser/userData/user.config" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/utils/Pair.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/utils/Pair.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/utils/SimpleCalendar.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/utils/SimpleCalendar.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/utils/json/JsonConverter.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/utils/json/JsonConverter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../backend/src/main/java/org/example/backend/utils/json/WriteJson.java" beforeDir="false" afterPath="$PROJECT_DIR$/../backend/src/main/java/com/example/roomie/backend/utils/json/WriteJson.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/roomie/frontend/HomeScreenActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/roomie/frontend/HomeScreenActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_home_screen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_home_screen.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

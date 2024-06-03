@@ -67,38 +67,26 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
         recyclerView!!.layoutManager = grid
         var rooms = ArrayList<Room>()
 
-        /*
-        backendCommunicator = BackendCommunicator()
-        backendCommunicator!!.attemptConnection()
-        backendCommunicator!!.sendMasterInfo(Chunk("", 1, generateFilterAll()))
-
-        var masterInput = backendCommunicator!!.sendClientInfo()
-        val rooms = masterInput.data as ArrayList<Room>
-
-        Log.d("HomeScreen", rooms.toString())
-        val roomsAdapter = RoomsAdapter(rooms, this)
-        recyclerView!!.adapter = roomsAdapter*/
-
+        //asynchronous routine
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
 
-            val to = Chunk("", 1, generateFilterAll().toString())
+            val chunk = Chunk("", 1, generateFilterAll().toString())
 
             val backendCommunicator = BackendCommunicator()
-            Log.d("HomeScreen1", rooms.toString())
-            backendCommunicator.sendMasterInfo(to)
-            Log.d("HomeScreen2", rooms.toString())
+            backendCommunicator.sendMasterInfo(chunk)
             val answer = backendCommunicator.sendClientInfo()
 
             rooms = answer.data as ArrayList<Room>
 
-            Log.d("HomeScreen", rooms.toString())
 
+            // Switch to the main thread to update the UI
+            withContext(Dispatchers.Main) {
+                val roomsAdapter = RoomsAdapter(rooms, this@HomeScreenActivity)
+                recyclerView!!.adapter = roomsAdapter
+            }
 
         }
-        Log.d("RRRRRRRRRRRRRRRRRR", rooms.toString())
-        val roomsAdapter = RoomsAdapter(rooms, this)
-        recyclerView!!.adapter = roomsAdapter
     }
 
     override fun onRoomClick(room: Room, view: View) {
