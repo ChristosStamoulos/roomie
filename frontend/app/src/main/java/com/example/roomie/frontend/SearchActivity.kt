@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.SeekBar
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +15,15 @@ import androidx.core.app.ActivityOptionsCompat
 import com.example.roomie.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
+import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
+import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
+import org.json.JSONObject
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
 class SearchActivity : AppCompatActivity() {
 
@@ -29,8 +38,13 @@ class SearchActivity : AppCompatActivity() {
     var where_expanded: LinearLayout? = null
     var stars_expanded: LinearLayout? = null
     var price_expanded: LinearLayout? = null
+    var calendarView: MaterialCalendarView? = null
     var location: String? = null
     var people = 0
+    private var startDate: CalendarDay? = null
+    private var finishDate: CalendarDay? = null
+    var minPrice = 0
+    var maxPrice = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,7 +99,7 @@ class SearchActivity : AppCompatActivity() {
         skipWhere.setOnClickListener{
             where_expanded!!.visibility = View.GONE
             wherebtn!!.visibility = View.VISIBLE
-            where_expanded!!.visibility = View.VISIBLE
+            when_expanded!!.visibility = View.VISIBLE
             whenbtn!!.visibility = View.GONE
         }
 
@@ -133,6 +147,32 @@ class SearchActivity : AppCompatActivity() {
             who_expanded!!.visibility = View.VISIBLE
             whobtn!!.visibility = View.GONE
         }
+
+        calendarView = findViewById(R.id.when_calendar)
+
+
+        calendarView!!.setOnDateChangedListener(object : OnDateSelectedListener {
+            override fun onDateSelected(widget: MaterialCalendarView, date: CalendarDay, selected: Boolean) {
+                if (startDate == null) {
+                    startDate = date
+                } else if (finishDate == null) {
+                    finishDate = date
+                    // Optionally sort dates if needed
+                    if (startDate!!.isAfter(finishDate!!)) {
+                        val temp = startDate
+                        startDate = finishDate
+                        startDate = temp
+                    }
+                    highlightSelectedRange()
+                } else {
+                    // Reset the selection
+                    startDate = date
+                    finishDate = null
+                    calendarView!!.clearSelection()
+                    calendarView!!.setDateSelected(date, true)
+                }
+            }
+        })
 
     }
 
@@ -200,8 +240,8 @@ class SearchActivity : AppCompatActivity() {
 
         var skipPrice = findViewById<Button>(R.id.skipPrice)
         skipPrice.setOnClickListener{
-            price_expanded!!.visibility = View.GONE
             pricebtn!!.visibility = View.VISIBLE
+            price_expanded!!.visibility = View.GONE
         }
 
         var nextPrice = findViewById<Button>(R.id.nextPrice)
@@ -209,12 +249,104 @@ class SearchActivity : AppCompatActivity() {
             //TO DO:
             who_expanded!!.visibility = View.GONE
             whobtn!!.visibility = View.VISIBLE
+            pricebtn!!.visibility = View.VISIBLE
+            price_expanded!!.visibility = View.GONE
+            val ptxt = findViewById<TextView>(R.id.pricetxt)
+            ptxt.text = minPrice.toString()
+
         }
 
-        //TO DO: price range
+        //TO DO: price range for max
+
+        val priceSeekBar = findViewById<SeekBar>(R.id.priceBar)
+
+        // Set the minimum and maximum values for the SeekBar (e.g., price range)
+        val minP = 0
+        val maxP = 1000
+        priceSeekBar.min = minP
+        priceSeekBar.max = maxP
+        var price = 0
+
+        // Set up a listener to handle changes in the SeekBar progress
+        priceSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                price = (minP + (maxP - minP) * (progress.toFloat() / priceSeekBar.max)).toInt()
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                // Handle when the user starts dragging the SeekBar
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                minPrice = price
+            }
+        })
     }
 
     fun starsButton(){
 
+    }
+
+    fun createJson() : JSONObject{
+        var filters = JSONObject()
+        var filter = JSONObject()
+        if (location.equals("")){
+            filter.put("area", "default")
+        }else{
+            filter.put("area", location)
+        }
+
+        if(startDate!=null){
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH)
+            val d = startDate!!.date.toLocalDate().format(formatter)
+            filter.put("startDate", d)
+        }else{
+            filter.put("startDate", "01/01/0001")
+        }
+
+        if(finishDate!=null){
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH)
+            val d = finishDate!!.date.toLocalDate().format(formatter)
+            filter.put("finishDate", d)
+        }else{
+            filter.put("finishDate", "01/01/0001")
+        }
+
+        filter.put("noOfPeople", people)
+
+        filter.put("lowPrice", 0)
+        filter.put("highPrice", 0)
+        filter.put("stars", 0.0)
+
+        filters.put("filters", filter)
+        return filters
+    }
+
+    private fun highlightSelectedRange() {
+        if (startDate != null && finishDate != null) {
+            val startdate = startDate!!.date.toLocalDate()
+            val enddate = finishDate!!.date.toLocalDate()
+            val datesInRange = generateDatesInRange(startdate, enddate)
+
+            datesInRange.forEach { date ->
+                val calendarDay = CalendarDay.from(date.year, date.monthValue - 1, date.dayOfMonth)
+                calendarView!!.setDateSelected(calendarDay, true)
+            }
+        }
+    }
+
+    private fun Date.toLocalDate(): LocalDate {
+        return this.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+    }
+
+
+    private fun generateDatesInRange(startDate: LocalDate, endDate: LocalDate): List<LocalDate> {
+        val datesInRange = mutableListOf<LocalDate>()
+        var currentDate = startDate
+        while (!currentDate.isAfter(endDate)) {
+            datesInRange.add(currentDate)
+            currentDate = currentDate.plusDays(1)
+        }
+        return datesInRange
     }
 }
