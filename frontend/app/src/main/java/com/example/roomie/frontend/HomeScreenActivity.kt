@@ -1,16 +1,12 @@
 package com.example.roomie.frontend
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.roomie.R
@@ -25,12 +21,23 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
+/** Home Screen Activity class
+ *
+ * @author Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
+ * @Details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024.
+ *
+ * This class is implemented to visualize an implemented home screen.
+ */
 class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
 
     var bottomNavigationView: BottomNavigationView? = null
     var recyclerView: RecyclerView? = null
     var backendCommunicator: BackendCommunicator? = null
 
+    /**
+     * Initializes the class's attributes
+     * @param savedInstanceState
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -89,6 +96,11 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
         }
     }
 
+    /**
+     * Starts Room Details activity and passes the corresponding room id.
+     * @param room
+     * @param view
+     */
     override fun onRoomClick(room: Room, view: View) {
         var intent = Intent(this, RoomDetailsActivity::class.java)
         val options = ActivityOptionsCompat.makeCustomAnimation(
@@ -96,10 +108,15 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
                 R.anim.expand_trans,  // Animation for the entering activity
                 R.anim.slide_out  // Animation for the exiting activity
         )
+        intent.putExtra("roomId", room.id)
         startActivity(intent, options.toBundle())
         //startActivity(intent)
     }
 
+    /**
+     * Generates the default values of a room,
+     * so all the rooms can be displayed in Home Screen.
+     */
     fun generateFilterAll(): JSONObject{
         var filter = JSONObject()
         filter.put("area", "default")
