@@ -164,11 +164,11 @@ public class Reducer {
         int id = chunks.get(0).getSegmentID();
         int type = chunks.get(0).getSegmentID();
 
-        ArrayList<Pair<Room, ArrayList<Byte[]>>> workerChunk = new ArrayList<>();
-        ArrayList<Pair<Room, ArrayList<Byte[]>>> finalList = new ArrayList<>();
+        ArrayList<Pair<Room, ArrayList<byte[]>>> workerChunk = new ArrayList<>();
+        ArrayList<Pair<Room, ArrayList<byte[]>>> finalList = new ArrayList<>();
         // Iterate over each chunk to extract the list of rooms and add them to the final list
         for (int i = 0; i < expectedChunks; i++) {
-            workerChunk = (ArrayList<Pair<Room, ArrayList<Byte[]>>>) chunks.get(i).getData();
+            workerChunk = (ArrayList<Pair<Room, ArrayList<byte[]>>>) chunks.get(i).getData();
             for (int j = 0; j < workerChunk.size(); j++) {
                 finalList.add(workerChunk.get(j));
             }

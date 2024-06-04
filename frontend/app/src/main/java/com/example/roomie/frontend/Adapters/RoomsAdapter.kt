@@ -1,6 +1,7 @@
 package com.example.roomie.frontend.Adapters
 
-import android.util.Log
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +10,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.roomie.R
 import com.example.roomie.backend.domain.Room
-import java.util.Locale
+import com.example.roomie.backend.utils.Pair
 
-class RoomsAdapter (private val roomList: ArrayList<Room>, private val listener: onRoomClickListener) : RecyclerView.Adapter<RoomsAdapter.RoomViewHolder>() {
+class RoomsAdapter (private val roomList: ArrayList<Pair<Room, ArrayList<ByteArray>>>, private val listener: onRoomClickListener) : RecyclerView.Adapter<RoomsAdapter.RoomViewHolder>() {
     interface onRoomClickListener {
         fun onRoomClick(room: Room, view: View)
     }
@@ -42,15 +43,15 @@ class RoomsAdapter (private val roomList: ArrayList<Room>, private val listener:
             roomStars = itemView.findViewById(R.id.roomStars)
         }
 
-        fun bindRoom(room: Room, listener: onRoomClickListener) {
+        fun bindRoom(room: Pair<Room, ArrayList<ByteArray>>, listener: onRoomClickListener) {
             roomName = itemView.findViewById(R.id.name)
             roomImage = itemView.findViewById(R.id.roomImage)
-            roomName.text = room.name
-            roomArea.text = room.area
-            roomStars.text = room.rating.toString()
-            /*val resId = itemView.resources.getIdentifier(room.name.lowercase(Locale.getDefault()), "drawable", itemView.context.packageName)
-
-            // Set the image based on the resource identifier
+            roomName.text = room.key.name
+            roomArea.text = room.key.area
+            roomStars.text = room.key.rating.toString()
+            var bitmap: Bitmap? = BitmapFactory.decodeByteArray(room.value!![0], 0, room.value!![0].size)
+            roomImage!!.setImageBitmap(bitmap)
+            /* Set the image based on the resource identifier
             if (resId != 0) {
                 roomImage!!.setImageResource(resId)
             }*/
@@ -68,7 +69,7 @@ class RoomsAdapter (private val roomList: ArrayList<Room>, private val listener:
                                     .scaleY(1.0f)
                                     .setDuration(100)
                                     .withEndAction {
-                                        listener.onRoomClick(room, it)
+                                        listener.onRoomClick(room.key, it)
                                     }
                                     .start()
                         }

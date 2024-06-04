@@ -2,6 +2,7 @@ package com.example.roomie.frontend
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.roomie.R
 import com.example.roomie.backend.domain.Chunk
 import com.example.roomie.backend.domain.Room
+import com.example.roomie.backend.utils.Pair
 import com.example.roomie.frontend.Adapters.RoomsAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
@@ -72,7 +74,7 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
         recyclerView = findViewById<RecyclerView>(R.id.recyclerView)!!
         val grid = GridLayoutManager(this, 2)
         recyclerView!!.layoutManager = grid
-        var rooms = ArrayList<Room>()
+        var rooms: ArrayList<Pair<Room, ArrayList<ByteArray>>>
 
         //asynchronous routine
         val scope = CoroutineScope(Dispatchers.IO)
@@ -83,8 +85,8 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
             val backendCommunicator = BackendCommunicator()
             backendCommunicator.sendMasterInfo(chunk)
             val answer = backendCommunicator.sendClientInfo()
-
-            rooms = answer.data as ArrayList<Room>
+            Log.d("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", answer.toString())
+            rooms = answer.data as ArrayList<Pair<Room, ArrayList<ByteArray>>>
 
 
             // Switch to the main thread to update the UI
