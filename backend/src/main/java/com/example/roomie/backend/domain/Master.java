@@ -283,6 +283,17 @@ public class Master {
                     e.printStackTrace();
                 }
                 break;
+            case 9:         //for frontend
+                int id = (Integer) chunk.getData();
+                int w = hashRequestToWorker(id, numOfWorkers);
+                try{
+                    Chunk c = new Chunk("i", 9, id);
+                    workers.get(w).writeObject(c);
+                    workers.get(w).flush();
+                }catch(IOException e){
+                    e.printStackTrace();
+                }
+                break;
             // Default case: Throw an exception for unexpected request types
             default:
                 throw new IllegalStateException("Unexpected value: " + type);

@@ -90,24 +90,36 @@ public class Reducer {
             ObjectInputStream in = new ObjectInputStream(workerSocket.getInputStream());
             while (true) {
                 Chunk chunk = (Chunk) in.readObject(); // Read chunks sent by the Worker
-                // Add the chunk to the map based on its ID
-                synchronized (chunkMap) {
-                    int chunkId = chunk.getSegmentID();
-                    if (!chunkMap.containsKey(chunkId)) {
-                        chunkMap.put(chunkId, new ArrayList<>());
-                    }
-                    chunkMap.get(chunkId).add(chunk);
 
-                    // Check if all expected chunks are received
-                    if (chunkMap.get(chunkId).size() == expectedChunks) {
-                        ArrayList<Chunk> chunks = chunkMap.get(chunkId);
-                        // Merge chunks into a single chunk
-                        Chunk mergedChunk = mergeChunks(chunks);
-                        // Send merged chunk to the Master
-                        sentToMaster(mergedChunk);
-                        // Clear the chunks from the map
-                        chunkMap.remove(chunkId); // Clear the chunks from the map
-                    }
+                switch(chunk.getTypeID()) {
+
+                    case 1,7:
+                    // Add the chunk to the map based on its ID
+                        synchronized (chunkMap) {
+                            int chunkId = chunk.getSegmentID();
+                            if (!chunkMap.containsKey(chunkId)) {
+                                chunkMap.put(chunkId, new ArrayList<>());
+                            }
+                            chunkMap.get(chunkId).add(chunk);
+
+                            // Check if all expected chunks are received
+                            if (chunkMap.get(chunkId).size() == expectedChunks) {
+                                ArrayList<Chunk> chunks = chunkMap.get(chunkId);
+                                // Merge chunks into a single chunk
+                                Chunk mergedChunk = mergeChunks(chunks);
+                                // Send merged chunk to the Master
+                                sentToMaster(mergedChunk);
+                                // Clear the chunks from the map
+                                chunkMap.remove(chunkId); // Clear the chunks from the map
+                            }
+                        }
+                        break;
+                    case 8:
+                        //To Do
+                        break;
+                    case 9:
+                        sentToMaster(chunk);
+                        break;
                 }
             }
         } catch (IOException | ClassNotFoundException e) {

@@ -111,6 +111,12 @@ public class ActionsForWorkers extends Thread {
                 d.setSegmentID(data.getSegmentID());
                 sendReducer(d);
                 break;
+            case 9:
+                int rid = (Integer) chunk.getData();
+                Chunk ch = new Chunk(chunk.getUserID(), chunk.getTypeID(), findRoombyId(rid));
+                ch.setSegmentID(chunk.getSegmentID());
+                sendReducer(ch);
+                break;
             default:
                 System.out.println("Invalid request type");
         }
@@ -330,5 +336,20 @@ public class ActionsForWorkers extends Thread {
             i++;
         }
         return new Pair<Boolean, Integer>(false, 0);
+    }
+
+    /**
+     * Find a room by its id
+     *
+     * @param id the room id
+     * @return  an Object Room
+     */
+    private synchronized Room findRoombyId(int id){
+        for(Room r :rooms){
+            if(r.getId() == id){
+                return r;
+            }
+        }
+        return null;
     }
 }
