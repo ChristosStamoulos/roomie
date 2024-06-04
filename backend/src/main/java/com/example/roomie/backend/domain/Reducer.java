@@ -1,5 +1,7 @@
 package com.example.roomie.backend.domain;
 
+import com.example.roomie.backend.utils.Pair;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -162,11 +164,11 @@ public class Reducer {
         int id = chunks.get(0).getSegmentID();
         int type = chunks.get(0).getSegmentID();
 
-        ArrayList<Room> workerChunk = new ArrayList<>();
-        ArrayList<Room> finalList = new ArrayList<>();
+        ArrayList<Pair<Room, ArrayList<Byte[]>>> workerChunk = new ArrayList<>();
+        ArrayList<Pair<Room, ArrayList<Byte[]>>> finalList = new ArrayList<>();
         // Iterate over each chunk to extract the list of rooms and add them to the final list
         for (int i = 0; i < expectedChunks; i++) {
-            workerChunk = (ArrayList<Room>) chunks.get(i).getData();
+            workerChunk = (ArrayList<Pair<Room, ArrayList<Byte[]>>>) chunks.get(i).getData();
             for (int j = 0; j < workerChunk.size(); j++) {
                 finalList.add(workerChunk.get(j));
             }

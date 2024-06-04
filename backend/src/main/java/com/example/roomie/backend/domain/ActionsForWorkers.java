@@ -4,10 +4,7 @@ import com.example.roomie.backend.utils.Pair;
 import com.example.roomie.backend.utils.SimpleCalendar;
 import org.json.JSONObject;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -82,7 +79,7 @@ public class ActionsForWorkers extends Thread {
     private void processRequest(int type, Chunk chunk) {
         switch (type) {
             case 1:     //user's request, searches for rooms with given filters
-                ArrayList<Room> filteredRooms = findRoomByFilter(new JSONObject( (String)data.getData()));
+                ArrayList<Pair<Room, ArrayList<Byte[]>>> filteredRooms = findRoomByFilter(new JSONObject( (String)data.getData()));
                 Chunk c = new Chunk(data.getUserID(), data.getTypeID(), filteredRooms);
                 c.setSegmentID(data.getSegmentID());
                 sendReducer(c);
@@ -167,9 +164,9 @@ public class ActionsForWorkers extends Thread {
      * @param filter    the filter in json format
      * @return          an ArrayList of objects Room
      */
-    private ArrayList<Room> findRoomByFilter(JSONObject filter){
+    private ArrayList<Pair<Room, ArrayList<Byte[]>>> findRoomByFilter(JSONObject filter){
         filter = filter.getJSONObject("filters");
-        ArrayList<Room> mrooms = new ArrayList<Room>();
+        ArrayList<Pair<Room, ArrayList<Byte[]>>> mrooms = new ArrayList<>();
 
         String area = ((String) filter.get("area")).toLowerCase();
         int lowPrice = (Integer) filter.get("lowPrice");
@@ -226,7 +223,8 @@ public class ActionsForWorkers extends Thread {
                 }
             }
             if(filterCounter == 7){
-                mrooms.add(r);
+                ArrayList<Byte[]> imgs = findImages(r.getId());
+                mrooms.add(new Pair<Room, ArrayList<Byte[]>>(r, imgs));
             }
         }
         return mrooms;
@@ -265,8 +263,6 @@ public class ActionsForWorkers extends Thread {
                 }
             }
         }
-
-
     }
 
     /**
@@ -351,5 +347,26 @@ public class ActionsForWorkers extends Thread {
             }
         }
         return null;
+    }
+
+    /**
+     * Finds the images of a room and returns them as a list of bytes
+     *
+     * @param id the room id
+     * @return  an ArrayList of Byte[] Objects
+     */
+    private synchronized ArrayList<Byte[]> findImages(int id){
+        ArrayList<Byte[]> imgs = new ArrayList<>();
+        Room r = findRoombyId(id);
+        for(String img: r.getRoomImage()){
+            File imageFile = new File(img);
+            byte[] byteArray = new byte[(int) img.length()];
+            try (FileInputStream fileInputStream = new FileInputStream(imageFile)) {
+                fileInputStream.read(byteArray);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return imgs;
     }
 }

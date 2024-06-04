@@ -19,7 +19,7 @@ public class Room implements Serializable {
     private double lon;                     //the longitude of the room
     private String description;             //the description of the room
     private int price;                      //the price of a room for a night
-    private String roomImage;               //a path to the room's image
+    private ArrayList<String> roomImage;    //a path to the room's image
     private int noOfReviews;                //the number of reviews
     private int noOfRooms;                  //the number of rooms the room has
     private int noOfBathrooms;              //the number of bathrooms the room has
@@ -269,7 +269,7 @@ public class Room implements Serializable {
      *
      * @param roomImage the path
      */
-    public void setRoomImage(String roomImage) {
+    public void setRoomImage(ArrayList<String> roomImage) {
         this.roomImage = roomImage;
     }
 
@@ -278,7 +278,7 @@ public class Room implements Serializable {
      *
      * @return  the path
      */
-    public String getRoomImage() {
+    public ArrayList<String> getRoomImage() {
         return roomImage;
     }
 
