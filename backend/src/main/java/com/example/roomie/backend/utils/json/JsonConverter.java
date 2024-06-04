@@ -3,6 +3,7 @@ package com.example.roomie.backend.utils.json;
 import com.example.roomie.backend.domain.Room;
 import com.example.roomie.backend.utils.SimpleCalendar;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
  * This class is implemented to convert json objects, the rooms in data into objects of type Room.
  */
 public class JsonConverter {
-    private static final String path = "src/main/java/com/example/roomie/backend/data/data.json";
+    private static final String path = "src/main/java/org/example/backend/data/data.json";
     private ArrayList<Room> rooms;
 
     private void readFile() {
@@ -34,6 +35,8 @@ public class JsonConverter {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -45,30 +48,39 @@ public class JsonConverter {
      */
     public Room convertToRoom(JSONObject jsonRoom){
         Room room = new Room();
-        room.setArea((String) jsonRoom.get("area"));
-        room.setName((String) jsonRoom.get("roomName"));
-        room.setPrice(Double.parseDouble((String) jsonRoom.get("price")));
-        room.setRating(Double.parseDouble((String) jsonRoom.get("stars")));
-        room.setNoOfReviews(Integer.parseInt((String) jsonRoom.get("noOfReviews")));
-        room.setNoOfPersons(Integer.parseInt((String) jsonRoom.get("noOfPersons")));
-        room.setRoomImage((String) jsonRoom.get("roomImage"));
-        room.setMid(Integer.parseInt((String) jsonRoom.get("mid")));
-        JSONArray jsonAvailableDates = new JSONArray( jsonRoom.getJSONArray("availableDates"));
-        ArrayList<SimpleCalendar> avDates = new ArrayList<SimpleCalendar>();
-        for(int i = 0; i<jsonAvailableDates.length(); i++){
-            JSONObject date = (JSONObject) jsonAvailableDates.get(i);
-            avDates.add(new SimpleCalendar((String) date.get("date")));
-        }
-        JSONArray jsonReservationDates = new JSONArray( jsonRoom.getJSONArray("reservationDates"));
-        ArrayList<SimpleCalendar> resDates = new ArrayList<SimpleCalendar>();
-        for(int i = 0; i<jsonReservationDates.length(); i++){
-            JSONObject date = (JSONObject) jsonReservationDates.get(i);
-            resDates.add(new SimpleCalendar((String) date.get("date")));
-        }
-        room.setAvailableDates(avDates);
-        room.setReservationDates(resDates);
+        try {
+            room.setArea((String) jsonRoom.get("area"));
+            room.setLat(Double.parseDouble((String) jsonRoom.get("lat")));
+            room.setLon(Double.parseDouble((String) jsonRoom.get("lon")));
+            room.setDesc((String) jsonRoom.get("description"));
+            room.setName((String) jsonRoom.get("roomName"));
+            room.setPrice(Integer.parseInt((String) jsonRoom.get("price")));
+            room.setRating(Double.parseDouble((String) jsonRoom.get("stars")));
+            room.setNoOfReviews(Integer.parseInt((String) jsonRoom.get("noOfReviews")));
+            room.setNoOfPersons(Integer.parseInt((String) jsonRoom.get("noOfPersons")));
+            room.setNoOfRooms(Integer.parseInt((String) jsonRoom.get("noOfRooms")));
+            room.setNoOfBathrooms(Integer.parseInt((String) jsonRoom.get("noOfBathrooms")));
+            room.setRoomImage((String) jsonRoom.get("roomImage"));
+            room.setMid(Integer.parseInt((String) jsonRoom.get("mid")));
+            JSONArray jsonAvailableDates = new JSONArray( jsonRoom.getJSONArray("availableDates"));
+            ArrayList<SimpleCalendar> avDates = new ArrayList<SimpleCalendar>();
+            for(int i = 0; i<jsonAvailableDates.length(); i++){
+                JSONObject date = (JSONObject) jsonAvailableDates.get(i);
+                avDates.add(new SimpleCalendar((String) date.get("date")));
+            }
+            JSONArray jsonReservationDates = new JSONArray( jsonRoom.getJSONArray("reservationDates"));
+            ArrayList<SimpleCalendar> resDates = new ArrayList<SimpleCalendar>();
+            for(int i = 0; i<jsonReservationDates.length(); i++){
+                JSONObject date = (JSONObject) jsonReservationDates.get(i);
+                resDates.add(new SimpleCalendar((String) date.get("date")));
+            }
+            room.setAvailableDates(avDates);
+            room.setReservationDates(resDates);
 
-        return room;
+            return room;
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
