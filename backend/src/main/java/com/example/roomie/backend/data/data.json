@@ -1,7 +1,9 @@
 {
   "Rooms":[
-    {"area":"Athens","price":"34","roomImage":"lovers.png","noOfReviews":"12","mid":"1","stars":"4.4",
-      "noOfPersons":"5","roomName":"lover's room",
+    {"area":"Athens","latitude": "37.850294","longitude": "23.750200",
+      "description": "An airy, bright and next to the sea villa that promises to offer notes of hospitality and relaxation to its visitors",
+      "price":"34", "roomImage":"haris.png","noOfReviews":"12","mid":"1","stars":"4.4",
+      "noOfPersons":"5","noOfRooms": "6","noOfBathrooms": "3","roomName":"villa haris",
       "availableDates": [
         {"date": "19/04/2024"},
         {"date": "20/04/2024"},
@@ -15,8 +17,10 @@
         {"date": "22/04/2024"},
         {"date": "27/07/2024"}
       ]},
-    {"area":"Crete","price":"40","roomImage":"eleni.png","noOfReviews":"3","mid":"2","stars":"13",
-      "noOfPersons":"3","roomName":"eleni's rooms",
+    {"area":"Elafonisi","latitude": "35.270989","longitude": "23.544091",
+      "description": "A room right next to the beautiful, deep blue, Elafonisos sea, located southwest of Crete.",
+      "price":"40","roomImage":"eleni.png","noOfReviews":"3","mid":"2","stars":"4.3",
+      "noOfPersons":"3","noOfRooms": "4","noOfBathrooms": "2","roomName":"eleni's rooms",
       "availableDates": [
         {"date": "19/05/2024"},
         {"date": "20/05/2024"},

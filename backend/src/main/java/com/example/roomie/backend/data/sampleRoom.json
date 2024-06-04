@@ -1,13 +1,18 @@
 {
   "room": {
     "mid": "1",
-    "area": "athens",
+    "area": "Rethymno",
+    "latitude": "35.402688",
+    "longitude": "24.959326",
+    "description": "A near the sea room that promises to let the visitor escape reality.",
     "price": "24",
-    "roomImage": "popo.png",
+    "roomImage": "lupin.png",
     "noOfReviews": "23",
     "stars": "3.4",
     "noOfPersons": "2",
-    "roomName": "lover's room",
+    "noOfRooms": "2",
+    "noOfBathrooms": "1",
+    "roomName": "Lupin Fodele",
     "availableDates": [
       {"date": "19/04/2024"},
       {"date": "20/04/2024"},
