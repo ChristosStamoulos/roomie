@@ -79,7 +79,7 @@ public class ActionsForWorkers extends Thread {
     private void processRequest(int type, Chunk chunk) {
         switch (type) {
             case 1:     //user's request, searches for rooms with given filters
-                ArrayList<Pair<Room, ArrayList<Byte[]>>> filteredRooms = findRoomByFilter(new JSONObject( (String)data.getData()));
+                ArrayList<Pair<Room, ArrayList<byte[]>>> filteredRooms = findRoomByFilter(new JSONObject( (String)data.getData()));
                 Chunk c = new Chunk(data.getUserID(), data.getTypeID(), filteredRooms);
                 c.setSegmentID(data.getSegmentID());
                 sendReducer(c);
@@ -110,7 +110,7 @@ public class ActionsForWorkers extends Thread {
                 break;
             case 9:
                 int rid = (Integer) chunk.getData();
-                Chunk ch = new Chunk(chunk.getUserID(), chunk.getTypeID(), new Pair<Room, ArrayList<Byte[]>>(findRoombyId(rid), findImages(rid)));
+                Chunk ch = new Chunk(chunk.getUserID(), chunk.getTypeID(), new Pair<Room, ArrayList<byte[]>>(findRoombyId(rid), findImages(rid)));
                 ch.setSegmentID(chunk.getSegmentID());
                 sendReducer(ch);
                 break;
@@ -164,9 +164,9 @@ public class ActionsForWorkers extends Thread {
      * @param filter    the filter in json format
      * @return          an ArrayList of objects Room
      */
-    private ArrayList<Pair<Room, ArrayList<Byte[]>>> findRoomByFilter(JSONObject filter){
+    private ArrayList<Pair<Room, ArrayList<byte[]>>> findRoomByFilter(JSONObject filter){
         filter = filter.getJSONObject("filters");
-        ArrayList<Pair<Room, ArrayList<Byte[]>>> mrooms = new ArrayList<>();
+        ArrayList<Pair<Room, ArrayList<byte[]>>> mrooms = new ArrayList<>();
 
         String area = ((String) filter.get("area")).toLowerCase();
         int lowPrice = (Integer) filter.get("lowPrice");
@@ -223,8 +223,8 @@ public class ActionsForWorkers extends Thread {
                 }
             }
             if(filterCounter == 7){
-                ArrayList<Byte[]> imgs = findImages(r.getId());
-                mrooms.add(new Pair<Room, ArrayList<Byte[]>>(r, imgs));
+                ArrayList<byte[]> imgs = findImages(r.getId());
+                mrooms.add(new Pair<Room, ArrayList<byte[]>>(r, imgs));
             }
         }
         return mrooms;
@@ -355,18 +355,20 @@ public class ActionsForWorkers extends Thread {
      * @param id the room id
      * @return  an ArrayList of Byte[] Objects
      */
-    private synchronized ArrayList<Byte[]> findImages(int id){
-        ArrayList<Byte[]> imgs = new ArrayList<>();
+    private synchronized ArrayList<byte[]> findImages(int id){
+        ArrayList<byte[]> imgs = new ArrayList<>();
         Room r = findRoombyId(id);
         String path = "assets/";
         for(String img: r.getRoomImage()){
             File imageFile = new File(path+img);
             byte[] byteArray = new byte[(int) img.length()];
+            System.out.println(byteArray);
             try (FileInputStream fileInputStream = new FileInputStream(imageFile)) {
                 fileInputStream.read(byteArray);
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            imgs.add(byteArray);
         }
         return imgs;
     }
