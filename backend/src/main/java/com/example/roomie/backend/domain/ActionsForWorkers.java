@@ -110,7 +110,7 @@ public class ActionsForWorkers extends Thread {
                 break;
             case 9:
                 int rid = (Integer) chunk.getData();
-                Chunk ch = new Chunk(chunk.getUserID(), chunk.getTypeID(), findImages(rid));
+                Chunk ch = new Chunk(chunk.getUserID(), chunk.getTypeID(), new Pair<Room, ArrayList<Byte[]>>(findRoombyId(rid), findImages(rid)));
                 ch.setSegmentID(chunk.getSegmentID());
                 sendReducer(ch);
                 break;
