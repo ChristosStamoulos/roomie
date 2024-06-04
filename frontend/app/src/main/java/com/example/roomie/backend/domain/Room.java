@@ -15,9 +15,14 @@ import java.util.Objects;
 public class Room implements Serializable {
     private String name;                    //the name of the room
     private String area;                    //the area the room is located
-    private double price;                   //the price of a room for a night
+    private double lat;                     //the latitude of the room
+    private double lon;                     //the longitude of the room
+    private String description;             //the description of the room
+    private int price;                      //the price of a room for a night
     private String roomImage;               //a path to the room's image
     private int noOfReviews;                //the number of reviews
+    private int noOfRooms;                  //the number of rooms the room has
+    private int noOfBathrooms;              //the number of bathrooms the room has
     private int noOfPersons;                //the number of people the room can host
     private double rating;                  //the total rating of the room
     private int mid;                        //manager's id
@@ -94,7 +99,7 @@ public class Room implements Serializable {
     /**
      * Sets the area of the room
      *
-     * @param area  the area of the room
+     * @param area the area of the room
      */
     public void setArea(String area) {
         this.area = area;
@@ -110,11 +115,53 @@ public class Room implements Serializable {
     }
 
     /**
+     * Sets the latitude of the room
+     *
+     * @param lat the latitude of the room
+     */
+    public void setLat(double lat) { this.lat = lat; }
+
+    /**
+     * Gets the latitude of the room
+     *
+     * @return the latitude
+     */
+    public double getLat() { return lat;}
+
+    /**
+     * Sets the longitude of the room
+     *
+     * @param lon the latitude of the room
+     */
+    public void setLon(double lon) { this.lon = lon; }
+
+    /**
+     * Gets the longitude of the room
+     *
+     * @return the longitude
+     */
+    public double getLon() { return lon;}
+
+    /**
+     * Sets the description of the room
+     *
+     * @param description the description of the room
+     */
+    public void setDesc(String description) { this.description = description; }
+
+    /**
+     * Gets the description of the room
+     *
+     * @return the description
+     */
+    public String getDesc() { return description;}
+
+    /**
      * Sets the price of the room for one night
      *
      * @param price the price
      */
-    public void setPrice(double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 
@@ -161,6 +208,42 @@ public class Room implements Serializable {
      */
     public int getNoOfPersons() {
         return noOfPersons;
+    }
+
+    /**
+     * Sets the number of rooms the room has
+     *
+     * @param noOfRooms the number of rooms
+     */
+    public void setNoOfRooms(int noOfRooms) {
+        this.noOfRooms = noOfRooms;
+    }
+
+    /**
+     * Gets the number of rooms the room has
+     *
+     * @return the number of rooms
+     */
+    public int getNoOfRooms() {
+        return noOfRooms;
+    }
+
+    /**
+     * Sets the number of bathrooms the room has
+     *
+     * @param noOfBathrooms the number of bathrooms
+     */
+    public void setNoOfBathrooms(int noOfBathrooms) {
+        this.noOfBathrooms = noOfBathrooms;
+    }
+
+    /**
+     * Gets the number of bathrooms the room has
+     *
+     * @return  the number of bathrooms
+     */
+    public int getNoOfBathrooms() {
+        return noOfBathrooms;
     }
 
     /**
@@ -301,9 +384,14 @@ public class Room implements Serializable {
     public String toString() {
         return "Room name: " + name + '\n' +
                 "area: " + area + '\n' +
+                "latitude: " + lat + '\n' +
+                "longitude: " + lon + '\n' +
+                "description: " + description + '\n' +
                 "price: " + price + " per night\n" +
                 "noOfReviews: " + noOfReviews +
                 "\nnoOfPersons: " + noOfPersons +
+                "\nnoOfRooms: " + noOfRooms +
+                "\nnoOfBathrooms: " + noOfBathrooms +
                 "\nrating:" + rating;
     }
 }
