@@ -358,8 +358,9 @@ public class ActionsForWorkers extends Thread {
     private synchronized ArrayList<Byte[]> findImages(int id){
         ArrayList<Byte[]> imgs = new ArrayList<>();
         Room r = findRoombyId(id);
+        String path = "assets/";
         for(String img: r.getRoomImage()){
-            File imageFile = new File(img);
+            File imageFile = new File(path+img);
             byte[] byteArray = new byte[(int) img.length()];
             try (FileInputStream fileInputStream = new FileInputStream(imageFile)) {
                 fileInputStream.read(byteArray);

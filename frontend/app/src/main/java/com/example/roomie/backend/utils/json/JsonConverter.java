@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * This class is implemented to convert json objects, the rooms in data into objects of type Room.
  */
 public class JsonConverter {
-    private static final String path = "src/main/java/org/example/backend/data/data.json";
+    private static final String path = "src/main/java/com/example/roomie/backend/data/data.json";
     private ArrayList<Room> rooms;
 
     private void readFile() {
@@ -50,8 +50,8 @@ public class JsonConverter {
         Room room = new Room();
         try {
             room.setArea((String) jsonRoom.get("area"));
-            room.setLat(Double.parseDouble((String) jsonRoom.get("lat")));
-            room.setLon(Double.parseDouble((String) jsonRoom.get("lon")));
+            room.setLat(Double.parseDouble((String) jsonRoom.get("latitude")));
+            room.setLon(Double.parseDouble((String) jsonRoom.get("longitude")));
             room.setDesc((String) jsonRoom.get("description"));
             room.setName((String) jsonRoom.get("roomName"));
             room.setPrice(Integer.parseInt((String) jsonRoom.get("price")));
@@ -60,7 +60,6 @@ public class JsonConverter {
             room.setNoOfPersons(Integer.parseInt((String) jsonRoom.get("noOfPersons")));
             room.setNoOfRooms(Integer.parseInt((String) jsonRoom.get("noOfRooms")));
             room.setNoOfBathrooms(Integer.parseInt((String) jsonRoom.get("noOfBathrooms")));
-            room.setRoomImage((String) jsonRoom.get("roomImage"));
             room.setMid(Integer.parseInt((String) jsonRoom.get("mid")));
             JSONArray jsonAvailableDates = new JSONArray( jsonRoom.getJSONArray("availableDates"));
             ArrayList<SimpleCalendar> avDates = new ArrayList<SimpleCalendar>();
@@ -77,6 +76,13 @@ public class JsonConverter {
             room.setAvailableDates(avDates);
             room.setReservationDates(resDates);
 
+            int noOfImgs = Integer.parseInt((String) jsonRoom.get("noOfImgs"));
+            ArrayList<String> imgs = new ArrayList<>();
+            String imgName = (String) jsonRoom.get("roomImage");
+            for(int i = 1; i <= noOfImgs; i++){
+                imgs.add(imgName + "_" + String.valueOf(i) + ".png");
+            }
+            room.setRoomImage(imgs);
             return room;
         } catch (JSONException e) {
             throw new RuntimeException(e);
