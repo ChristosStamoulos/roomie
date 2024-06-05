@@ -263,7 +263,9 @@ public class ActionsForWorkers extends Thread {
             if(r.getId() == dates.getKey()){
                 for (String d : dat) {
                     SimpleCalendar date = new SimpleCalendar(d);
-                    if (!r.getReservationDates().contains(date)) {
+                    if (!r.getAvailableDates().contains(date)) {
+                        System.out.println(r.getAvailableDates().toString());
+                        System.out.println(date.toString());
                         return false;
                     }
                 }

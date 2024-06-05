@@ -143,7 +143,7 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         val dates = HashSet<CalendarDay>()
         val d = room!!.availableDates
         for (dat in d) {
-            dates.add(CalendarDay.from(dat.year, dat.month, dat.dayOfMonth))
+            dates.add(CalendarDay.from(dat.year, dat.month-1, dat.dayOfMonth))
         }
         return dates
     }
@@ -238,7 +238,7 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private fun makeBooking() {
         for (i in selectedDates){
-            selectedDatesToMaster.add(selectedDates.toString())
+            selectedDatesToMaster.add(i.toString())
         }
         if (room == null) {
             Toast.makeText(this, "Room details not available", Toast.LENGTH_SHORT).show()
