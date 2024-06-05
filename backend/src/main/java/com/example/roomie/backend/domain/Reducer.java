@@ -1,6 +1,7 @@
 package com.example.roomie.backend.domain;
 
 import com.example.roomie.backend.utils.Pair;
+import com.example.roomie.backend.utils.SimpleCalendar;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,6 +28,7 @@ public class Reducer {
     private static int expectedChunks;   //The number of expected chunks to be received before processing.
     //A map to store chunks received from Workers based on their segment IDs.
     private static Map<Integer, ArrayList<Chunk>> chunkMap = new HashMap<>();
+    private static Map<Integer, ArrayList<Chunk>> UserchunkMap = new HashMap<>();
     //The number of chunks to be processed concurrently.
     private static final int numberOfChunks = 1;
 
@@ -90,9 +92,11 @@ public class Reducer {
     private static void handleWorkerRequest(Socket workerSocket) {
         try {
             ObjectInputStream in = new ObjectInputStream(workerSocket.getInputStream());
+            System.out.println("h");
             while (true) {
+                System.out.println("test");
                 Chunk chunk = (Chunk) in.readObject(); // Read chunks sent by the Worker
-
+                System.out.println("test"+chunk.getData().toString());
                 switch(chunk.getTypeID()) {
 
                     case 1,7:
@@ -119,8 +123,30 @@ public class Reducer {
                     case 8:
                         //To Do
                         break;
-                    case 9:
+                    case 2, 9:
+                        System.out.println(chunk.getData().toString());
                         sentToMaster(chunk);
+                        break;
+                    case 10:
+                        // Add the chunk to the map based on its ID
+                        synchronized (UserchunkMap) {
+                            int chunkId = chunk.getSegmentID();
+                            if (!UserchunkMap.containsKey(chunkId)) {
+                                UserchunkMap.put(chunkId, new ArrayList<>());
+                            }
+                            UserchunkMap.get(chunkId).add(chunk);
+
+                            // Check if all expected chunks are received
+                            if (UserchunkMap.get(chunkId).size() == expectedChunks) {
+                                ArrayList<Chunk> chunks = UserchunkMap.get(chunkId);
+                                // Merge chunks into a single chunk
+                                Chunk mergedUserChunk = mergeUserChunks(chunks);
+                                // Send merged chunk to the Master
+                                sentToMaster(mergedUserChunk);
+                                // Clear the chunks from the map
+                                UserchunkMap.remove(chunkId); // Clear the chunks from the map
+                            }
+                        }
                         break;
                 }
             }
@@ -169,6 +195,34 @@ public class Reducer {
         // Iterate over each chunk to extract the list of rooms and add them to the final list
         for (int i = 0; i < expectedChunks; i++) {
             workerChunk = (ArrayList<Pair<Room, ArrayList<byte[]>>>) chunks.get(i).getData();
+            for (int j = 0; j < workerChunk.size(); j++) {
+                finalList.add(workerChunk.get(j));
+            }
+        }
+        // Create a new chunk with the merged list of rooms and set the userID, segmentID, and type
+        Chunk finalChunk = new Chunk(userID, type, finalList);
+        finalChunk.setSegmentID(id);
+        return finalChunk;
+    }
+
+    /**
+     * Merges the list of chunks into a single chunk.
+     *
+     * @param chunks The list of chunks to be merged.
+     * @return The merged chunk.
+     */
+    private static Chunk mergeUserChunks(ArrayList<Chunk> chunks) {
+        // Extract userID, segmentID, and type from the first chunk
+        String userID = chunks.get(0).getUserID();
+        int id = chunks.get(0).getSegmentID();
+        int type = chunks.get(0).getSegmentID();
+
+        ArrayList<Pair<Integer, ArrayList<SimpleCalendar>>> finalList = new ArrayList<>();
+        ArrayList<Pair<Integer, ArrayList<SimpleCalendar>>> workerChunk = new ArrayList<>();
+
+        // Iterate over each chunk to extract the list of rooms and add them to the final list
+        for (int i = 0; i < expectedChunks; i++) {
+            workerChunk = ( ArrayList<Pair<Integer, ArrayList<SimpleCalendar>>>) chunks.get(i).getData();
             for (int j = 0; j < workerChunk.size(); j++) {
                 finalList.add(workerChunk.get(j));
             }

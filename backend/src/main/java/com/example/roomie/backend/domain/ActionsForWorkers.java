@@ -117,6 +117,13 @@ public class ActionsForWorkers extends Thread {
                 ch.setSegmentID(chunk.getSegmentID());
                 sendReducer(ch);
                 break;
+            case 10:
+                int userId = Integer.parseInt(chunk.getUserID());
+                ArrayList<Pair<Integer, ArrayList<SimpleCalendar>>> reservations = findReservations(userId);
+                Chunk c3 = new Chunk(chunk.getUserID(), chunk.getTypeID(), reservations);
+                c3.setSegmentID(chunk.getSegmentID());
+                sendReducer(c3);
+                break;
             default:
                 System.out.println("Invalid request type");
         }
@@ -143,6 +150,22 @@ public class ActionsForWorkers extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Finds the rooms a user has reserved.
+     *
+     * @param userId  the user's id
+     * @return        an ArrayList of objects Simple Calendar
+     */
+    private ArrayList<Pair<Integer, ArrayList<SimpleCalendar>>> findReservations(int userId) {
+        ArrayList<Pair<Integer, ArrayList<SimpleCalendar>>> reservations = new ArrayList<>();
+        for (Room r : rooms) {
+            ArrayList<SimpleCalendar> res = r.getUserAvailableDates(userId);
+            Pair<Integer, ArrayList<SimpleCalendar>> pair = new Pair<>(r.getId(), res);
+            reservations.add(pair);
+        }
+        return reservations;
     }
 
     /**
@@ -271,6 +294,7 @@ public class ActionsForWorkers extends Thread {
                 }
                 for(String d: dat){
                     SimpleCalendar date = new SimpleCalendar(d);
+                    r.addUserReservationDate(Integer.parseInt(data.getUserID()), date);
                     r.addReservationDate(date);
                 }
                 return true;
