@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<font-family xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/jost_light" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="400"
+        android:font="@font/jost_italic" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="400"
+        android:font="@font/jost_semibold_italic" />
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/jost_semibold" />
+    <font
+        android:fontStyle="italic"
+        android:fontWeight="400"
+        android:font="@font/jost_light_italic" />
+
+    <font
+        android:fontStyle="normal"
+        android:fontWeight="400"
+        android:font="@font/jost_regural" />
+
+</font-family>

@@ -3,6 +3,7 @@
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Other theme attributes -->
         <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
+        <item name="android:fontFamily">@font/jost_semibold_italic</item>
     </style>
 
     <style name="CustomActivityAnimation" parent="@android:style/Animation.Activity">

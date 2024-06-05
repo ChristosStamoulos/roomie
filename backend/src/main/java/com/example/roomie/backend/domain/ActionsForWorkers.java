@@ -203,7 +203,7 @@ public class ActionsForWorkers extends Thread {
                     filterCounter++;
                 }
             }
-            if(stars == 0.0 || stars == r.getRating()){
+            if(stars == 0.0 || stars <= r.getRating()){
                 filterCounter++;
             }
             if(noOfPeople == 0 || noOfPeople == r.getNoOfPersons()){

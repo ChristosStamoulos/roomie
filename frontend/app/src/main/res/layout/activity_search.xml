@@ -20,7 +20,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/viewFlipper"
-        android:textSize="24dp"/>
+        android:textSize="24dp"
+        android:fontFamily="@font/jost_semibold"/>
 
     <ViewFlipper
         android:id="@+id/viewFlipper"
@@ -386,6 +387,95 @@
                     android:text="stars"
                     android:textSize="16dp"
                     android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/stars_expanded"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/bottom_nav_bg"
+                android:elevation="5dp"
+                android:orientation="vertical"
+                android:padding="40dp"
+                android:paddingLeft="5dp"
+                android:visibility="gone"
+                tools:layout_editor_absoluteX="20dp">
+
+                <TextView
+                    android:id="@+id/starstxt_expanded"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:gravity="center_vertical"
+                    android:text="How Luxurious?"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <CheckBox
+                        android:id="@+id/star1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="1 star" />
+
+                    <CheckBox
+                        android:id="@+id/star2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="2 stars" />
+                    <CheckBox
+                        android:id="@+id/star3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="3 stars" />
+                    <CheckBox
+                        android:id="@+id/star4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="4 stars" />
+                    <CheckBox
+                        android:id="@+id/star5"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="5 stars" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Note: If you chose e.x. 2 stars then we will show you properties rated with 2 stars or more."
+                        android:textSize="10dp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/skipStars"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/white"
+                        android:text="Skip"
+                        android:textColor="@color/black"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/nextStars"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/mandarin"
+                        android:text="Next"
+                        android:textColor="@color/white" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
