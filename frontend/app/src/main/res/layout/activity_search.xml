@@ -282,15 +282,15 @@
 
                 <TextView
                     android:id="@+id/people_expanded"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="322dp"
+                    android:layout_height="57dp"
                     android:gravity="center_vertical"
                     android:text="Who's coming?"
                     android:textSize="18dp"
                     android:textStyle="bold" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="324dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical">
 
@@ -305,7 +305,7 @@
                         android:id="@+id/minusppl"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="19dp"
+                        android:layout_margin="0dp"
                         android:backgroundTint="@color/white"
                         android:text="-"
                         android:textColor="@color/black"
@@ -322,7 +322,7 @@
                         android:id="@+id/plusppl"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="19dp"
+                        android:layout_margin="0dp"
                         android:backgroundTint="@color/white"
                         android:text="+"
                         android:textColor="@color/black"
@@ -643,18 +643,20 @@
             <TextView
                 android:id="@+id/minisearchbtn"
                 android:layout_width="0dp"
-                android:layout_height="100dp"
+                android:layout_height="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/bottom_nav_bg"
                 android:gravity="center_vertical"
-                android:paddingStart="50dp"
+                android:paddingStart="5dp"
                 android:text="Where"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                tools:ignore="RtlSymmetry" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/searchResults"
                 android:layout_width="match_parent"
-                android:layout_height="509dp"
+                android:layout_marginTop="@dimen/cardview_default_radius"
+                android:layout_height="600dp"
                 app:layout_constraintHorizontal_bias="0.51"/>
 
         </LinearLayout>
