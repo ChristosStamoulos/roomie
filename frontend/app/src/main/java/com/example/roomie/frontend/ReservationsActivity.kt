@@ -13,6 +13,7 @@ import com.example.roomie.R
 import com.example.roomie.backend.domain.Chunk
 import com.example.roomie.backend.domain.Room
 import com.example.roomie.backend.utils.Pair
+import com.example.roomie.backend.utils.SimpleCalendar
 import com.example.roomie.frontend.Adapters.ReservationsAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
@@ -67,16 +68,34 @@ class ReservationsActivity : AppCompatActivity(), ReservationsAdapter.onReservat
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
 
+            var res = ArrayList<Pair<Pair<Room, ArrayList<ByteArray>>,ArrayList<SimpleCalendar>>>()
             val chunk = Chunk("", 10, 1)// replace 1 with user id
 
             val backendCommunicator = BackendCommunicator()
             backendCommunicator.sendMasterInfo(chunk)
             val answer = backendCommunicator.sendClientInfo()
-            val reservations = answer.data as ArrayList<Pair<Pair<Room, ArrayList<ByteArray>>,ArrayList<String>>>
+            val reservations = answer.data as ArrayList<Pair<Integer, ArrayList<SimpleCalendar>>>
+
+            for(pair in reservations){
+                val roomId = pair.key
+                val dates = pair.value
+                val chunk1 = Chunk("", 9, roomId)
+
+                backendCommunicator.sendMasterInfo(chunk1)
+                val answer1 = backendCommunicator.sendClientInfo()
+                val room_details = answer1.data as Pair<Room, ArrayList<ByteArray>>
+
+                var room = room_details.key
+                var imgs = room_details.value
+
+                var p = Pair(Pair(room, imgs), dates)
+                res.add(p)
+            }
+
 
             // Switch to the main thread to update the UI
             withContext(Dispatchers.Main) {
-                val reservationsAdapter = ReservationsAdapter(reservations, this@ReservationsActivity)
+                val reservationsAdapter = ReservationsAdapter(res, this@ReservationsActivity)
                 recyclerView!!.adapter = reservationsAdapter
             }
 
