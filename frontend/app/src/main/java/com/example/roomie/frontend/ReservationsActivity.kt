@@ -46,13 +46,18 @@ class ReservationsActivity : AppCompatActivity(), ReservationsAdapter.onReservat
                 startActivity(intent)
             } else if (itemId == R.id.homeBtn) {
                 val intent: Intent = Intent(this, HomeScreenActivity::class.java)
-                startActivity(intent)
+                val options = ActivityOptionsCompat.makeCustomAnimation(
+                        this,
+                        R.anim.slide_out,  // Animation for the entering activity
+                        R.anim.slide_in// Animation for the exiting activity
+                )
+                startActivity(intent, options.toBundle())
             } else if (itemId == R.id.searchbtn) {
                 val intent: Intent = Intent(this, SearchActivity::class.java)
                 val options = ActivityOptionsCompat.makeCustomAnimation(
                         this,
-                        R.anim.slide_in,  // Animation for the entering activity
-                        R.anim.slide_out  // Animation for the exiting activity
+                        R.anim.slide_out,  // Animation for the entering activity
+                        R.anim.slide_in// Animation for the exiting activity
                 )
                 startActivity(intent, options.toBundle())
             }
@@ -69,7 +74,7 @@ class ReservationsActivity : AppCompatActivity(), ReservationsAdapter.onReservat
         scope.launch {
 
             var res = ArrayList<Pair<Pair<Room, ArrayList<ByteArray>>,ArrayList<SimpleCalendar>>>()
-            val chunk = Chunk("", 10, 1)// replace 1 with user id
+            val chunk = Chunk("1", 10, 1)// replace 1 with user id
 
             val backendCommunicator = BackendCommunicator()
             backendCommunicator.sendMasterInfo(chunk)
@@ -81,8 +86,9 @@ class ReservationsActivity : AppCompatActivity(), ReservationsAdapter.onReservat
                 val dates = pair.value
                 val chunk1 = Chunk("", 9, roomId)
 
-                backendCommunicator.sendMasterInfo(chunk1)
-                val answer1 = backendCommunicator.sendClientInfo()
+                val bc = BackendCommunicator()
+                bc.sendMasterInfo(chunk1)
+                val answer1 = bc.sendClientInfo()
                 val room_details = answer1.data as Pair<Room, ArrayList<ByteArray>>
 
                 var room = room_details.key

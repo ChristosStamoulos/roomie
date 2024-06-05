@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@color/offwhite">
 
     <!-- Price and Booking Button Widget -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="67dp"
-        android:background="#FFFFFF">
+        android:background="@color/snow">
 
         <TextView
             android:id="@+id/dollar_sign"
@@ -66,8 +67,8 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#F5F5F5">
+        android:layout_height="630dp"
+        android:background="@color/offwhite">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -77,10 +78,10 @@
 
             <!-- Photo Gallery -->
             <HorizontalScrollView
+                android:id="@+id/photo_scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="16dp"
-                android:id="@+id/photo_scroll_view">
+                android:paddingBottom="16dp">
 
                 <LinearLayout
                     android:id="@+id/photo_container"
@@ -111,8 +112,8 @@
                             android:layout_width="360dp"
                             android:layout_height="250dp"
                             android:layout_marginEnd="8dp"
-                            android:src="@drawable/img_1"
-                            android:scaleType="centerCrop" />
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/img_1" />
                     </FrameLayout>
 
                     <FrameLayout
@@ -123,8 +124,8 @@
                             android:id="@+id/img3"
                             android:layout_width="360dp"
                             android:layout_height="250dp"
-                            android:src="@drawable/img_2"
-                            android:scaleType="centerCrop" />
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/img_2" />
                     </FrameLayout>
                 </LinearLayout>
             </HorizontalScrollView>
@@ -133,39 +134,39 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/room_name"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:paddingStart="0dp"
                     android:text="Maria's Room"
                     android:textColor="#000000"
                     android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:layout_weight="1"/>
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_gravity="center_vertical">
+                    android:layout_gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:src="@drawable/rating_star"
-                        android:paddingRight="3dp"/>
+                        android:paddingRight="3dp"
+                        android:src="@drawable/rating_star" />
 
                     <TextView
                         android:id="@+id/starstxt"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
                         android:text="5.0 (97)"
-                        android:textSize="16sp"
-                        android:layout_gravity="center_vertical"/>
+                        android:textSize="16sp" />
 
                 </LinearLayout>
             </LinearLayout>
@@ -174,25 +175,25 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:paddingTop="8dp">
 
                 <TextView
                     android:id="@+id/room_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:paddingStart="0dp"
                     android:text="A cozy room with a beautiful view."
-                    android:textSize="16sp"
                     android:textColor="#666666"
-                    android:paddingStart="0dp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:paddingTop="16dp"
                 android:paddingBottom="8dp">
 
@@ -207,9 +208,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text=" Rethymno, Crete"
-                    android:textSize="16sp"
                     android:textColor="#666666"
-                    app:layout_flexGrow="0.6"/>
+                    android:textSize="16sp"
+                    app:layout_flexGrow="0.6" />
 
             </LinearLayout>
 
@@ -217,115 +218,115 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="8dp"
                 android:text="Details"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:paddingTop="10dp"
-                android:paddingBottom="8dp" />
+                android:textStyle="bold" />
 
 
-                <com.google.android.flexbox.FlexboxLayout
-                    android:layout_width="match_parent"
+            <com.google.android.flexbox.FlexboxLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp"
+                app:alignItems="flex_start"
+                app:flexWrap="wrap"
+                app:justifyContent="flex_start">
+
+                <!-- Each detail item as a child of FlexboxLayout -->
+
+                <!-- Max Visitors -->
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/people_icon"
+                    app:layout_flexGrow="0" />
+
+                <TextView
+                    android:id="@+id/max_visitors"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
-                    app:flexWrap="wrap"
-                    app:alignItems="flex_start"
-                    app:justifyContent="flex_start">
+                    android:text=" 4"
+                    android:textColor="#666666"
+                    android:textSize="16sp"
+                    app:layout_flexGrow="0.1" />
 
-                    <!-- Each detail item as a child of FlexboxLayout -->
+                <TextView
+                    android:id="@+id/people_bullet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="• "
+                    android:textColor="#666666"
+                    android:textSize="16sp"
+                    app:layout_flexGrow="0.1" />
 
-                    <!-- Max Visitors -->
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/people_icon"
-                        app:layout_flexGrow="0"/>
+                <!-- Number of Rooms -->
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/room_icon"
+                    app:layout_flexGrow="0" />
 
-                    <TextView
-                        android:id="@+id/max_visitors"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=" 4"
-                        android:textSize="16sp"
-                        android:textColor="#666666"
-                        app:layout_flexGrow="0.1"/>
+                <TextView
+                    android:id="@+id/num_rooms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:text="3"
+                    android:textColor="#666666"
+                    android:textSize="16sp"
+                    app:layout_flexGrow="0.1" />
 
-                    <TextView
-                        android:id="@+id/people_bullet"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="• "
-                        android:textSize="16sp"
-                        android:textColor="#666666"
-                        app:layout_flexGrow="0.1"/>
+                <TextView
+                    android:id="@+id/rooms_bullet"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="• "
+                    android:textColor="#666666"
+                    android:textSize="16sp"
+                    app:layout_flexGrow="0.1" />
 
-                    <!-- Number of Rooms -->
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/room_icon"
-                        app:layout_flexGrow="0"/>
+                <!-- Number of Bathrooms -->
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/bathroom_icon"
+                    app:layout_flexGrow="0" />
 
-                    <TextView
-                        android:id="@+id/num_rooms"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingStart="8dp"
-                        android:text="3"
-                        android:textSize="16sp"
-                        android:textColor="#666666"
-                        app:layout_flexGrow="0.1"/>
+                <TextView
+                    android:id="@+id/num_bathrooms"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="8dp"
+                    android:text="2"
+                    android:textColor="#666666"
+                    android:textSize="16sp"
+                    app:layout_flexGrow="1" />
 
-                    <TextView
-                        android:id="@+id/rooms_bullet"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="• "
-                        android:textSize="16sp"
-                        android:textColor="#666666"
-                        app:layout_flexGrow="0.1"/>
-
-                    <!-- Number of Bathrooms -->
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/bathroom_icon"
-                        app:layout_flexGrow="0"/>
-
-                    <TextView
-                        android:id="@+id/num_bathrooms"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingStart="8dp"
-                        android:text="2"
-                        android:textSize="16sp"
-                        android:textColor="#666666"
-                        app:layout_flexGrow="1"/>
-
-                </com.google.android.flexbox.FlexboxLayout>
+            </com.google.android.flexbox.FlexboxLayout>
 
             <!-- Room Availability Calendar -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingTop="16dp"
+                android:paddingBottom="8dp"
                 android:text="Availability"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp" />
+                android:textStyle="bold" />
 
             <com.prolificinteractive.materialcalendarview.MaterialCalendarView
                 android:id="@+id/calendar_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:mcv_showOtherDates="all"
-                android:paddingBottom="16dp" />
+                android:paddingBottom="16dp"
+                app:mcv_showOtherDates="all" />
 
             <!-- Map -->
             <FrameLayout
+                android:id="@+id/map_container"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:id="@+id/map_container">
+                android:layout_height="300dp">
 
                 <fragment
                     android:id="@+id/map"
@@ -336,5 +337,20 @@
             </FrameLayout>
         </LinearLayout>
     </ScrollView>
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+
+        android:id="@+id/bottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@drawable/bottom_nav_bg"
+        app:elevation="10dp"
+        app:itemIconSize="25dp"
+        app:itemIconTint="@drawable/bottom_nav_selector"
+        app:itemRippleColor="@android:color/transparent"
+        app:labelVisibilityMode="unlabeled"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:menu="@menu/activity_menu" />
 </LinearLayout>
 

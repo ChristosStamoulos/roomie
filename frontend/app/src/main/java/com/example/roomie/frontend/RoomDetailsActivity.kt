@@ -1,15 +1,19 @@
 package com.example.roomie.frontend
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
+import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityOptionsCompat
 import com.example.roomie.R
 import com.example.roomie.backend.domain.Chunk
 import com.example.roomie.backend.domain.Room
@@ -22,6 +26,8 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
@@ -44,6 +50,7 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
     var avDates: HashSet<CalendarDay>? = null
     private var selectedDates: ArrayList<SimpleCalendar> = ArrayList()
     private var selectedDatesToMaster: ArrayList<String> = ArrayList()
+    var bottomNavigationView: BottomNavigationView? = null
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -112,6 +119,38 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         bookButton.setOnClickListener {
             makeBooking()
         }
+
+        bottomNavigationView = findViewById<View>(R.id.bottomNav) as BottomNavigationView?
+
+        bottomNavigationView?.setSelectedItemId(R.id.homeBtn)
+        bottomNavigationView!!.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item: MenuItem ->
+            val itemId = item.itemId
+            if (item.itemId == R.id.accountbtn) {
+                val intent = Intent(this, HomeScreenActivity::class.java)
+                startActivity(intent)
+            } else if (itemId == R.id.homeBtn) {
+                val intent = Intent(this, HomeScreenActivity::class.java)
+                startActivity(intent)
+            } else if (itemId == R.id.searchbtn) {
+                val intent = Intent(this, SearchActivity::class.java)
+                val options = ActivityOptionsCompat.makeCustomAnimation(
+                        this,
+                        R.anim.slide_in,  // Animation for the entering activity
+                        R.anim.slide_out  // Animation for the exiting activity
+                )
+                startActivity(intent, options.toBundle())
+            } else if(itemId == R.id.reservbtn){
+                val intent = Intent(this, ReservationsActivity::class.java)
+                val options = ActivityOptionsCompat.makeCustomAnimation(
+                        this,
+                        R.anim.slide_in,  // Animation for the entering activity
+                        R.anim.slide_out  // Animation for the exiting activity
+                )
+                startActivity(intent, options.toBundle())
+            }
+            item.setChecked(true)
+            true
+        })
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -260,7 +299,7 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             try {
-                val chunk = Chunk("", 2, booking)
+                val chunk = Chunk("1", 2, booking)
                 Log.d("RoomDetailsActivity", booking.toString())
                 val backendCommunicator = BackendCommunicator()
                 backendCommunicator.sendMasterInfo(chunk)
