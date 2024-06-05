@@ -159,6 +159,7 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         val noOfRooms = findViewById<TextView>(R.id.num_rooms)
         val noOfBaths = findViewById<TextView>(R.id.num_bathrooms)
         val description = findViewById<TextView>(R.id.room_description)
+        val stars = findViewById<TextView>(R.id.starstxt)
 
         price.text = room!!.price.toString()
         name.text = room!!.name
@@ -167,6 +168,7 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         noOfRooms.text = room!!.noOfRooms.toString()
         noOfBaths.text = room!!.noOfBathrooms.toString()
         description.text = room!!.desc
+        stars.text = room!!.rating.toString() + " (" + room!!.noOfReviews.toString() + ")"
 
         //for(i in imgs!!){
         val imgViews = listOf(
@@ -236,6 +238,9 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         return datesInRange
     }
 
+    /**
+     * Books the accommodation, with the dates the user selected
+     */
     private fun makeBooking() {
         for (i in selectedDates){
             selectedDatesToMaster.add(i.toString())
