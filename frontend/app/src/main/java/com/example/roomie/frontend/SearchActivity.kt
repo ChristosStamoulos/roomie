@@ -147,6 +147,7 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
 
 
         searchbtn!!.setOnClickListener {
+
             var filters = createJson()
             val scope = CoroutineScope(Dispatchers.IO)
             scope.launch {
@@ -161,7 +162,25 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
                 // Switch to the main thread to update the UI
                 withContext(Dispatchers.Main) {
 
-                    viewFlipper!!.showNext()
+                    searchResultsView!!.animate()
+                            .translationY(-searchResultsView!!.height.toFloat())
+                            .alpha(0.0f)
+                            .setDuration(300)
+                            .withEndAction {
+                                // Once the filter layout is hidden, make it gone
+                                viewFlipper!!.showNext()
+
+                                // Slide in the results layout
+                                searchResultsView!!.translationY = searchResultsView!!.height.toFloat()
+                                searchResultsView!!.alpha = 0.0f
+                                searchResultsView!!.animate()
+                                        .translationY(0f)
+                                        .alpha(1.0f)
+                                        .setDuration(300)
+                                        .start()
+                            }
+                            .start()
+
                     val roomsAdapter = RoomsAdapter(searchResults, this@SearchActivity)
                     searchResultsView!!.adapter = roomsAdapter
                 }
