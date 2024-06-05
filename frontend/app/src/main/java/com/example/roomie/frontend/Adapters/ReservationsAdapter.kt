@@ -11,14 +11,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.roomie.R
 import com.example.roomie.backend.domain.Room
 import com.example.roomie.backend.utils.Pair
+import com.example.roomie.backend.utils.SimpleCalendar
 
-class ReservationsAdapter (private val roomList: ArrayList<Pair<Pair<Room, ArrayList<ByteArray>>,ArrayList<String>>>, private val listener: onReservationClickListener) : RecyclerView.Adapter<ReservationsAdapter.ReservationsViewHolder>() {
+class ReservationsAdapter (private val roomList: ArrayList<Pair<Pair<Room, ArrayList<ByteArray>>,ArrayList<SimpleCalendar>>>, private val listener: onReservationClickListener) : RecyclerView.Adapter<ReservationsAdapter.ReservationsViewHolder>() {
         interface onReservationClickListener {
             fun onReservationClick(room: Room, view: View)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReservationsViewHolder {
-            val view = LayoutInflater.from(parent.context).inflate(R.layout.rooms_homescreen, parent, false)
+            val view = LayoutInflater.from(parent.context).inflate(R.layout.reservation, parent, false)
             return ReservationsViewHolder(view)
         }
 
@@ -43,7 +44,7 @@ class ReservationsAdapter (private val roomList: ArrayList<Pair<Pair<Room, Array
                 roomDate = itemView.findViewById(R.id.date)
             }
 
-            fun bindRoom(reservation: Pair<Pair<Room, ArrayList<ByteArray>>,ArrayList<String>>, listener: onReservationClickListener) {
+            fun bindRoom(reservation: Pair<Pair<Room, ArrayList<ByteArray>>,ArrayList<SimpleCalendar>>, listener: onReservationClickListener) {
                 val room = reservation.key
                 val dates = reservation.value
                 roomName = itemView.findViewById(R.id.name)
@@ -52,7 +53,7 @@ class ReservationsAdapter (private val roomList: ArrayList<Pair<Pair<Room, Array
                 roomName.text = room.key.name
                 roomArea.text = room.key.area
 
-                roomDate!!.text = dates.get(0) + " - " + dates.get(dates.size -1)
+                roomDate!!.text = dates.get(0).toString() + " - " + dates.get(dates.size -1).toString()
 
                 var bitmap: Bitmap? = BitmapFactory.decodeByteArray(room.value!![0], 0, room.value!![0].size)
                 roomImage!!.setImageBitmap(bitmap)
