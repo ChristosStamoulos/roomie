@@ -30,6 +30,7 @@ import java.time.ZoneId
 import java.util.Date
 
 class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
+    lateinit var googleMap: GoogleMap
     var backendCommunicator: BackendCommunicator? = null
     var imgs: ArrayList<ByteArray>? = null
     var room: Room? = null
@@ -44,7 +45,6 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val roomId = intent.getIntExtra("roomId", -1)
 
-
         //asynchronous routine
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
@@ -58,15 +58,16 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
             var data = dat.data as Pair<Room, ArrayList<ByteArray>>
             imgs = data.value
             room = data.key
+            Log.e("RoomDetailsActivity", imgs.toString())
 
             // Switch to the main thread to update the UI
             withContext(Dispatchers.Main) {
-
 
                 setDetails()
 
                 avDates = getAvailableDates()
                 calendarView!!.addDecorators(AvailabilityDecorator(avDates!!))
+                setupMap()
             }
         }
 
@@ -102,9 +103,20 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        val location = LatLng(room!!.lat, room!!.lon) // Replace with the actual location
-        googleMap.addMarker(MarkerOptions().position(location).title("Room Location"))
-        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
+        this.googleMap = googleMap
+    }
+    private fun setupMap() {
+        if (googleMap != null && room != null) {
+            val lat = room!!.lat
+            val lon = room!!.lon
+
+            // Validate the latitude and longitude values
+            if (lat in -90.0..90.0 && lon in -180.0..180.0) {
+                val location = LatLng(lat, lon)
+                googleMap!!.addMarker(MarkerOptions().position(location).title(room!!.name))
+                googleMap!!.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
+            }
+        }
     }
 
     /**
@@ -144,18 +156,29 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         description.text = room!!.desc
 
         //for(i in imgs!!){
-        var bitmap: Bitmap? = BitmapFactory.decodeByteArray(imgs!![0], 0, imgs!![0].size)
-        Log.d("BYTEEEEEEEEE", imgs!![0][0].toString())
-        var imgView = findViewById<ImageView>(R.id.img1)
-        imgView.setImageBitmap(bitmap)
-        Log.d("AAAAAAAAAAAAAAAAAAAAAAAAAA", bitmap.toString())
-        Log.d("BBBBBBBBBBBBBBBBBBBBBBB", imgs!![0].toString())
-        bitmap = BitmapFactory.decodeByteArray(imgs!![1], 0, imgs!![1].size)
-        var imgView2 = findViewById<ImageView>(R.id.img2)
-        imgView2.setImageBitmap(bitmap)
-        bitmap = BitmapFactory.decodeByteArray(imgs!![2], 0, imgs!![2].size)
-        var imgView3 = findViewById<ImageView>(R.id.img3)
-        imgView3.setImageBitmap(bitmap)
+        val imgViews = listOf(
+                findViewById<ImageView>(R.id.img1),
+                findViewById<ImageView>(R.id.img2),
+                findViewById<ImageView>(R.id.img3)
+        )
+
+        for (i in imgs!!.indices) {
+            val imgData = imgs!![i]
+
+            if (imgData.size > 100) {  // Assuming a minimum size for a valid image
+                Log.d("RoomDetailsActivity", "Image $i data size: ${imgData.size}")
+                val bitmap: Bitmap? = BitmapFactory.decodeByteArray(imgData, 0, imgData.size)
+
+                if (bitmap != null) {
+                    imgViews[i].setImageBitmap(bitmap)
+                    Log.d("RoomDetailsActivity", "Successfully decoded and set image $i")
+                } else {
+                    Log.e("RoomDetailsActivity", "Failed to decode image $i")
+                }
+            } else {
+                Log.e("RoomDetailsActivity", "Image $i data size is too small: ${imgData.size}")
+            }
+        }
         //}
     }
 
