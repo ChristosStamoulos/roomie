@@ -85,7 +85,10 @@ public class ActionsForWorkers extends Thread {
                 sendReducer(c);
                 break;
             case 2:     //user's request, adds a reservation to the room
-                addReservation((Pair<Integer, ArrayList<SimpleCalendar>>) data.getData());
+                boolean successful = addReservation((Pair<Integer, ArrayList<SimpleCalendar>>) chunk.getData());
+                Chunk c2 = new Chunk(chunk.getUserID(), chunk.getTypeID(), successful);
+                c2.setSegmentID(chunk.getSegmentID());
+                sendReducer(c2);
                 break;
             case 3:     //user's request, adds a rating to a room
                 addRating((Pair<Integer, Integer>) data.getData());
@@ -254,16 +257,24 @@ public class ActionsForWorkers extends Thread {
      *
      * @param dates a Pair object with key the room id and value the dates the user wants to reserve the room
      */
-    private synchronized void addReservation(Pair<Integer, ArrayList<SimpleCalendar>> dates){
+    private synchronized boolean addReservation(Pair<Integer, ArrayList<SimpleCalendar>> dates){
         ArrayList<SimpleCalendar> dat = dates.getValue();
         for(Room r: rooms){
             if(r.getId() == dates.getKey()){
+                for (SimpleCalendar d : dat) {
+                    if (!r.getReservationDates().contains(d)) {
+                        return false;
+                    }
+                }
                 for(SimpleCalendar d: dat){
                     r.addReservationDate(d);
                 }
+                return true;
             }
         }
+        return false;
     }
+
 
     /**
      * Adds a rating from the user to the room
@@ -376,3 +387,6 @@ public class ActionsForWorkers extends Thread {
         return imgs;
     }
 }
+
+
+
