@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.SeekBar
@@ -68,6 +69,7 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
     var maxPrice: Int = 0
     val minP = 0
     val maxP = 1000
+    var star: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -320,20 +322,21 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
         skipWho.setOnClickListener{
             who_expanded!!.visibility = View.GONE
             whobtn!!.visibility = View.VISIBLE
-            //stars_expanded!!.visibility = View.VISIBLE
-            //starsbtn!!.visibility = View.GONE
+            stars_expanded!!.visibility = View.VISIBLE
+            starsbtn!!.visibility = View.GONE
         }
 
-        var nextWho = findViewById<Button>(R.id.nextWhen)
+        var nextWho = findViewById<Button>(R.id.nextWho)
         var ppltxt = findViewById<TextView>(R.id.ppltxt)
         var whotxt = findViewById<TextView>(R.id.whotxt)
         nextWho.setOnClickListener {
-            //TO DO:
             who_expanded!!.visibility = View.GONE
             whobtn!!.visibility = View.VISIBLE
             stars_expanded!!.visibility = View.VISIBLE
             ppltxt.text = people.toString()
             whotxt.text = people.toString()
+            stars_expanded!!.visibility = View.VISIBLE
+            starsbtn!!.visibility = View.GONE
         }
 
         var plusbtn = findViewById<Button>(R.id.plusppl)
@@ -455,7 +458,99 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
     }
 
     fun starsButton(){
+        starsbtn = findViewById(R.id.starsbtn)
+        stars_expanded = findViewById(R.id.stars_expanded)
 
+        starsbtn!!.setOnClickListener(){
+            if (stars_expanded!!.visibility == View.VISIBLE){
+                stars_expanded!!.visibility = View.GONE
+                starsbtn!!.visibility = View.VISIBLE
+            }else{
+                stars_expanded!!.visibility = View.VISIBLE
+                starsbtn!!.visibility = View.GONE
+            }
+        }
+
+        var skipStars = findViewById<Button>(R.id.skipStars)
+        skipStars.setOnClickListener{
+            stars_expanded!!.visibility = View.GONE
+            starsbtn!!.visibility = View.VISIBLE
+            price_expanded!!.visibility = View.VISIBLE
+            pricebtn!!.visibility = View.GONE
+        }
+
+        var nextStars = findViewById<Button>(R.id.nextStars)
+        var starstxt = findViewById<TextView>(R.id.starstxt)
+
+        nextStars.setOnClickListener {
+            stars_expanded!!.visibility = View.GONE
+            starsbtn!!.visibility = View.VISIBLE
+            price_expanded!!.visibility = View.VISIBLE
+            pricebtn!!.visibility = View.GONE
+            starstxt!!.text = star.toString()
+        }
+
+        val stars1 = findViewById<CheckBox>(R.id.star1)
+        val stars2 = findViewById<CheckBox>(R.id.star2)
+        val stars3 = findViewById<CheckBox>(R.id.star3)
+        val stars4 = findViewById<CheckBox>(R.id.star4)
+        val stars5 = findViewById<CheckBox>(R.id.star5)
+
+// Set the OnCheckedChangeListener for each CheckBox
+        stars1.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                // If this CheckBox is checked, uncheck all other CheckBoxes
+                stars2.isChecked = false
+                stars3.isChecked = false
+                stars4.isChecked = false
+                stars5.isChecked = false
+                star = 1
+            }
+        }
+
+        stars2.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                // If this CheckBox is checked, uncheck all other CheckBoxes
+                stars1.isChecked = false
+                stars3.isChecked = false
+                stars4.isChecked = false
+                stars5.isChecked = false
+                star = 2
+            }
+        }
+
+        stars3.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                // If this CheckBox is checked, uncheck all other CheckBoxes
+                stars1.isChecked = false
+                stars2.isChecked = false
+                stars4.isChecked = false
+                stars5.isChecked = false
+                star = 3
+            }
+        }
+
+        stars4.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                // If this CheckBox is checked, uncheck all other CheckBoxes
+                stars1.isChecked = false
+                stars2.isChecked = false
+                stars3.isChecked = false
+                stars5.isChecked = false
+                star = 4
+            }
+        }
+
+        stars5.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                // If this CheckBox is checked, uncheck all other CheckBoxes
+                stars1.isChecked = false
+                stars2.isChecked = false
+                stars3.isChecked = false
+                stars4.isChecked = false
+                star = 5
+            }
+        }
     }
 
     fun createJson() : JSONObject {
@@ -487,7 +582,7 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
 
         filter.put("lowPrice", minPrice)
         filter.put("highPrice", maxPrice)
-        filter.put("stars", 0.0)
+        filter.put("stars", star)
 
         filters.put("filters", filter)
         return filters
