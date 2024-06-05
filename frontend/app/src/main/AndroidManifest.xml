@@ -39,6 +39,9 @@
         <activity
             android:name=".frontend.RoomDetailsActivity"
             android:exported="false"/>
+
+        <activity android:name=".frontend.ReservationsActivity"
+            android:exported="false"/>
     </application>
 
 </manifest>
