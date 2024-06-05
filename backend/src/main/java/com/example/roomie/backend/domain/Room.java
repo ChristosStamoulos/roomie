@@ -41,6 +41,7 @@ public class Room implements Serializable {
     public Room(){
         this.availableDates = new ArrayList<SimpleCalendar>();
         this.reservationDates = new ArrayList<SimpleCalendar>();
+        this.userReservationDates = new ArrayList<>();
         this.id = idCount++;
     }
 
