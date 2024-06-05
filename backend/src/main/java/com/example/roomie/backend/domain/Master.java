@@ -203,6 +203,7 @@ public class Master {
             ObjectInputStream in = new ObjectInputStream(reducerSocket.getInputStream());
             Chunk resultChunk = (Chunk) in.readObject();
             // Process the result chunk
+            System.out.println("Maria");
             processResultsFromReducer(resultChunk);
 
         } catch (IOException | ClassNotFoundException e) {
@@ -224,6 +225,7 @@ public class Master {
         // Check if the User socket is found
         if (userSocket != null) {
             try (ObjectOutputStream out = new ObjectOutputStream(userSocket.getOutputStream())) {
+                System.out.println(result.getData().toString());
                 out.writeObject(result);
                 out.flush();
             } catch (IOException e) {
@@ -243,7 +245,7 @@ public class Master {
      */
     private static void processRequest(int type, Chunk chunk){
         switch (type){
-            case 1, 6, 7, 8:
+            case 1, 6, 7, 8, 10:
                 // Iterate all workers
                 for(int i=0; i<numOfWorkers; i++) {
                     try {
@@ -256,6 +258,8 @@ public class Master {
                 }
                 break;
             case 2, 3, 5:
+                System.out.println("lLlLlL");
+                System.out.println(chunk.getData());
                 // Extract room ID and associated data from the chunk
                 Pair<Integer, ArrayList<String>> pair = (Pair<Integer, ArrayList<String>>) chunk.getData();
                 int roomID = pair.getKey();
