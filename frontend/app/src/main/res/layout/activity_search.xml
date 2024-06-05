@@ -635,31 +635,35 @@
 
     </ScrollView>
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/minisearchbtn"
-                android:layout_width="0dp"
-                android:layout_height="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/bottom_nav_bg"
-                android:gravity="center_vertical"
-                android:paddingStart="5dp"
-                android:text="Where"
-                android:textSize="16sp"
-                tools:ignore="RtlSymmetry" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/searchResults"
                 android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/cardview_default_radius"
-                android:layout_height="600dp"
-                app:layout_constraintHorizontal_bias="0.51"/>
+                android:layout_height="550dp"
+                android:layout_marginTop="11dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/minisearchbtn" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/minisearchbtn"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginBottom="11dp"
+                android:layout_weight="1"
+                android:background="@drawable/bottom_nav_bg"
+                android:gravity="center_vertical"
+                android:paddingStart="50dp"
+                android:text="Athens,   16/09/2024 - 19/09/2024"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toTopOf="@+id/searchResults"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ViewFlipper>
 
