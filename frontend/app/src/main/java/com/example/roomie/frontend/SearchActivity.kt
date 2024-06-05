@@ -96,7 +96,7 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
                 val intent: Intent = Intent(this, HomeScreenActivity::class.java)
                 startActivity(intent)
             } else if (itemId == R.id.reservbtn) {
-                val intent: Intent = Intent(this, HomeScreenActivity::class.java)
+                val intent: Intent = Intent(this, ReservationsActivity::class.java)
                 startActivity(intent)
             } else if (itemId == R.id.searchbtn) {
                 val intent: Intent = Intent(this, SearchActivity::class.java)

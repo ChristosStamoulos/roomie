@@ -13,23 +13,15 @@ import com.example.roomie.R
 import com.example.roomie.backend.domain.Chunk
 import com.example.roomie.backend.domain.Room
 import com.example.roomie.backend.utils.Pair
-import com.example.roomie.frontend.Adapters.RoomsAdapter
+import com.example.roomie.frontend.Adapters.ReservationsAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONObject
 
-/** Home Screen Activity class
- *
- * @author Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
- * @Details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024.
- *
- * This class is implemented to visualize an implemented home screen.
- */
-class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
+class ReservationsActivity : AppCompatActivity(), ReservationsAdapter.onReservationClickListener {
 
     var bottomNavigationView: BottomNavigationView? = null
     var recyclerView: RecyclerView? = null
@@ -45,14 +37,14 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
 
         bottomNavigationView = findViewById<View>(R.id.bottomNav) as BottomNavigationView?
 
-        bottomNavigationView?.setSelectedItemId(R.id.homeBtn)
+        bottomNavigationView?.setSelectedItemId(R.id.reservbtn)
         bottomNavigationView!!.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item: MenuItem ->
             val itemId = item.itemId
             if (item.itemId == R.id.accountbtn) {
                 val intent: Intent = Intent(this, HomeScreenActivity::class.java)
                 startActivity(intent)
-            } else if (itemId == R.id.reservbtn) {
-                val intent: Intent = Intent(this, ReservationsActivity::class.java)
+            } else if (itemId == R.id.homeBtn) {
+                val intent: Intent = Intent(this, HomeScreenActivity::class.java)
                 startActivity(intent)
             } else if (itemId == R.id.searchbtn) {
                 val intent: Intent = Intent(this, SearchActivity::class.java)
@@ -68,26 +60,24 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
         })
 
         recyclerView = findViewById<RecyclerView>(R.id.recyclerView)!!
-        val grid = GridLayoutManager(this, 2)
+        val grid = GridLayoutManager(this, 1)
         recyclerView!!.layoutManager = grid
-        var rooms: ArrayList<Pair<Room, ArrayList<ByteArray>>>
 
         //asynchronous routine
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
 
-            val chunk = Chunk("", 1, generateFilterAll().toString())
+            val chunk = Chunk("", 10, 1)// replace 1 with user id
 
             val backendCommunicator = BackendCommunicator()
             backendCommunicator.sendMasterInfo(chunk)
             val answer = backendCommunicator.sendClientInfo()
-            rooms = answer.data as ArrayList<Pair<Room, ArrayList<ByteArray>>>
-
+            val reservations = answer.data as ArrayList<Pair<Pair<Room, ArrayList<ByteArray>>,ArrayList<String>>>
 
             // Switch to the main thread to update the UI
             withContext(Dispatchers.Main) {
-                val roomsAdapter = RoomsAdapter(rooms, this@HomeScreenActivity)
-                recyclerView!!.adapter = roomsAdapter
+                val reservationsAdapter = ReservationsAdapter(reservations, this@ReservationsActivity)
+                recyclerView!!.adapter = reservationsAdapter
             }
 
         }
@@ -98,7 +88,7 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
      * @param room
      * @param view
      */
-    override fun onRoomClick(room: Room, view: View) {
+    override fun onReservationClick(room: Room, view: View) {
         var intent = Intent(this, RoomDetailsActivity::class.java)
         val options = ActivityOptionsCompat.makeCustomAnimation(
                 this,
@@ -107,25 +97,5 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
         )
         intent.putExtra("roomId", room.id)
         startActivity(intent, options.toBundle())
-        //startActivity(intent)
-    }
-
-    /**
-     * Generates the default values of a room,
-     * so all the rooms can be displayed in Home Screen.
-     */
-    fun generateFilterAll(): JSONObject{
-        var filter = JSONObject()
-        filter.put("area", "default")
-        filter.put("startDate", "01/01/0001")
-        filter.put("finishDate", "01/01/0001")
-        filter.put("noOfPeople", 0)
-        filter.put("lowPrice", 0)
-        filter.put("highPrice", 0)
-        filter.put("stars", 0.0)
-
-        var f = JSONObject()
-        f.put("filters", filter)
-        return f
     }
 }
