@@ -2,38 +2,43 @@
   "Rooms":[
     {"area":"Athens","latitude": "37.850294","longitude": "23.750200",
       "description": "An airy, bright and next to the sea villa that promises to offer notes of hospitality and relaxation to its visitors",
-      "price":"34", "roomImage":"haris.png","noOfReviews":"12","mid":"1","stars":"4.4",
-      "noOfPersons":"5","noOfRooms": "6","noOfBathrooms": "3","roomName":"villa haris",
+      "price":"34", "roomImage":"haris","noOfReviews":"12","mid":"1","stars":"4.4",
+      "noOfPersons":"5","noOfRooms": "6","noOfBathrooms": "3","roomName":"villa haris","noOfImgs": "3",
       "availableDates": [
-        {"date": "19/04/2024"},
-        {"date": "20/04/2024"},
-        {"date": "21/04/2024"},
-        {"date": "28/05/2024"},
-        {"date": "29/05/2024"},
-        {"date": "15/07/2024"},
-        {"date": "16/07/2024"}
+        {"date": "19/06/2024"},
+        {"date": "20/06/2024"},
+        {"date": "21/06/2024"},
+        {"date": "28/07/2024"},
+        {"date": "29/07/2024"},
+        {"date": "15/08/2024"},
+        {"date": "16/08/2024"}
       ],
       "reservationDates": [
-        {"date": "22/04/2024"},
+        {"date": "22/06/2024"},
         {"date": "27/07/2024"}
       ]},
     {"area":"Elafonisi","latitude": "35.270989","longitude": "23.544091",
       "description": "A room right next to the beautiful, deep blue, Elafonisos sea, located southwest of Crete.",
-      "price":"40","roomImage":"eleni.png","noOfReviews":"3","mid":"2","stars":"4.3",
-      "noOfPersons":"3","noOfRooms": "4","noOfBathrooms": "2","roomName":"eleni's rooms",
+      "price":"40","roomImage":"eleni","noOfReviews":"3","mid":"2","stars":"4.3",
+      "noOfPersons":"3","noOfRooms": "4","noOfBathrooms": "2","roomName":"eleni's rooms","noOfImgs": "3",
       "availableDates": [
-        {"date": "19/05/2024"},
-        {"date": "20/05/2024"},
-        {"date": "21/05/2024"},
-        {"date": "28/04/2024"},
+        {"date": "19/06/2024"},
+        {"date": "20/06/2024"},
+        {"date": "21/06/2024"},
+        {"date": "28/07/2024"},
+        {"date": "29/07/2024"},
+        {"date": "30/07/2024"},
+        {"date": "01/07/2024"},
         {"date": "10/09/2024"},
         {"date": "12/09/2024"}
       ],
       "reservationDates": [
         {"date": "15/08/2024"}
       ]},
-    {"area":"Skiathos","price":"78","roomImage":"lenas.png","noOfReviews":"56","mid":"1","stars":"4.5",
-      "noOfPersons":"3","roomName":"lena's room",
+    {"area":"Skiathos","latitude": "35.270989","longitude": "23.544091",
+      "description": "Lena's Rooms is located in the heart of the old port amidst many food and entertainment options.",
+      "noOfImgs": "3","price":"78","roomImage":"lenas","noOfReviews":"56","mid":"1","stars":"4.5",
+      "noOfPersons":"3","roomName":"lena's room","noOfRooms": "3","noOfBathrooms": "1",
       "availableDates": [
         {"date": "15/10/2024"},
         {"date": "16/10/2024"},
@@ -43,8 +48,10 @@
         {"date": "22/09/2024"},
         {"date": "23/09/2024"}
       ]},
-    {"area":"Aegina","price":"400","roomImage":"entireVilla.png","noOfReviews":"40","mid":"2","stars":"5",
-      "noOfPersons":"5","roomName":"Entire villa",
+    {"area":"Aegina","latitude": "37.745880","longitude": "23.438946",
+      "description": "Entire Villa Aegina offers the visitor moments of relaxation and tranquility!",
+      "noOfImgs": "3","price":"400","roomImage":"entireVilla","noOfReviews":"40","mid":"2","stars":"5",
+      "noOfPersons":"5","roomName":"Entire villa","noOfRooms": "6","noOfBathrooms": "2",
       "availableDates": [
         {"date": "19/04/2024"},
         {"date": "21/04/2024"},
@@ -55,16 +62,20 @@
         {"date": "20/01/2025"},
         {"date": "21/01/2025"}
       ]},
-    {"area":"Loutraki","price":"80","roomImage":"OliveGroves.png","noOfReviews":"139","mid":"1","stars":"4.4",
-      "noOfPersons":"6","roomName":"OliveGroves",
+    {"area":"Loutraki","latitude": "37.973961","longitude": "22.978855",
+      "description": "A luxurious apartment on the 2nd floor, located in the heart of Loutraki. Very close to the main street and just a 3 min walk from the beach.",
+      "noOfImgs": "3","price":"80","roomImage":"OliveGroves","noOfReviews":"139","mid":"1","stars":"4.4",
+      "noOfPersons":"6","roomName":"OliveGroves","noOfRooms": "5","noOfBathrooms": "2",
       "availableDates": [
         {"date": "19/06/2024"}
       ],
       "reservationDates": [
         {"date": "22/07/2024"}
       ]},
-    {"area":"Athens","price":"123","roomImage":"romanos.png","noOfReviews":"314","mid":"3","stars":"4.9",
-      "noOfPersons":"3","roomName":"Romanos",
+    {"area":"Athens","latitude": "37.992353","longitude": "23.715531",
+      "description": "In the center of Athens, a minute from Larissa metro station and 3 minutes ride to Syntagma, there's my carefully designed piece of heaven, with it's own patio, accessible both from the bd and the living room - looking down the Athenian streets!",
+      "noOfImgs": "3","price":"123","roomImage":"romanos","noOfReviews":"314","mid":"3","stars":"4.9",
+      "noOfPersons":"3","roomName":"Romanos","noOfRooms": "2","noOfBathrooms": "1",
       "availableDates": [
         {"date": "07/09/2024"},
         {"date": "08/09/2024"},
@@ -75,8 +86,10 @@
         {"date": "19/07/2024"},
         {"date": "20/08/2024"}
       ]},
-    {"area":"Athens","price":"32","roomImage":"sarn.png","noOfReviews":"12","mid":"1","stars":"2.5",
-      "noOfPersons":"2","roomName":"Sarn",
+    {"area":"Athens","latitude": "37.964134","longitude": "23.727592",
+      "description": "Romantic Athenian Eagle's Nest Overlooking the majestic Acropolis. Nestled in the heart of Athens, our top-floor studio in Athens offers more than just a stay; it's an experience that encapsulates the romantic essence of ancient and modern Greece. Whether you're a local seeking a serene escape or a traveler eager to immerse yourself in the city's rich tapestry, this intimate retreat promises memories to last a lifetime.",
+      "noOfImgs": "3","price":"32","roomImage":"sarn","noOfReviews":"12","mid":"1","stars":"2.5",
+      "noOfPersons":"2","roomName":"Sarn","noOfRooms": "1","noOfBathrooms": "1",
       "availableDates": [
         {"date": "19/04/2024"},
         {"date": "20/04/2024"}
@@ -84,8 +97,10 @@
       "reservationDates": [
         {"date": "22/04/2024"}
       ]},
-    {"area":"Kallithea","price":"40","roomImage":"topten.png","noOfReviews":"61","mid":"3","stars":"4.5",
-      "noOfPersons":"2","roomName":"Top Ten",
+    {"area":"Kallithea","latitude": "37.953548","longitude": "23.708150",
+      "description": "This upscale 50m2, one-bedroom apartment is located in Kallithea near the main street and shopping area. Newly renovated, minimal-chic decor with a touch of velvet make it the perfect getaway in  Athens.",
+      "noOfImgs": "3","price":"40","roomImage":"topten","noOfReviews":"61","mid":"3","stars":"4.5",
+      "noOfPersons":"2","roomName":"Top Ten","noOfRooms": "1","noOfBathrooms": "1",
       "availableDates": [
         {"date": "29/07/2024"},
         {"date": "30/07/2024"},
@@ -95,8 +110,10 @@
         {"date": "22/04/2024"},
         {"date": "27/07/2024"}
       ]},
-    {"area":"Pireas","price":"102","roomImage":"bluemotion.png","noOfReviews":"27","mid":"4","stars":"4.6",
-      "noOfPersons":"4","roomName":"BlueMotion",
+    {"area":"Pireas","latitude": "37.941503","longitude": "23.642498",
+      "description": "Enjoy a stylish experience in this centrally located space.",
+      "noOfImgs": "3","price":"102","roomImage":"bluemotion","noOfReviews":"27","mid":"4","stars":"4.6",
+      "noOfPersons":"4","roomName":"BlueMotion","noOfRooms": "2","noOfBathrooms": "1",
       "availableDates": [
         {"date": "19/04/2024"},
         {"date": "29/05/2024"},
@@ -109,8 +126,10 @@
         {"date": "21/08/2024"},
         {"date": "28/08/2024"}
       ]},
-    {"area":"Pireas","price":"110","roomImage":"whiteBlacksuite.png","noOfReviews":"16","mid":"4","stars":"5",
-      "noOfPersons":"2","roomName":"White&Black suite",
+    {"area":"Pireas","latitude": "37.938231","longitude": "23.646125",
+      "description": "Discover the allure of Marina Zeas from our first-floor, 80m2 gem. Embrace luxury with 2 king bedrooms, 2 radiant balconies, and bespoke bathrooms. Revel in the fully AC'd space with 3 smart TVs and complimentary Netflix. The sun-drenched front balcony offers yacht views, while the private patio promises alfresco delights. Steps from Pireas's heart, your serene waterfront haven awaits.",
+      "noOfImgs": "3","price":"110","roomImage":"whiteBlacksuite","noOfReviews":"16","mid":"4","stars":"5",
+      "noOfPersons":"2","roomName":"White&Black suite","noOfRooms": "1","noOfBathrooms": "1",
       "availableDates": [
         {"date": "15/11/2024"},
         {"date": "16/11/2024"}
@@ -119,8 +138,10 @@
         {"date": "22/11/2024"},
         {"date": "27/11/2024"}
       ]},
-    {"area":"Crete","price":"36","roomImage":"staing.png","noOfReviews":"5","mid":"4","stars":"4.2",
-      "noOfPersons":"4","roomName":"Staing",
+    {"area":"Crete","latitude": "35.018218","longitude": "25.852121",
+      "description": "A special place between mountains and sea. Our apartment is located in the tranquil town of Ferma, 10 km away from Ierapetra. Very nicely located, with a breathtaking view of mountains, as well as the sea over an olive grove.",
+      "noOfImgs": "3","price":"36","roomImage":"staing","noOfReviews":"5","mid":"4","stars":"4.2",
+      "noOfPersons":"4","roomName":"Staing","noOfRooms": "2","noOfBathrooms": "1",
       "availableDates": [
         {"date": "19/04/2024"},
         {"date": "20/04/2024"}
