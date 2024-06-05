@@ -1,16 +1,20 @@
 package com.example.roomie.frontend
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.roomie.R
 import com.example.roomie.backend.domain.Chunk
 import com.example.roomie.backend.domain.Room
 import com.example.roomie.backend.utils.Pair
+import com.example.roomie.backend.utils.SimpleCalendar
 import com.example.roomie.frontend.utils.AvailabilityDecorator
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -38,7 +42,9 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var startDate: CalendarDay? = null
     private var finishDate: CalendarDay? = null
     var avDates: HashSet<CalendarDay>? = null
+    private var selectedDates: ArrayList<SimpleCalendar> = ArrayList()
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room_details)
@@ -75,7 +81,7 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         calendarView!!.setOnDateChangedListener(object : OnDateSelectedListener {
             override fun onDateSelected(widget: MaterialCalendarView, date: CalendarDay, selected: Boolean) {
 
-                if(avDates!!.contains(date)) {
+                if (avDates!!.contains(date)) {
                     if (startDate == null) {
                         startDate = date
                     } else if (finishDate == null) {
@@ -100,11 +106,17 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        val bookButton = findViewById<Button>(R.id.book_btn)
+        bookButton.setOnClickListener {
+            makeBooking()
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         this.googleMap = googleMap
     }
+
     private fun setupMap() {
         if (googleMap != null && room != null) {
             val lat = room!!.lat
@@ -129,8 +141,8 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         // Example of available dates
         val dates = HashSet<CalendarDay>()
         val d = room!!.availableDates
-        for (dat in d){
-            dates.add(CalendarDay.from(dat.year,dat.month,dat.dayOfMonth))
+        for (dat in d) {
+            dates.add(CalendarDay.from(dat.year, dat.month, dat.dayOfMonth))
         }
         return dates
     }
@@ -138,7 +150,7 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
     /**
      * Sets the details of the room to the screen
      */
-    private fun setDetails(){
+    private fun setDetails() {
         val price = findViewById<TextView>(R.id.price_value)
         val name = findViewById<TextView>(R.id.room_name)
         val location = findViewById<TextView>(R.id.location)
@@ -189,10 +201,10 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         if (startDate != null && finishDate != null) {
             val startdate = startDate!!.date.toLocalDate()
             val enddate = finishDate!!.date.toLocalDate()
-            val datesInRange = generateDatesInRange(startdate, enddate)
+            selectedDates = generateDatesInRange(startdate, enddate)
 
-            datesInRange.forEach { date ->
-                val calendarDay = CalendarDay.from(date.year, date.monthValue - 1, date.dayOfMonth)
+            selectedDates.forEach { date ->
+                val calendarDay = CalendarDay.from(date.year, date.month - 1, date.dayOfMonth)
                 calendarView!!.setDateSelected(calendarDay, true)
             }
         }
@@ -213,13 +225,51 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
      * @param endDate   the check out date
      * @return a List of localdates
      */
-    private fun generateDatesInRange(startDate: LocalDate, endDate: LocalDate): List<LocalDate> {
-        val datesInRange = mutableListOf<LocalDate>()
+    private fun generateDatesInRange(startDate: LocalDate, endDate: LocalDate): ArrayList<SimpleCalendar> {
+        val datesInRange = mutableListOf<SimpleCalendar>()
         var currentDate = startDate
         while (!currentDate.isAfter(endDate)) {
-            datesInRange.add(currentDate)
+            datesInRange.add(SimpleCalendar(currentDate.year, currentDate.monthValue, currentDate.dayOfMonth))
             currentDate = currentDate.plusDays(1)
         }
-        return datesInRange
+        return ArrayList(datesInRange)
+    }
+
+    private fun makeBooking() {
+        if (room == null) {
+            Toast.makeText(this, "Room details not available", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        if (selectedDates.isEmpty()) {
+            Toast.makeText(this, "Please select dates", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val booking = Pair(room!!.id, selectedDates)
+
+        val scope = CoroutineScope(Dispatchers.IO)
+        scope.launch {
+            try {
+                val chunk = Chunk("", 2, booking)
+                Log.d("RoomDetailsActivity", booking.toString())
+                val backendCommunicator = BackendCommunicator()
+                backendCommunicator.sendMasterInfo(chunk)
+                val response = backendCommunicator.sendClientInfo()
+
+                withContext(Dispatchers.Main) {
+                    Log.d("RoomDetailsActivity", response?.data.toString())
+                    if (response?.data == true) {
+                        Toast.makeText(this@RoomDetailsActivity, "Booking successful", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(this@RoomDetailsActivity, "Booking failed", Toast.LENGTH_LONG).show()
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@RoomDetailsActivity, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+        }
     }
 }
