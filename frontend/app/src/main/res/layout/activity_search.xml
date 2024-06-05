@@ -282,15 +282,15 @@
 
                 <TextView
                     android:id="@+id/people_expanded"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_width="322dp"
+                    android:layout_height="57dp"
                     android:gravity="center_vertical"
                     android:text="Who's coming?"
                     android:textSize="18dp"
                     android:textStyle="bold" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="324dp"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical">
 
@@ -305,7 +305,7 @@
                         android:id="@+id/minusppl"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="19dp"
+                        android:layout_margin="0dp"
                         android:backgroundTint="@color/white"
                         android:text="-"
                         android:textColor="@color/black"
@@ -322,7 +322,7 @@
                         android:id="@+id/plusppl"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="19dp"
+                        android:layout_margin="0dp"
                         android:backgroundTint="@color/white"
                         android:text="+"
                         android:textColor="@color/black"

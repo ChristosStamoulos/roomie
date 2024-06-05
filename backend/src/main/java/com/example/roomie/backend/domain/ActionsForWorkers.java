@@ -162,8 +162,10 @@ public class ActionsForWorkers extends Thread {
         ArrayList<Pair<Integer, ArrayList<SimpleCalendar>>> reservations = new ArrayList<>();
         for (Room r : rooms) {
             ArrayList<SimpleCalendar> res = r.getUserAvailableDates(userId);
-            Pair<Integer, ArrayList<SimpleCalendar>> pair = new Pair<>(r.getId(), res);
-            reservations.add(pair);
+            if (!res.isEmpty()){
+                Pair<Integer, ArrayList<SimpleCalendar>> pair = new Pair<>(r.getId(), res);
+                reservations.add(pair);
+            }
         }
         return reservations;
     }
