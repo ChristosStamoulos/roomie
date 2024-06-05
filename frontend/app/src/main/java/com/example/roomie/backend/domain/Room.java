@@ -1,5 +1,6 @@
 package com.example.roomie.backend.domain;
 
+import com.example.roomie.backend.utils.Pair;
 import com.example.roomie.backend.utils.SimpleCalendar;
 
 import java.io.Serializable;
@@ -29,6 +30,7 @@ public class Room implements Serializable {
 
     private ArrayList<SimpleCalendar> availableDates;   //the available dates for rating the room
     private ArrayList<SimpleCalendar> reservationDates; //the dates the room is reserved
+    private ArrayList<Pair<Integer, SimpleCalendar>> userReservationDates; //the dates the room is reserved by a user
 
     private int id;                         //the room's id
     private static int idCount = 0;         //a counter for the ids of the rooms
@@ -319,6 +321,22 @@ public class Room implements Serializable {
     }
 
     /**
+     * Gets the dates the room is reserved by a user
+     *
+     * @param userId user's id
+     * @return an ArrayList of SimpleCalendar objects
+     */
+    public ArrayList<SimpleCalendar> getUserAvailableDates(int userId) {
+        ArrayList<SimpleCalendar> dates = new ArrayList<>();
+        for(Pair<Integer, SimpleCalendar> i: userReservationDates){
+            if(i.getKey() == userId){
+                dates.add(i.getValue());
+            }
+        }
+        return dates;
+    }
+
+    /**
      * Adds an available date for the room
      *
      * @param date  a SimpleCalendar date
@@ -338,6 +356,18 @@ public class Room implements Serializable {
         if(!this.reservationDates.contains(date)) {
             this.reservationDates.add(date);
             this.availableDates.remove(date);
+        }
+    }
+
+    /**
+     * Adds a reservation to the user
+     *
+     * @param userId user's id
+     * @param date  a SimpleCalendar date
+     */
+    public void addUserReservationDate(int userId, SimpleCalendar date){
+        if(!this.reservationDates.contains(date)) {
+            this.userReservationDates.add(new Pair<Integer, SimpleCalendar>(userId, date));
         }
     }
 
