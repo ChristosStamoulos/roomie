@@ -38,6 +38,13 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
+/** Search Screen Activity class
+ *
+ * @author Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
+ * @Details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024.
+ *
+ * This class is implemented to visualize an implemented search screen.
+ */
 class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
 
     var clearbtn: Button? = null
@@ -71,6 +78,10 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
     val maxP = 1000
     var star: Int = 0
 
+    /**
+     * Initializes the class's attributes
+     * @param savedInstanceState
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -103,7 +114,6 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
         })
 
         viewFlipper = findViewById(R.id.viewFlipper)
-        Log.d("VIEWWWWWWWWWWWWWWW", "ViewFlipper initialized")
         viewFlipper!!.displayedChild = 0;
 
         whoButton()
@@ -116,6 +126,9 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
         miniSearchButton()
     }
 
+    /**
+     * Implements the clear button, clears all filters
+     */
     fun clearButton(){
        clearbtn = findViewById(R.id.clearBtn)
 
@@ -140,6 +153,10 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
         }
     }
 
+    /**
+     * Implements the search button, sends the filters to master
+     * and displays the search results to the screen
+     */
     fun searchButton(){
         searchbtn = findViewById(R.id.searchBtn)
         searchResultsView = findViewById(R.id.searchResults)
@@ -191,6 +208,10 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
         }
     }
 
+    /**
+     * mini search button, for when the search results are displayed
+     * to be able to return to search
+     */
     fun miniSearchButton(){
         miniSearchbtn = findViewById(R.id.minisearchbtn)
         miniSearchbtn!!.visibility = View.VISIBLE
@@ -199,6 +220,10 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
         }
     }
 
+    /**
+     * Implements the where filter, lets user write the location
+     * he wants,
+     */
     fun whereButton(){
         wherebtn = findViewById(R.id.wherebtn)
         where_expanded = findViewById(R.id.where_expanded)
@@ -236,6 +261,9 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
 
     }
 
+    /**
+     * Implements the when filter, lets the user pick a range of dates
+     */
     fun whenButton(){
         whenbtn = findViewById(R.id.whenbtn)
         when_expanded = findViewById(R.id.when_expanded)
@@ -304,6 +332,10 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
 
     }
 
+    /**
+     * Implements the who button, lets the user pick how
+     * many people will stay on the accomodation
+     */
     fun whoButton(){
 
         whobtn = findViewById(R.id.whobtn)
@@ -355,6 +387,10 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
         }
     }
 
+    /**
+     * Implements the price filter, lets the user pick a range
+     * of prices for a night in the object
+     */
     fun priceButton(){
 
         pricebtn = findViewById(R.id.pricebtn)
@@ -445,18 +481,30 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
         })
     }
 
+    /**
+     * Updates the min price text, calculates the price in the
+     * seek bar
+     */
     fun updateMinPriceText(progress: Int) {
         val minprice = (minP + (maxP - minP) * (progress.toFloat() / minPriceSeekBar!!.max)).toInt()
         minPricetxt!!.text = minprice.toString()
         minPrice = minprice
     }
 
+    /**
+     * Updates the max price text, calculates the price in the
+     * seek bar
+     */
     fun updateMaxPriceText(progress: Int) {
         val maxprice = (minP + (maxP - minP) * (progress.toFloat() / maxPriceSeekBar!!.max)).toInt()
         maxPricetxt!!.text = maxprice.toString()
         maxPrice = maxprice
     }
 
+    /**
+     * Implements the stars filter, lets the user pick the minimum
+     * stars he wants the accomodation to have
+     */
     fun starsButton(){
         starsbtn = findViewById(R.id.starsbtn)
         stars_expanded = findViewById(R.id.stars_expanded)
@@ -553,6 +601,11 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
         }
     }
 
+    /**
+     * Creates a JSONObject with the filters the user picked
+     *
+     * @return the filters as JSONObject
+     */
     fun createJson() : JSONObject {
         var filters = JSONObject()
         var filter = JSONObject()
@@ -588,6 +641,9 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
         return filters
     }
 
+    /**
+     * Highlights the range of dates the user selected
+     */
     private fun highlightSelectedRange() {
         if (startDate != null && finishDate != null) {
             val startdate = startDate!!.date.toLocalDate()
@@ -601,11 +657,23 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
         }
     }
 
+    /**
+     * Turns a Date object into LocalDate
+     * @return a LocalDate Object
+     */
     private fun Date.toLocalDate(): LocalDate {
         return this.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
     }
 
 
+    /**
+     * Generates a list of dates between the start and end date the
+     * user picked
+     *
+     * @param startDate the start date the user picked
+     * @param endDate   the end date the user picked
+     * @return a List of LocalDate Objects
+     */
     private fun generateDatesInRange(startDate: LocalDate, endDate: LocalDate): List<LocalDate> {
         val datesInRange = mutableListOf<LocalDate>()
         var currentDate = startDate
@@ -616,6 +684,12 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
         return datesInRange
     }
 
+    /**
+     * Starts RoomDetailsActivity, when a user clicks a room
+     *
+     * @param room  the Room the user clicked
+     * @param view the view
+     */
     override fun onRoomClick(room: Room, view: View) {
         var intent = Intent(this, RoomDetailsActivity::class.java)
         val options = ActivityOptionsCompat.makeCustomAnimation(
