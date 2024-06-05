@@ -43,6 +43,7 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var finishDate: CalendarDay? = null
     var avDates: HashSet<CalendarDay>? = null
     private var selectedDates: ArrayList<SimpleCalendar> = ArrayList()
+    private var selectedDatesToMaster: ArrayList<String> = ArrayList()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -226,27 +227,30 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
      * @return a List of localdates
      */
     private fun generateDatesInRange(startDate: LocalDate, endDate: LocalDate): ArrayList<SimpleCalendar> {
-        val datesInRange = mutableListOf<SimpleCalendar>()
+        val datesInRange = ArrayList<SimpleCalendar>()
         var currentDate = startDate
         while (!currentDate.isAfter(endDate)) {
             datesInRange.add(SimpleCalendar(currentDate.year, currentDate.monthValue, currentDate.dayOfMonth))
             currentDate = currentDate.plusDays(1)
         }
-        return ArrayList(datesInRange)
+        return datesInRange
     }
 
     private fun makeBooking() {
+        for (i in selectedDates){
+            selectedDatesToMaster.add(selectedDates.toString())
+        }
         if (room == null) {
             Toast.makeText(this, "Room details not available", Toast.LENGTH_SHORT).show()
             return
         }
 
-        if (selectedDates.isEmpty()) {
+        if (selectedDatesToMaster.isEmpty()) {
             Toast.makeText(this, "Please select dates", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val booking = Pair(room!!.id, selectedDates)
+        val booking = Pair(room!!.id, selectedDatesToMaster)
 
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
