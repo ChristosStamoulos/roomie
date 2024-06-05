@@ -5,5 +5,9 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.roomie" parent="Base.Theme.roomie" />
+    <style name="Theme.roomie" parent="Base.Theme.roomie">
+        <item name="android:fontFamily">@font/jost_light</item>
+        <item name="android:textColor">@color/light_black</item>
+
+    </style>
 </resources>
