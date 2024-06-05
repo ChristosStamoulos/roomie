@@ -361,12 +361,15 @@ public class ActionsForWorkers extends Thread {
         String path = "assets/";
         for(String img: r.getRoomImage()){
             File imageFile = new File(path+img);
-            byte[] byteArray = new byte[(int) img.length()];
-            System.out.println(byteArray);
+            byte[] byteArray;
             try (FileInputStream fileInputStream = new FileInputStream(imageFile)) {
+                int length = (int) imageFile.length();
+                byteArray = new byte[length];
                 fileInputStream.read(byteArray);
             } catch (IOException e) {
+                // In case of an exception, create an empty byte array
                 e.printStackTrace();
+                byteArray = new byte[0];
             }
             imgs.add(byteArray);
         }
