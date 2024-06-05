@@ -2,24 +2,39 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/room_bg"
     android:elevation="4dp"
     android:layout_margin="5dp">
 
-
-    <ImageView
-        android:id="@+id/roomImage"
-        android:layout_width="135dp"
-        android:layout_height="125dp"
-        android:layout_marginStart="26dp"
-        android:layout_marginTop="13dp"
-        android:layout_marginBottom="6dp"
-        android:src="@drawable/istockphoto_904608018_612x612_removebg_preview"
-        app:layout_constraintBottom_toTopOf="@+id/roomArea"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView"
+        android:layout_width="162dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="8dp"
+        app:cardCornerRadius="7dp"
+        app:cardElevation="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintHeight_percent="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
+        app:layout_constraintTop_toBottomOf="@+id/name"
+        app:layout_constraintWidth_percent="0.9"
+        android:backgroundTint="@color/offwhite">
+
+
+        <ImageView
+            android:id="@+id/roomImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/cornered_background"
+            android:scaleType="center"
+            android:src="@drawable/istockphoto_904608018_612x612_removebg_preview"/>
+
+    </androidx.cardview.widget.CardView>
 
     <TextView
         android:id="@+id/name"
@@ -27,7 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="26dp"
         android:text="Name"
-        app:layout_constraintBottom_toTopOf="@+id/roomImage"
+        app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,23 +51,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="101dp"
-        android:layout_marginTop="34dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginRight="5dp"
         android:text="Area"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/roomImage"
+        app:layout_constraintHorizontal_bias="0.929"
+        app:layout_constraintStart_toEndOf="@+id/cardView"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="102dp"
         android:layout_marginTop="28dp"
+        android:layout_marginRight="5dp"
         android:layout_marginBottom="33dp"
         android:text="Date"
         app:layout_constraintBottom_toTopOf="@+id/roomDesc"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/roomImage"
+        app:layout_constraintHorizontal_bias="0.99"
+        app:layout_constraintStart_toEndOf="@+id/cardView"
         app:layout_constraintTop_toBottomOf="@+id/roomArea" />
 
     <TextView
@@ -61,10 +79,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="64dp"
         android:layout_marginTop="20dp"
+        android:layout_marginRight="5dp"
         android:layout_marginBottom="7dp"
         android:text="Tap to view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/roomImage"
+        app:layout_constraintHorizontal_bias="0.823"
+        app:layout_constraintStart_toEndOf="@+id/cardView"
         app:layout_constraintTop_toBottomOf="@+id/date" />
 </androidx.constraintlayout.widget.ConstraintLayout>
