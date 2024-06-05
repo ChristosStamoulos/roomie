@@ -19,18 +19,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+        app:layout_constraintBottom_toTopOf="@+id/viewFlipper"
         android:textSize="24dp"/>
 
-    <ScrollView
-        android:id="@+id/scrollView2"
+    <ViewFlipper
+        android:id="@+id/viewFlipper"
         android:layout_width="match_parent"
-        android:layout_height="607dp"
-        android:isScrollContainer="false"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/bottomNav"
         app:layout_constraintTop_toBottomOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
+
+        <ScrollView
+        android:id="@+id/scrollView2"
+        android:layout_width="match_parent"
+        android:layout_height="607dp"
+        android:isScrollContainer="false"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/bottomNav"
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -433,9 +443,52 @@
                     android:textStyle="bold" />
 
                 <SeekBar
-                    android:id="@+id/priceBar"
+                    android:id="@+id/minPriceBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
+
+                <SeekBar
+                    android:id="@+id/maxPriceBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Min Price"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:text="Max Price"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/minPricetxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="0"/>
+
+                    <TextView
+                        android:id="@+id/maxPricetxt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0"
+                        android:text="1000"/>
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -464,9 +517,59 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/clearBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Clear"
+                    android:layout_margin="40dp"
+                    android:backgroundTint="@color/material_dynamic_primary30"/>
+
+                <Button
+                    android:id="@+id/searchBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Search"
+                    android:layout_margin="40dp"
+                    android:backgroundTint="@color/mandarin"/>
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </ScrollView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/minisearchbtn"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:background="@drawable/bottom_nav_bg"
+                android:gravity="center_vertical"
+                android:paddingStart="50dp"
+                android:text="Where"
+                android:textSize="16sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/searchResults"
+                android:layout_width="match_parent"
+                android:layout_height="509dp"
+                app:layout_constraintHorizontal_bias="0.51"/>
+
+        </LinearLayout>
+
+    </ViewFlipper>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"
@@ -483,6 +586,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewFlipper"
         app:menu="@menu/activity_menu" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

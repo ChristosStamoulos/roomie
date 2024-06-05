@@ -2,6 +2,7 @@ package com.example.roomie.frontend
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -9,15 +10,26 @@ import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.SeekBar
 import android.widget.TextView
+import android.widget.ViewFlipper
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.roomie.R
+import com.example.roomie.backend.domain.Chunk
+import com.example.roomie.backend.domain.Room
+import com.example.roomie.backend.utils.Pair
+import com.example.roomie.frontend.Adapters.RoomsAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.navigation.NavigationBarView
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.OnDateSelectedListener
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import java.time.LocalDate
 import java.time.ZoneId
@@ -25,8 +37,13 @@ import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
 
+    var clearbtn: Button? = null
+    var searchbtn: Button? = null
+    var searchResultsView: RecyclerView? = null
+    var miniSearchbtn: TextView? = null
+    var viewFlipper: ViewFlipper? = null
     var bottomNavigationView: BottomNavigationView? = null
     var whenbtn: LinearLayout? = null
     var whobtn: LinearLayout? = null
@@ -39,12 +56,18 @@ class SearchActivity : AppCompatActivity() {
     var stars_expanded: LinearLayout? = null
     var price_expanded: LinearLayout? = null
     var calendarView: MaterialCalendarView? = null
+    var maxPricetxt: TextView? = null
+    var minPricetxt: TextView? = null
+    var maxPriceSeekBar: SeekBar? = null
+    var minPriceSeekBar: SeekBar? = null
     var location: String? = null
     var people = 0
     private var startDate: CalendarDay? = null
     private var finishDate: CalendarDay? = null
-    var minPrice = 0
-    var maxPrice = 0
+    var minPrice: Int = 0
+    var maxPrice: Int = 0
+    val minP = 0
+    val maxP = 1000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,11 +99,83 @@ class SearchActivity : AppCompatActivity() {
             item.setChecked(true)
             true
         })
+
+        viewFlipper = findViewById(R.id.viewFlipper)
+        Log.d("VIEWWWWWWWWWWWWWWW", "ViewFlipper initialized")
+        viewFlipper!!.displayedChild = 0;
+
         whoButton()
         whenButton()
         whereButton()
         priceButton()
         starsButton()
+        clearButton()
+        searchButton()
+        miniSearchButton()
+    }
+
+    fun clearButton(){
+       clearbtn = findViewById(R.id.clearBtn)
+
+        clearbtn!!.setOnClickListener {
+            location = ""
+            var placetxt = findViewById<TextView>(R.id.wheretxt)
+            placetxt.text = "Place"
+
+            people = 0
+            var whotxt = findViewById<TextView>(R.id.whotxt)
+            whotxt.text = "People"
+
+            startDate = null
+            finishDate = null
+            var whentxt = findViewById<TextView>(R.id.whentxt)
+            whentxt.text = "Date"
+
+            minPrice = 0
+            maxPrice = 0
+            val pricetxt = findViewById<TextView>(R.id.pricetxt)
+            pricetxt.text = "Value"
+        }
+    }
+
+    fun searchButton(){
+        searchbtn = findViewById(R.id.searchBtn)
+        searchResultsView = findViewById(R.id.searchResults)
+        val grid = GridLayoutManager(this, 2)
+
+        searchResultsView!!.layoutManager = grid
+
+
+        searchbtn!!.setOnClickListener {
+            var filters = createJson()
+            val scope = CoroutineScope(Dispatchers.IO)
+            scope.launch {
+
+                val chunk = Chunk("", 1, filters.toString())
+
+                val backendCommunicator = BackendCommunicator()
+                backendCommunicator.sendMasterInfo(chunk)
+                val answer = backendCommunicator.sendClientInfo()
+                var searchResults = answer.data as ArrayList<Pair<Room, ArrayList<ByteArray>>>
+
+                // Switch to the main thread to update the UI
+                withContext(Dispatchers.Main) {
+
+                    viewFlipper!!.showNext()
+                    val roomsAdapter = RoomsAdapter(searchResults, this@SearchActivity)
+                    searchResultsView!!.adapter = roomsAdapter
+                }
+
+            }
+        }
+    }
+
+    fun miniSearchButton(){
+        miniSearchbtn = findViewById(R.id.minisearchbtn)
+        miniSearchbtn!!.visibility = View.VISIBLE
+        miniSearchbtn!!.setOnClickListener {
+            viewFlipper!!.showPrevious()
+        }
     }
 
     fun whereButton(){
@@ -117,6 +212,7 @@ class SearchActivity : AppCompatActivity() {
             when_expanded!!.visibility = View.VISIBLE
             whenbtn!!.visibility = View.GONE
         }
+
     }
 
     fun whenButton(){
@@ -140,12 +236,23 @@ class SearchActivity : AppCompatActivity() {
         }
 
         var nextWhen = findViewById<Button>(R.id.nextWhen)
+        var whentxt = findViewById<TextView>(R.id.whentxt)
         nextWhen.setOnClickListener {
             //TO DO: add clickable dates
             when_expanded!!.visibility = View.GONE
             whenbtn!!.visibility = View.VISIBLE
             who_expanded!!.visibility = View.VISIBLE
             whobtn!!.visibility = View.GONE
+            val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", Locale.ENGLISH)
+            if (startDate!=null && finishDate!=null){
+                whentxt.text = startDate!!.date.toLocalDate().format(formatter)+ " - " + finishDate!!.date.toLocalDate().format(formatter)
+            }else if(startDate==null && finishDate!=null){
+                whentxt.text = " - " + finishDate!!.date.toLocalDate().format(formatter)
+            }else if(startDate!=null && finishDate==null){
+                whentxt.text = startDate!!.date.toLocalDate().format(formatter)+ " - "
+            }else if(startDate!!.equals(finishDate)){
+                whentxt.text = startDate!!.date.toLocalDate().format(formatter)
+            }
         }
 
         calendarView = findViewById(R.id.when_calendar)
@@ -177,6 +284,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun whoButton(){
+
         whobtn = findViewById(R.id.whobtn)
         who_expanded = findViewById(R.id.who_expanded)
         whobtn!!.setOnClickListener {
@@ -226,6 +334,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     fun priceButton(){
+
         pricebtn = findViewById(R.id.pricebtn)
         price_expanded = findViewById(R.id.price_expanded)
         pricebtn!!.setOnClickListener {
@@ -252,25 +361,30 @@ class SearchActivity : AppCompatActivity() {
             pricebtn!!.visibility = View.VISIBLE
             price_expanded!!.visibility = View.GONE
             val ptxt = findViewById<TextView>(R.id.pricetxt)
-            ptxt.text = minPrice.toString()
+            ptxt.text = "$minPrice - $maxPrice"
+            Log.d("MINNNNNNNNNNNNNNNN", minPrice.toString())
 
         }
 
         //TO DO: price range for max
 
-        val priceSeekBar = findViewById<SeekBar>(R.id.priceBar)
+        minPriceSeekBar = findViewById(R.id.minPriceBar)
+        minPricetxt = findViewById(R.id.minPricetxt)
+
 
         // Set the minimum and maximum values for the SeekBar (e.g., price range)
-        val minP = 0
-        val maxP = 1000
-        priceSeekBar.min = minP
-        priceSeekBar.max = maxP
-        var price = 0
+        minPriceSeekBar!!.min = minP
+        minPriceSeekBar!!.max = maxP
+        var minprice = 0
 
         // Set up a listener to handle changes in the SeekBar progress
-        priceSeekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        minPriceSeekBar!!.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                price = (minP + (maxP - minP) * (progress.toFloat() / priceSeekBar.max)).toInt()
+                if (progress > maxPriceSeekBar!!.progress) {
+                    minPriceSeekBar!!.progress = maxPriceSeekBar!!.progress
+                } else {
+                    updateMinPriceText(progress)
+                }
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -278,19 +392,57 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                minPrice = price
+                minPrice = minprice
             }
         })
+
+        maxPriceSeekBar = findViewById(R.id.maxPriceBar)
+        maxPricetxt = findViewById(R.id.maxPricetxt)
+
+        maxPriceSeekBar!!.min = minP
+        maxPriceSeekBar!!.max = maxP
+        var maxprice = 0
+
+        // Set up a listener to handle changes in the SeekBar progress
+        maxPriceSeekBar!!.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (progress < minPriceSeekBar!!.progress) {
+                    maxPriceSeekBar!!.progress = minPriceSeekBar!!.progress
+                } else {
+                    updateMaxPriceText(progress)
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                // Handle when the user starts dragging the SeekBar
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                maxPrice = maxprice
+            }
+        })
+    }
+
+    fun updateMinPriceText(progress: Int) {
+        val minprice = (minP + (maxP - minP) * (progress.toFloat() / minPriceSeekBar!!.max)).toInt()
+        minPricetxt!!.text = minprice.toString()
+        minPrice = minprice
+    }
+
+    fun updateMaxPriceText(progress: Int) {
+        val maxprice = (minP + (maxP - minP) * (progress.toFloat() / maxPriceSeekBar!!.max)).toInt()
+        maxPricetxt!!.text = maxprice.toString()
+        maxPrice = maxprice
     }
 
     fun starsButton(){
 
     }
 
-    fun createJson() : JSONObject{
+    fun createJson() : JSONObject {
         var filters = JSONObject()
         var filter = JSONObject()
-        if (location.equals("")){
+        if (location.equals("") || location == null){
             filter.put("area", "default")
         }else{
             filter.put("area", location)
@@ -314,8 +466,8 @@ class SearchActivity : AppCompatActivity() {
 
         filter.put("noOfPeople", people)
 
-        filter.put("lowPrice", 0)
-        filter.put("highPrice", 0)
+        filter.put("lowPrice", minPrice)
+        filter.put("highPrice", maxPrice)
         filter.put("stars", 0.0)
 
         filters.put("filters", filter)
@@ -348,5 +500,16 @@ class SearchActivity : AppCompatActivity() {
             currentDate = currentDate.plusDays(1)
         }
         return datesInRange
+    }
+
+    override fun onRoomClick(room: Room, view: View) {
+        var intent = Intent(this, RoomDetailsActivity::class.java)
+        val options = ActivityOptionsCompat.makeCustomAnimation(
+                this,
+                R.anim.expand_trans,  // Animation for the entering activity
+                R.anim.slide_out  // Animation for the exiting activity
+        )
+        intent.putExtra("roomId", room.id)
+        startActivity(intent, options.toBundle())
     }
 }
