@@ -379,6 +379,7 @@ public class Room implements Serializable {
      */
     public void addRating(int rate){
         this.rating = (this.rating*this.noOfReviews + rate)/(this.noOfReviews + 1);
+        this.rating = Math.round(this.rating * 10.0) / 10.0;
         this.noOfReviews++;
     }
 
