@@ -22,10 +22,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+/** Reservation Activity class
+ *
+ * @author Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
+ * @Details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024.
+ *
+ * This class is implemented for the displayment of the user's reservations.
+ */
 class ReservationsActivity : AppCompatActivity(), ReservationsAdapter.onReservationClickListener {
 
     var bottomNavigationView: BottomNavigationView? = null
     var recyclerView: RecyclerView? = null
+    var userId: Int = 0
 
     /**
      * Initializes the class's attributes
@@ -36,14 +44,22 @@ class ReservationsActivity : AppCompatActivity(), ReservationsAdapter.onReservat
         enableEdgeToEdge()
         setContentView(R.layout.activity_home_screen)
 
+        userId = intent.getIntExtra("userId", -1)
+
         bottomNavigationView = findViewById<View>(R.id.bottomNav) as BottomNavigationView?
 
         bottomNavigationView?.setSelectedItemId(R.id.reservbtn)
         bottomNavigationView!!.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item: MenuItem ->
             val itemId = item.itemId
             if (item.itemId == R.id.accountbtn) {
-                val intent: Intent = Intent(this, HomeScreenActivity::class.java)
-                startActivity(intent)
+                val intent: Intent = Intent(this, MyAccountActivity::class.java)
+                val options = ActivityOptionsCompat.makeCustomAnimation(
+                        this,
+                        R.anim.slide_in,  // Animation for the entering activity
+                        R.anim.slide_out  // Animation for the exiting activity
+                )
+                intent.putExtra("userId", userId)
+                startActivity(intent, options.toBundle())
             } else if (itemId == R.id.homeBtn) {
                 val intent: Intent = Intent(this, HomeScreenActivity::class.java)
                 val options = ActivityOptionsCompat.makeCustomAnimation(
@@ -51,6 +67,7 @@ class ReservationsActivity : AppCompatActivity(), ReservationsAdapter.onReservat
                         R.anim.slide_out,  // Animation for the entering activity
                         R.anim.slide_in// Animation for the exiting activity
                 )
+                intent.putExtra("userId", userId)
                 startActivity(intent, options.toBundle())
             } else if (itemId == R.id.searchbtn) {
                 val intent: Intent = Intent(this, SearchActivity::class.java)
@@ -59,6 +76,7 @@ class ReservationsActivity : AppCompatActivity(), ReservationsAdapter.onReservat
                         R.anim.slide_out,  // Animation for the entering activity
                         R.anim.slide_in// Animation for the exiting activity
                 )
+                intent.putExtra("userId", userId)
                 startActivity(intent, options.toBundle())
             }
             item.setChecked(true)
@@ -74,7 +92,7 @@ class ReservationsActivity : AppCompatActivity(), ReservationsAdapter.onReservat
         scope.launch {
 
             var res = ArrayList<Pair<Pair<Room, ArrayList<ByteArray>>,ArrayList<SimpleCalendar>>>()
-            val chunk = Chunk("1", 10, 1)// replace 1 with user id
+            val chunk = Chunk("1", 10, userId)
 
             val backendCommunicator = BackendCommunicator()
             backendCommunicator.sendMasterInfo(chunk)

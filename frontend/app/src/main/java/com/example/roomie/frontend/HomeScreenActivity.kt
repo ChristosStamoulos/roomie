@@ -33,6 +33,7 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
 
     var bottomNavigationView: BottomNavigationView? = null
     var recyclerView: RecyclerView? = null
+    var userId: Int = 0
 
     /**
      * Initializes the class's attributes
@@ -43,17 +44,31 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
         enableEdgeToEdge()
         setContentView(R.layout.activity_home_screen)
 
+        userId = intent.getIntExtra("userId", -1)
+
         bottomNavigationView = findViewById<View>(R.id.bottomNav) as BottomNavigationView?
 
         bottomNavigationView?.setSelectedItemId(R.id.homeBtn)
         bottomNavigationView!!.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item: MenuItem ->
             val itemId = item.itemId
             if (item.itemId == R.id.accountbtn) {
-                val intent: Intent = Intent(this, HomeScreenActivity::class.java)
-                startActivity(intent)
+                val intent: Intent = Intent(this, MyAccountActivity::class.java)
+                val options = ActivityOptionsCompat.makeCustomAnimation(
+                        this,
+                        R.anim.slide_in,  // Animation for the entering activity
+                        R.anim.slide_out  // Animation for the exiting activity
+                )
+                intent.putExtra("userId", userId)
+                startActivity(intent, options.toBundle())
             } else if (itemId == R.id.reservbtn) {
                 val intent: Intent = Intent(this, ReservationsActivity::class.java)
-                startActivity(intent)
+                val options = ActivityOptionsCompat.makeCustomAnimation(
+                        this,
+                        R.anim.slide_in,  // Animation for the entering activity
+                        R.anim.slide_out  // Animation for the exiting activity
+                )
+                intent.putExtra("userId", userId)
+                startActivity(intent, options.toBundle())
             } else if (itemId == R.id.searchbtn) {
                 val intent: Intent = Intent(this, SearchActivity::class.java)
                 val options = ActivityOptionsCompat.makeCustomAnimation(
@@ -61,6 +76,7 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
                         R.anim.slide_in,  // Animation for the entering activity
                         R.anim.slide_out  // Animation for the exiting activity
                 )
+                intent.putExtra("userId", userId)
                 startActivity(intent, options.toBundle())
             }
             item.setChecked(true)

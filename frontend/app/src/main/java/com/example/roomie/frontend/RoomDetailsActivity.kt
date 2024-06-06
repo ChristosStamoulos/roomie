@@ -45,6 +45,13 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.util.Date
 
+/** Room Details Activity class
+ *
+ * @author Maria Schoinaki, Eleni Kechrioti, Christos Stamoulos
+ * @Details This project is being carried out in the course Distributed Systems @ Spring AUEB 2024.
+ *
+ * This class is implemented to for the displayment of the room's details.
+ */
 class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
     lateinit var googleMap: GoogleMap
     var backendCommunicator: BackendCommunicator? = null
@@ -57,13 +64,20 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var selectedDates: ArrayList<SimpleCalendar> = ArrayList()
     private var selectedDatesToMaster: ArrayList<String> = ArrayList()
     var bottomNavigationView: BottomNavigationView? = null
+    var userId: Int = 0
 
+
+    /**
+     * Initializes the class's attributes
+     * @param savedInstanceState
+     */
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_room_details)
 
         val roomId = intent.getIntExtra("roomId", -1)
+        userId = intent.getIntExtra("userId", -1)
 
         //asynchronous routine
         val scope = CoroutineScope(Dispatchers.IO)
@@ -138,10 +152,23 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         bottomNavigationView!!.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item: MenuItem ->
             val itemId = item.itemId
             if (item.itemId == R.id.accountbtn) {
-                val intent = Intent(this, HomeScreenActivity::class.java)
-                startActivity(intent)
+                val intent = Intent(this, MyAccountActivity::class.java)
+                val options = ActivityOptionsCompat.makeCustomAnimation(
+                        this,
+                        R.anim.slide_in,  // Animation for the entering activity
+                        R.anim.slide_out  // Animation for the exiting activity
+                )
+                intent.putExtra("userId", userId)
+                startActivity(intent, options.toBundle())
             } else if (itemId == R.id.homeBtn) {
                 val intent = Intent(this, HomeScreenActivity::class.java)
+                val options = ActivityOptionsCompat.makeCustomAnimation(
+                        this,
+                        R.anim.slide_up,  // Animation for the entering activity
+                        R.anim.slide_in  // Animation for the exiting activity
+                )
+                intent.putExtra("userId", userId)
+                startActivity(intent, options.toBundle())
                 startActivity(intent)
             } else if (itemId == R.id.searchbtn) {
                 val intent = Intent(this, SearchActivity::class.java)
@@ -150,6 +177,7 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
                         R.anim.slide_in,  // Animation for the entering activity
                         R.anim.slide_out  // Animation for the exiting activity
                 )
+                intent.putExtra("userId", userId)
                 startActivity(intent, options.toBundle())
             } else if(itemId == R.id.reservbtn){
                 val intent = Intent(this, ReservationsActivity::class.java)
@@ -158,6 +186,7 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
                         R.anim.slide_in,  // Animation for the entering activity
                         R.anim.slide_out  // Animation for the exiting activity
                 )
+                intent.putExtra("userId", userId)
                 startActivity(intent, options.toBundle())
             }
             item.setChecked(true)
@@ -311,7 +340,7 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
             try {
-                val chunk = Chunk("1", 2, booking)
+                val chunk = Chunk(userId.toString(), 2, booking)
                 Log.d("RoomDetailsActivity", booking.toString())
                 val backendCommunicator = BackendCommunicator()
                 backendCommunicator.sendMasterInfo(chunk)
@@ -332,6 +361,11 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
         }
     }
+
+    /**
+     * Show rating pop up window and allows user to
+     * rate the accommodation
+     */
     @SuppressLint("MissingInflatedId")
     private fun showRatingPopup() {
         val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -353,7 +387,7 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
 
             val scope = CoroutineScope(Dispatchers.IO)
             scope.launch {
-                val chunk = Chunk("1", 3, pair)
+                val chunk = Chunk(userId.toString(), 3, pair)
                 Log.d("RoomDetailsActivity", rating.toString())
                 val backendCommunicator = BackendCommunicator()
                 backendCommunicator.sendMasterInfo(chunk)

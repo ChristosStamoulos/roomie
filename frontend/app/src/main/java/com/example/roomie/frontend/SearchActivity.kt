@@ -2,7 +2,6 @@ package com.example.roomie.frontend
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -78,6 +77,7 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
     val minP = 0
     val maxP = 1000
     var star: Int = 0
+    var userId: Int = 0
 
     /**
      * Initializes the class's attributes
@@ -88,19 +88,31 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
         enableEdgeToEdge()
         setContentView(R.layout.activity_search)
 
+        userId = intent.getIntExtra("userId", -1)
+
         bottomNavigationView = findViewById<View>(R.id.bottomNav) as BottomNavigationView?
 
         bottomNavigationView?.setSelectedItemId(R.id.searchbtn)
         bottomNavigationView!!.setOnItemSelectedListener(NavigationBarView.OnItemSelectedListener { item: MenuItem ->
             val itemId = item.itemId
             if (item.itemId == R.id.accountbtn) {
-                val intent: Intent = Intent(this, HomeScreenActivity::class.java)
-                startActivity(intent)
+                val intent: Intent = Intent(this, MyAccountActivity::class.java)
+                val options = ActivityOptionsCompat.makeCustomAnimation(
+                        this,
+                        R.anim.slide_in,  // Animation for the entering activity
+                        R.anim.slide_out  // Animation for the exiting activity
+                )
+                intent.putExtra("userId", userId)
+                startActivity(intent, options.toBundle())
             } else if (itemId == R.id.reservbtn) {
                 val intent: Intent = Intent(this, ReservationsActivity::class.java)
-                startActivity(intent)
-            } else if (itemId == R.id.searchbtn) {
-                val intent: Intent = Intent(this, SearchActivity::class.java)
+                val options = ActivityOptionsCompat.makeCustomAnimation(
+                        this,
+                        R.anim.slide_in,  // Animation for the entering activity
+                        R.anim.slide_out  // Animation for the exiting activity
+                )
+                intent.putExtra("userId", userId)
+                startActivity(intent, options.toBundle())
             } else if (itemId == R.id.homeBtn) {
                 val intent: Intent = Intent(this, HomeScreenActivity::class.java)
                 val options = ActivityOptionsCompat.makeCustomAnimation(
@@ -108,6 +120,7 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
                         R.anim.slide_out ,  // Animation for the entering activity
                         R.anim.slide_in// Animation for the exiting activity
                 )
+                intent.putExtra("userId", userId)
                 startActivity(intent, options.toBundle())
             }
             item.setChecked(true)
@@ -437,7 +450,6 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
             price_expanded!!.visibility = View.GONE
             val ptxt = findViewById<TextView>(R.id.pricetxt)
             ptxt.text = "$minPrice - $maxPrice"
-            Log.d("MINNNNNNNNNNNNNNNN", minPrice.toString())
 
         }
 
@@ -715,6 +727,7 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
                 R.anim.slide_out  // Animation for the exiting activity
         )
         intent.putExtra("roomId", room.id)
+        intent.putExtra("userId", userId)
         startActivity(intent, options.toBundle())
     }
 }

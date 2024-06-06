@@ -22,11 +22,32 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBcoEr79BSCNAeru8sgl04fZ7KlBa6rZFM"/>
 
-        <activity
-            android:name=".frontend.utils.AvailabilityDecorator"
-            android:exported="false" />
+
+        <activity android:name=".frontend.HomeScreenActivity"
+            android:exported="true"/>
 
         <activity android:name=".frontend.LogInActivity"
+            android:exported="true"/>
+
+        <activity android:name=".frontend.MyAccountActivity"
+            android:exported="true"/>
+
+        <activity android:name=".frontend.ReservationsActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".frontend.RoomDetailsActivity"
+            android:exported="false"/>
+
+        <activity
+            android:name=".frontend.SearchActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".frontend.SignUpActivity"
+            android:exported="false" />
+
+        <activity android:name=".frontend.StartScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,17 +55,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".frontend.SearchActivity"
-            android:exported="false" />
-        <activity android:name=".frontend.HomeScreenActivity"
-            android:exported="true"/>
-        <activity
-            android:name=".frontend.RoomDetailsActivity"
-            android:exported="false"/>
 
-        <activity android:name=".frontend.ReservationsActivity"
-            android:exported="false"/>
+        <activity
+            android:name=".frontend.utils.AvailabilityDecorator"
+            android:exported="false" />
+
     </application>
 
 </manifest>
