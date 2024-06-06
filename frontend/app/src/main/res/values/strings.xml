@@ -19,4 +19,27 @@
     <string name="change_account_information">Change account info</string>
     <string name="log_out">Log out</string>
     <string name="your_personal_data">Your personal data:</string>
+    <string name="hintpswd">Password</string>
+    <string name="phone_number">Phone number</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="password">Password</string>
+    <string name="email_example">someone@example.com</string>
+    <string name="acc_fullName">Full Name</string>
+    <string name="profile_info">Profile info</string>
+    <string name="delete_account">Delete Account</string>
+    <string name="log_outmyacc">Log out</string>
+    <string name="example_name">Example name\n</string>
+    <string name="myaccphonenum">Phone number</string>
+    <string name="your_account_information">Your account information:</string>
+    <string name="edit_your_data">Edit your data</string>
+    <string name="change_your_name">Change your name</string>
+    <string name="new_password">New password</string>
+    <string name="confirm_new_password">Confirm new password</string>
+    <string name="change_password">Change password</string>
+    <string name="new_username">New username</string>
+    <string name="change_username">Change username</string>
+    <string name="new_phone_number">New phone number</string>
+    <string name="save">Save</string>
+
+
 </resources>
