@@ -1,6 +1,7 @@
 package com.example.roomie.backend.utils.json;
 
 import com.example.roomie.backend.domain.Room;
+import com.example.roomie.backend.domain.User;
 import com.example.roomie.backend.utils.SimpleCalendar;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 public class JsonConverter {
     private static final String path = "src/main/java/com/example/roomie/backend/data/data.json";
     private ArrayList<Room> rooms;
+    private ArrayList<User> users;
 
     private void readFile() {
         try {
@@ -97,5 +99,35 @@ public class JsonConverter {
     public ArrayList<Room> getRooms() {
         readFile();
         return rooms;
+    }
+
+    private void readUserFile(){
+        try {
+            String text = new String(Files.readAllBytes(Paths.get("src/main/java/com/example/roomie/backend/data/users.json")), StandardCharsets.UTF_8);
+            JSONObject obj = new JSONObject(text);
+            JSONArray jsonUsers = new JSONArray(obj.getJSONArray("Users"));
+            users = new ArrayList<User>();
+            for (int i = 0; i < jsonUsers.length(); i++) {
+                JSONObject jsonUser = (JSONObject) jsonUsers.get(i);
+
+                User user = new User();
+                user.setId(i);
+                user.setUsername(jsonUser.getString("username"));
+                user.setPassword(jsonUser.getString("password"));
+                user.setName(jsonUser.getString("name"));
+                user.setEmail(jsonUser.getString("email"));
+                user.setPhoneNumber(jsonUser.getString("tel"));
+                users.add(user);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ArrayList<User> getUsers(){
+        readUserFile();
+        return users;
     }
 }
