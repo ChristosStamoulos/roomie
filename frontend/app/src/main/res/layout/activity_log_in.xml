@@ -46,7 +46,7 @@
             app:hintTextColor="@color/mehhblack">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/loginusrnm"
+                android:id="@+id/usernamebtn"
                 android:textColor = "@color/mehhblack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -72,7 +72,7 @@
             app:passwordToggleEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/loginpsw"
+                android:id="@+id/passwordbtn"
                 android:textColor = "@color/mehhblack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -81,7 +81,7 @@
 
 
         <Button
-            android:id="@+id/buttonLogIn"
+            android:id="@+id/logInbtn"
             android:layout_width="213dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -111,7 +111,7 @@
             </TextView>
 
             <TextView
-                android:id="@+id/dndhaveaccsgnp"
+                android:id="@+id/signUpbtn"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
