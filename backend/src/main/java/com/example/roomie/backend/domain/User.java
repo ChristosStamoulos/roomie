@@ -8,8 +8,8 @@ public class User {
     private String password;
     private String name;
     private String phoneNumber;
-    private ArrayList<Room> rooms;
-
+    private String email;
+    private int id;
 
     /**
      * Default Constructor
@@ -89,20 +89,42 @@ public class User {
     }
 
     /**
-     * Gets the rooms teh user has done a reservation
+     * Gets the email of the user
      *
-     * @return the rooms as an ArrayList of Room Objects
+     * @return the email as a String
      */
-    public ArrayList<Room> getRooms() {
-        return rooms;
+    public String getEmail() {
+        return email;
     }
 
     /**
-     * Sets the rooms teh user has done a reservation
+     * Sets the email of the user
      *
-     * @param rooms an ArrayList of Room Objects
+     * @param email the email as a String
      */
-    public void setRooms(ArrayList<Room> rooms) {
-        this.rooms = rooms;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * Gets the id of the user
+     *
+     * @return the id as an Integer
+     */
+    public int getId() { return id; }
+
+    /**
+     * Sets the id of the user
+     *
+     * @param id the id as an Integer
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        User user = (User) obj;
+        return(this.username.equals(user.username) && this.password.equals(user.password));
     }
 }
