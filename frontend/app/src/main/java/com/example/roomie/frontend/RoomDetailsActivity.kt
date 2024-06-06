@@ -1,15 +1,21 @@
 package com.example.roomie.frontend
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.PopupWindow
+import android.widget.RatingBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -118,6 +124,12 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         val bookButton = findViewById<Button>(R.id.book_btn)
         bookButton.setOnClickListener {
             makeBooking()
+        }
+
+        val rateButton = findViewById<ImageView>(R.id.starimg)
+        rateButton.setOnClickListener {
+            // Show the rating popup when the star image is clicked
+            showRatingPopup()
         }
 
         bottomNavigationView = findViewById<View>(R.id.bottomNav) as BottomNavigationView?
@@ -319,5 +331,39 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
             }
         }
+    }
+    @SuppressLint("MissingInflatedId")
+    private fun showRatingPopup() {
+        val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val popupView = inflater.inflate(R.layout.rating_popup, null)
+
+        val width = LinearLayout.LayoutParams.WRAP_CONTENT
+        val height = LinearLayout.LayoutParams.WRAP_CONTENT
+        val focusable = true // prevent touch events outside the popup
+
+        val popupWindow = PopupWindow(popupView, width, height, focusable)
+
+        val ratingBar = popupView.findViewById<RatingBar>(R.id.rating_bar)
+        val submitButton = popupView.findViewById<Button>(R.id.submit_button)
+        val cancelButton = popupView.findViewById<Button>(R.id.cancel_button)
+
+        submitButton.setOnClickListener {
+            val rating = ratingBar.rating.toInt()
+            var pair = Pair(room?.id, rating)
+
+            val scope = CoroutineScope(Dispatchers.IO)
+            scope.launch {
+                val chunk = Chunk("1", 3, pair)
+                Log.d("RoomDetailsActivity", rating.toString())
+                val backendCommunicator = BackendCommunicator()
+                backendCommunicator.sendMasterInfo(chunk)
+            }
+            popupWindow.dismiss()
+        }
+
+        cancelButton.setOnClickListener {
+            popupWindow.dismiss()
+        }
+        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0)
     }
 }
