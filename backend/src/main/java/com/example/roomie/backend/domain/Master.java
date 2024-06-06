@@ -70,6 +70,7 @@ public class Master {
         // Initialize JSON converter and retrieve rooms
         jsonConverter = new JsonConverter();
         rooms = jsonConverter.getRooms();
+        users = jsonConverter.getUsers();
 
         // Initialize list of Worker sockets
         workers = new ArrayList<>();
@@ -301,15 +302,41 @@ public class Master {
                     e.printStackTrace();
                 }
                 break;
+            case 11:
+                ArrayList<String> userDat = (ArrayList<String>) chunk.getData();
+                int userId = validateUser(userDat);
+                if(userId != -1){
+                    Chunk chunk2 = new Chunk(String.valueOf(userId), 11, userId);
+                    processResultsFromReducer(chunk2);
+                }
+                else{
+                    Chunk chunk2 = new Chunk("", 11, null);
+                    processResultsFromReducer(chunk2);
+                }
+                break;
             case 12:
                 ArrayList<Pair<String, String>> userData = new ArrayList<>();
                 userData = (ArrayList<Pair<String, String>>) chunk.getData();
                 int canCreateUser = createUser(userData);
                 if(canCreateUser != -1){
                     Chunk chunk2 = new Chunk(String.valueOf(canCreateUser), 12, String.valueOf(canCreateUser));
+                    processResultsFromReducer(chunk2);
                 }
                 else{
                     Chunk chunk2 = new Chunk(String.valueOf(canCreateUser), 12, String.valueOf(canCreateUser));
+                    processResultsFromReducer(chunk2);
+                }
+                break;
+            case 13:
+                int userid = (Integer) chunk.getData();
+                User u = findUser(userid);
+                if(u != null){
+                    Chunk chunk2 = new Chunk(String.valueOf(u.getId()), 13, u);
+                    processResultsFromReducer(chunk2);
+                }
+                else{
+                    Chunk chunk2 = new Chunk("", 13, null);
+                    processResultsFromReducer(chunk2);
                 }
                 break;
             // Default case: Throw an exception for unexpected request types
@@ -330,6 +357,12 @@ public class Master {
         return roomID % numOfWorkers;
     }
 
+    /**
+     * Creates a User Object after a User signs up
+     *
+     * @param userData  the user's data
+     * @return          the user id
+     */
     private static synchronized int createUser(ArrayList<Pair<String, String>> userData) {
         User user = new User();
 
@@ -347,6 +380,35 @@ public class Master {
         user.setId(userIdCount);
         users.add(user);
         return userIdCount;
+    }
+
+    /**
+     * Validates a User's request to log in
+     *
+     * @param userData  the user's data
+     * @return          a user Object
+     */
+    private static synchronized int validateUser(ArrayList<String> userData) {
+        User user = new User();
+        user.setUsername(userData.get(0));
+        user.setPassword(userData.get(1));
+        for(User u: users){
+            if(u.equals(user)) return u.getId();
+        }
+        return -1;
+    }
+
+    /**
+     * Finds a user
+     *
+     * @param userId    the user's id
+     * @return          a User Object
+     */
+    private static synchronized User findUser(int userId) {
+        for(User u: users){
+            if(u.getId() == userId) return u;
+        }
+        return null;
     }
 
     /**
