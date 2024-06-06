@@ -120,8 +120,8 @@ class MyAccountActivity: AppCompatActivity() {
     fun setDetails(user: User){
         var fullname = findViewById<TextView>(R.id.fullnameacc)
         var phone = findViewById<TextView>(R.id.phonenumberacc)
-        var email = findViewById<TextView>(R.id.usernameacc)
-        var username = findViewById<TextView>(R.id.emailacc)
+        var email = findViewById<TextView>(R.id.emailacc)
+        var username = findViewById<TextView>(R.id.usernameacc)
 
         fullname.text = user.name
         phone.text = user.phoneNumber
