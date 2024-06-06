@@ -19,7 +19,6 @@
             android:layout_height="200dp">
 
             <ImageView
-                android:id="@+id/gnnpImg1"
                 android:layout_width="298dp"
                 android:layout_height="192dp"
                 android:layout_marginStart="-30dp"
@@ -28,14 +27,12 @@
             </ImageView>
 
             <ImageView
-                android:id="@+id/sgnpimg2"
                 android:layout_width="297dp"
                 android:layout_height="280dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="140dp"
                 android:layout_marginTop="-210dp"
                 android:src="@drawable/pent">
-
             </ImageView>
 
 
@@ -53,7 +50,7 @@
 
 
             <EditText
-                android:id="@+id/imputufllnm"
+                android:id="@+id/name"
                 android:layout_width="300dp"
                 android:textColor="@color/mehhblack"
                 android:layout_height="60dp"
@@ -66,7 +63,7 @@
             </EditText>
 
             <EditText
-                android:id="@+id/inputml"
+                android:id="@+id/email"
                 android:layout_width="300dp"
                 android:layout_height="60dp"
                 android:textColor="@color/mehhblack"
@@ -79,7 +76,7 @@
             </EditText>
 
             <EditText
-                android:id="@+id/inputusrnm"
+                android:id="@+id/username"
                 android:layout_width="300dp"
                 android:textColor="@color/mehhblack"
                 android:layout_height="60dp"
@@ -92,7 +89,7 @@
             </EditText>
 
             <EditText
-                android:id="@+id/inputpswsgnp"
+                android:id="@+id/password"
                 android:layout_width="300dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
@@ -106,7 +103,7 @@
             </EditText>
 
             <EditText
-                android:id="@+id/inputpswscnf"
+                android:id="@+id/conf_password"
                 android:layout_width="300dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
@@ -126,7 +123,6 @@
                 android:layout_marginTop="15dp">
 
                 <EditText
-                    android:id="@+id/inputcntrcd"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
@@ -140,7 +136,7 @@
                 </EditText>
 
                 <EditText
-                    android:id="@+id/inputsgnptlphn"
+                    android:id="@+id/phone"
                     android:layout_width="300dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
@@ -155,7 +151,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/btnSignup"
+                android:id="@+id/signUp"
                 android:layout_width="250dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
@@ -187,7 +183,7 @@
                 </TextView>
 
                 <TextView
-                    android:id="@+id/sgnuplgn"
+                    android:id="@+id/logIn"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -198,9 +194,7 @@
                     android:paddingBottom="10dp"
                     android:fontFamily="arial"/>
 
-
             </LinearLayout>
-
 
         </LinearLayout>
 
