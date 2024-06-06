@@ -51,8 +51,9 @@
                     android:layout_gravity="center"
                     android:baselineAligned="false"
                     android:text="@string/example_name"
+                    android:fontFamily="@font/jost_semibold"
                     android:textColor="@color/mehhblack"
-                    android:textSize="20sp">
+                    android:textSize="25sp">
 
                 </TextView>
 

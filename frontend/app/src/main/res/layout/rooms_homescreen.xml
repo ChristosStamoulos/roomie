@@ -42,7 +42,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/cornered_background"
             android:scaleType="center"
-            android:src="@drawable/istockphoto_904608018_612x612_removebg_preview" />
+            android:src="@mipmap/roomie" />
     </androidx.cardview.widget.CardView>
 
     <TextView
