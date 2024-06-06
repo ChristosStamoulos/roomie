@@ -51,7 +51,7 @@ public class ConsoleApp {
      */
     private static void init(){
         Properties prop = new Properties();
-        String filename = "src/main/java/org/example/backend/config/user.config";
+        String filename = "src/main/java/com/example/roomie/backend/config/user.config";
 
 
         try (FileInputStream f = new FileInputStream(filename)){
@@ -186,7 +186,7 @@ public class ConsoleApp {
                         Chunk d = null;
                         try{
                             inp = new ObjectInputStream(connectionSocket.getInputStream());
-                            dat = (Chunk) inp.readObject();
+                            d = (Chunk) inp.readObject();
                         } catch (ClassNotFoundException e){
                             System.err.println("Class not found exception.");
                         }
@@ -199,6 +199,7 @@ public class ConsoleApp {
                                 System.out.println(String.valueOf(++i) + ". " + r.getKey() + ": " + String.valueOf(r.getValue()));
                             }
                         }
+                        System.out.println("\n");
                         break;
                     case 6:
                         in.close();
