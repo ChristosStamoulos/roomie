@@ -234,7 +234,7 @@ public class ActionsForWorkers extends Thread {
             if(stars == 0.0 || stars <= r.getRating()){
                 filterCounter++;
             }
-            if(noOfPeople == 0 || noOfPeople == r.getNoOfPersons()){
+            if(noOfPeople == 0 || noOfPeople <= r.getNoOfPersons()){
                 filterCounter++;
             }
             if(startDate.equals(new SimpleCalendar("01/01/0001"))){
