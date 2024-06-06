@@ -2,8 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/offwhite"
-    tools:context=".StartScreenActivity">
+    android:background="@color/offwhite">
 
 
     <TextView
@@ -18,13 +17,15 @@
         android:fontFamily="@font/jost_semibold"
         android:layout_centerVertical="true" />
 
-    <ImageView
-        android:id="@+id/logoImageView"
-        android:layout_width="234dp"
+    <TextView
+        android:layout_width="243dp"
         android:layout_height="145dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"
-        android:src="@mipmap/roomie" />
+        android:layout_marginTop="190dp"
+        android:text="roomie."
+        android:fontFamily="@font/jost_semibold"
+        android:textSize="30sp"
+        android:textAlignment="center"/>
 
     <LinearLayout
         android:layout_width="match_parent"

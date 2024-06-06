@@ -16,7 +16,7 @@
         android:layout_width="158dp"
         android:layout_height="40dp"
         android:layout_marginTop="16dp"
-        android:text="@string/app_name"
+        android:text="roomie."
         android:fontFamily="@font/jost_semibold"
         android:textSize="24dp"
         app:layout_constraintBottom_toTopOf="@+id/recyclerView"
