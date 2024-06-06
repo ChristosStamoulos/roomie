@@ -36,6 +36,8 @@ public class Master {
     private static int segmentIdCount;                    // Counter for segment IDs
     private static ArrayList<Room> rooms;                 // List of rooms
     private static JsonConverter jsonConverter;           // JSON converter for room objects
+    private static int userIdCount;                       // Counter for user IDs
+    private static ArrayList<User> users;                 // List of users
 
     /**
      * Initializes the useful data of Master
@@ -63,6 +65,7 @@ public class Master {
         userPort = Integer.parseInt(prop.getProperty("userPort"));
         reducerPort = Integer.parseInt(prop.getProperty("reducerPort"));
         segmentIdCount = 0;
+        userIdCount = 0;
 
         // Initialize JSON converter and retrieve rooms
         jsonConverter = new JsonConverter();
@@ -298,6 +301,17 @@ public class Master {
                     e.printStackTrace();
                 }
                 break;
+            case 12:
+                ArrayList<Pair<String, String>> userData = new ArrayList<>();
+                userData = (ArrayList<Pair<String, String>>) chunk.getData();
+                int canCreateUser = createUser(userData);
+                if(canCreateUser != -1){
+                    Chunk chunk2 = new Chunk(String.valueOf(canCreateUser), 12, String.valueOf(canCreateUser));
+                }
+                else{
+                    Chunk chunk2 = new Chunk(String.valueOf(canCreateUser), 12, String.valueOf(canCreateUser));
+                }
+                break;
             // Default case: Throw an exception for unexpected request types
             default:
                 throw new IllegalStateException("Unexpected value: " + type);
@@ -314,6 +328,25 @@ public class Master {
     public static int hashRequestToWorker(int roomID, int numOfWorkers) {
         // Modulo operation to map the segment ID to a Worker
         return roomID % numOfWorkers;
+    }
+
+    private static synchronized int createUser(ArrayList<Pair<String, String>> userData) {
+        User user = new User();
+
+        for(Pair<String, String> pair: userData){
+            if(Objects.equals(pair.getKey(), "name")) user.setName(pair.getValue());
+            if(Objects.equals(pair.getKey(), "userName")) user.setUsername(pair.getValue());
+            if(Objects.equals(pair.getKey(), "email")) user.setEmail(pair.getValue());
+            if(Objects.equals(pair.getKey(), "password")) user.setPassword(pair.getValue());
+            if(Objects.equals(pair.getKey(), "phone")) user.setPhoneNumber(pair.getValue());
+        }
+        for(User u: users){
+            if(user.equals(u)) return -1;
+        }
+        userIdCount ++;
+        user.setId(userIdCount);
+        users.add(user);
+        return userIdCount;
     }
 
     /**
