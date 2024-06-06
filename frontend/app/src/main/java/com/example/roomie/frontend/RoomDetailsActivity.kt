@@ -169,7 +169,6 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
                 )
                 intent.putExtra("userId", userId)
                 startActivity(intent, options.toBundle())
-                startActivity(intent)
             } else if (itemId == R.id.searchbtn) {
                 val intent = Intent(this, SearchActivity::class.java)
                 val options = ActivityOptionsCompat.makeCustomAnimation(

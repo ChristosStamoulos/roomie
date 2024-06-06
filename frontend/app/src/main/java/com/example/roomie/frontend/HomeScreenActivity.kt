@@ -122,6 +122,7 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
                 R.anim.slide_out  // Animation for the exiting activity
         )
         intent.putExtra("roomId", room.id)
+        intent.putExtra("userId", userId)
         startActivity(intent, options.toBundle())
         //startActivity(intent)
     }
