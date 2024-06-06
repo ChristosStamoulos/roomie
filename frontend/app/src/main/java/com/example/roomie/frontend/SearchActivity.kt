@@ -14,6 +14,7 @@ import android.widget.TextView
 import android.widget.ViewFlipper
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -214,9 +215,25 @@ class SearchActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener {
      */
     fun miniSearchButton(){
         miniSearchbtn = findViewById(R.id.minisearchbtn)
-        miniSearchbtn!!.visibility = View.VISIBLE
+        var searchResultsV = findViewById<ConstraintLayout>(R.id.searchResultsView)
         miniSearchbtn!!.setOnClickListener {
-            viewFlipper!!.showPrevious()
+
+            searchResultsV.animate()
+                    .translationY(searchResultsV.height.toFloat())  // Slide down
+                    .alpha(0.0f)
+                    .setDuration(300)
+                    .withEndAction {
+                        viewFlipper!!.showPrevious()
+                        // Slide in the results layout
+                        searchResultsV.translationY = -searchResultsV.height.toFloat()  // Start above the view
+                        searchResultsV.alpha = 0.0f
+                        searchResultsV.animate()
+                                .translationY(0f)  // Slide down to original position
+                                .alpha(1.0f)
+                                .setDuration(300)
+                                .start()
+                    }
+                    .start()
         }
     }
 

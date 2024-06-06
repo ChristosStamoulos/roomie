@@ -637,7 +637,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:id="@+id/searchResultsView">
 
 
             <androidx.recyclerview.widget.RecyclerView
@@ -658,7 +659,7 @@
                 android:background="@drawable/bottom_nav_bg"
                 android:gravity="center_vertical"
                 android:paddingStart="50dp"
-                android:text="Athens,   16/09/2024 - 19/09/2024"
+                android:text="Search..."
                 android:textSize="16sp"
                 app:layout_constraintBottom_toTopOf="@+id/searchResults"
                 app:layout_constraintEnd_toEndOf="parent"
