@@ -38,7 +38,7 @@ class MyAccountActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_home_screen)
+        setContentView(R.layout.activity_my_account)
 
         userId = intent.getIntExtra("userId", -1)
 
@@ -100,7 +100,7 @@ class MyAccountActivity: AppCompatActivity() {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
 
-            val chunk = Chunk("", 13, userId)
+            val chunk = Chunk(userId.toString(), 13, userId)
 
             val backendCommunicator = BackendCommunicator()
             backendCommunicator.sendMasterInfo(chunk)

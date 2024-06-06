@@ -71,6 +71,8 @@ public class Master {
         jsonConverter = new JsonConverter();
         rooms = jsonConverter.getRooms();
         users = jsonConverter.getUsers();
+        userIdCount = users.size();
+
 
         // Initialize list of Worker sockets
         workers = new ArrayList<>();
@@ -126,7 +128,7 @@ public class Master {
         try{
             ObjectInputStream in = new ObjectInputStream(userSocket.getInputStream());
             Chunk data = (Chunk) in.readObject();
-            System.out.println(data.getData().toString());
+
             // Increment the segmentIdCount and assign it to the Chunk object
             data.setSegmentID(++segmentIdCount);
             // Store the userSocket in the userSockets map with the segment ID as the key
@@ -259,6 +261,7 @@ public class Master {
                         e.printStackTrace();
                     }
                     System.out.println(chunk.getData());
+                    System.out.println(chunk);
                 }
                 break;
             case 2, 3, 5:
@@ -305,38 +308,28 @@ public class Master {
             case 11:
                 ArrayList<String> userDat = (ArrayList<String>) chunk.getData();
                 int userId = validateUser(userDat);
-                if(userId != -1){
-                    Chunk chunk2 = new Chunk(String.valueOf(userId), 11, userId);
-                    processResultsFromReducer(chunk2);
-                }
-                else{
-                    Chunk chunk2 = new Chunk("", 11, null);
-                    processResultsFromReducer(chunk2);
-                }
+                Chunk chunk2 = new Chunk(String.valueOf(userId), 11, String.valueOf(userId));
+                processResultsFromReducer(chunk2);
                 break;
             case 12:
                 ArrayList<Pair<String, String>> userData = new ArrayList<>();
                 userData = (ArrayList<Pair<String, String>>) chunk.getData();
                 int canCreateUser = createUser(userData);
-                if(canCreateUser != -1){
-                    Chunk chunk2 = new Chunk(String.valueOf(canCreateUser), 12, String.valueOf(canCreateUser));
-                    processResultsFromReducer(chunk2);
-                }
-                else{
-                    Chunk chunk2 = new Chunk(String.valueOf(canCreateUser), 12, String.valueOf(canCreateUser));
-                    processResultsFromReducer(chunk2);
-                }
+                Chunk chunk3 = new Chunk(String.valueOf(canCreateUser), 12, String.valueOf(canCreateUser));
+                processResultsFromReducer(chunk3);
+
                 break;
             case 13:
                 int userid = (Integer) chunk.getData();
                 User u = findUser(userid);
+                System.out.println("Maria re" + userid);
                 if(u != null){
-                    Chunk chunk2 = new Chunk(String.valueOf(u.getId()), 13, u);
-                    processResultsFromReducer(chunk2);
+                    Chunk chunk4 = new Chunk(String.valueOf(u.getId()), 13, u);
+                    processResultsFromReducer(chunk4);
                 }
                 else{
-                    Chunk chunk2 = new Chunk("", 13, null);
-                    processResultsFromReducer(chunk2);
+                    Chunk chunk4 = new Chunk("", 13, null);
+                    processResultsFromReducer(chunk4);
                 }
                 break;
             // Default case: Throw an exception for unexpected request types

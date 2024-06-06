@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityOptionsCompat
@@ -27,7 +28,7 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var phoneEditText: EditText
     private lateinit var confirmPasswordEditText: EditText
     private lateinit var signUpButton: Button
-    private lateinit var logInButton: Button
+    private lateinit var logInButton: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -80,6 +81,8 @@ class SignUpActivity : AppCompatActivity() {
                 backendCommunicator.sendMasterInfo(chunk)
                 val answer = backendCommunicator.sendClientInfo()
                 val userId = Integer.parseInt(answer.userID)
+                Log.d("Sign up", userId.toString())
+
 
                 withContext(Dispatchers.Main) {
                     if (userId == -1) {
@@ -108,6 +111,7 @@ class SignUpActivity : AppCompatActivity() {
                 R.anim.expand_trans,  // Animation for the entering activity
                 R.anim.slide_out      // Animation for the exiting activity
         )
+        startActivity(intent, options.toBundle())
     }
 
     private fun validateForm(username: String, email: String, password: String, confirmPassword: String, phone: String): Boolean {

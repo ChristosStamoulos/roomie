@@ -92,7 +92,7 @@ class HomeScreenActivity : AppCompatActivity(), RoomsAdapter.onRoomClickListener
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
 
-            val chunk = Chunk("", 1, generateFilterAll().toString())
+            val chunk = Chunk(userId.toString(), 1, generateFilterAll().toString())
 
             val backendCommunicator = BackendCommunicator()
             backendCommunicator.sendMasterInfo(chunk)

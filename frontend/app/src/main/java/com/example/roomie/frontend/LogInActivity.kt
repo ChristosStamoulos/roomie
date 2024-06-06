@@ -45,25 +45,25 @@ class LogInActivity : AppCompatActivity() {
      * if the user exists or not
      */
     fun logI(){
+        var credentials = ArrayList<String>()
+        credentials.add(getUserName())
+        credentials.add(getPassword())
+        val chunk = Chunk("-1", 11, credentials)
+
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
-
-            var credentials = ArrayList<String>()
-            credentials.add(getUserName())
-            credentials.add(getPassword())
-            val chunk = Chunk("", 11, credentials)
 
             val backendCommunicator = BackendCommunicator()
             backendCommunicator.sendMasterInfo(chunk)
             val answer = backendCommunicator.sendClientInfo()
-            var userId = answer.data as Int
+            var userId = Integer.parseInt(answer.userID)
 
             // Switch to the main thread to update the UI
             withContext(Dispatchers.Main) {
-                if(userId != null) {
-                    logIn(userId)
-                }else{
+                if(userId == -1) {
                     showMessage("Error", "You are not registered!")
+                }else{
+                    logIn(userId)
                 }
             }
         }

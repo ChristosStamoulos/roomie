@@ -30,7 +30,7 @@
                 android:layout_height="500dp"
                 android:layout_gravity="center"
                 android:layout_marginTop="-290dp"
-                android:background="@drawable/shadowCircle"
+                android:background="@drawable/shadow_circle"
                 android:elevation="60dp"
                 android:orientation="vertical">
 
@@ -39,7 +39,7 @@
                     android:layout_height="100dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="310dp"
-                    android:src="@drawable/accountblacl">
+                    android:src="@drawable/account_icon">
 
                 </ImageView>
 

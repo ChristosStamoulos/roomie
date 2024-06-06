@@ -83,7 +83,7 @@ class RoomDetailsActivity : AppCompatActivity(), OnMapReadyCallback {
         val scope = CoroutineScope(Dispatchers.IO)
         scope.launch {
 
-            val chunk = Chunk("", 9, roomId)
+            val chunk = Chunk(userId.toString(), 9, roomId)
 
             val backendCommunicator = BackendCommunicator()
             backendCommunicator.sendMasterInfo(chunk)

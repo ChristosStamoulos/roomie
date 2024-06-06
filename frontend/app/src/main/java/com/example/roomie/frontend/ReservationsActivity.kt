@@ -2,6 +2,7 @@ package com.example.roomie.frontend
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.enableEdgeToEdge
@@ -45,6 +46,7 @@ class ReservationsActivity : AppCompatActivity(), ReservationsAdapter.onReservat
         setContentView(R.layout.activity_home_screen)
 
         userId = intent.getIntExtra("userId", -1)
+        Log.d(".", userId.toString())
 
         bottomNavigationView = findViewById<View>(R.id.bottomNav) as BottomNavigationView?
 
@@ -92,7 +94,9 @@ class ReservationsActivity : AppCompatActivity(), ReservationsAdapter.onReservat
         scope.launch {
 
             var res = ArrayList<Pair<Pair<Room, ArrayList<ByteArray>>,ArrayList<SimpleCalendar>>>()
-            val chunk = Chunk("1", 10, userId)
+            val chunk = Chunk(userId.toString(), 10, userId)
+            Log.d(".", userId.toString())
+
 
             val backendCommunicator = BackendCommunicator()
             backendCommunicator.sendMasterInfo(chunk)
@@ -102,7 +106,7 @@ class ReservationsActivity : AppCompatActivity(), ReservationsAdapter.onReservat
             for(pair in reservations){
                 val roomId = pair.key
                 val dates = pair.value
-                val chunk1 = Chunk("", 9, roomId)
+                val chunk1 = Chunk(userId.toString(), 9, roomId)
 
                 val bc = BackendCommunicator()
                 bc.sendMasterInfo(chunk1)
@@ -139,6 +143,7 @@ class ReservationsActivity : AppCompatActivity(), ReservationsAdapter.onReservat
                 R.anim.slide_out  // Animation for the exiting activity
         )
         intent.putExtra("roomId", room.id)
+        intent.putExtra("userId", userId)
         startActivity(intent, options.toBundle())
     }
 }
