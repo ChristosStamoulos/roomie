@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/offwhite"
-    tools:context=".StartSreenActivity">
+    tools:context=".StartScreenActivity">
 
 
     <TextView
@@ -15,7 +15,7 @@
         android:text="@string/slogan"
         android:textColor="@color/purple"
         android:textSize="24sp"
-        android:textStyle="bold"
+        android:fontFamily="@font/jost_semibold"
         android:layout_centerVertical="true" />
 
     <ImageView

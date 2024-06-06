@@ -42,6 +42,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="26dp"
         android:text="Name"
+        android:fontFamily="@font/jost_semibold"
         app:layout_constraintBottom_toTopOf="@+id/cardView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

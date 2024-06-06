@@ -20,6 +20,7 @@
             android:layout_marginStart="30dp"
             android:layout_marginBottom="16dp"
             android:text="$"
+            android:fontFamily="@font/jost_semibold"
             android:textColor="#FF5722"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -35,7 +36,7 @@
             android:text="100"
             android:textColor="#FF5722"
             android:textSize="18sp"
-            android:textStyle="bold"
+            android:fontFamily="@font/jost_semibold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/dollar_sign" />
 
