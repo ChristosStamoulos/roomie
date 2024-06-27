@@ -130,9 +130,11 @@ public class Master {
             Chunk data = (Chunk) in.readObject();
 
             // Increment the segmentIdCount and assign it to the Chunk object
-            data.setSegmentID(++segmentIdCount);
-            // Store the userSocket in the userSockets map with the segment ID as the key
-            userSockets.put(segmentIdCount, userSocket);
+            synchronized ((Object) segmentIdCount) {
+                data.setSegmentID(++segmentIdCount);
+                // Store the userSocket in the userSockets map with the segment ID as the key
+                userSockets.put(segmentIdCount, userSocket);
+            }
             // Process the request based on the type ID in the Chunk object
             processRequest(data.getTypeID(), data);
             System.out.println("Request processed successfully.");
@@ -155,16 +157,16 @@ public class Master {
             try {
                 // Create a Worker socket and connect to the Worker
                 Socket workerSocket1 = new Socket(host1, worker1Port);
-                //Socket workerSocket2 = new Socket(host2, worker2Port);
+                Socket workerSocket2 = new Socket(host2, worker2Port);
                 //Socket workerSocket3 = new Socket(host3, worker3Port);
                 ObjectOutputStream outWorker1 = new ObjectOutputStream(workerSocket1.getOutputStream());
-                //ObjectOutputStream outWorker2 = new ObjectOutputStream(workerSocket2.getOutputStream());
+                ObjectOutputStream outWorker2 = new ObjectOutputStream(workerSocket2.getOutputStream());
                 //ObjectOutputStream outWorker3 = new ObjectOutputStream(workerSocket3.getOutputStream());
 
                 // Add the output stream to the list of Workers
                 synchronized (workers) {
                     workers.add(outWorker1);
-                //    workers.add(outWorker2);
+                    workers.add(outWorker2);
                 //    workers.add(outWorker3);
                 }
                 splitRooms();
